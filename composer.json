@@ -15,7 +15,7 @@
     ],
     "require": {
         "php": ">=4.4.9",
-        "mysql": ">=4.1.22",
+        "mysql": ">=4.1.22"
     },
     "version": "2.2.3",
     "autoload": {
