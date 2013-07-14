@@ -1,0 +1,24 @@
+{
+    "name": "stefangabos/zebra_mptt",
+    "type": "library",
+    "description": "A PHP library providing an implementation of the modified preorder tree traversal algorithm",
+    "keywords": ["php","mptt", "modified", "preorder", "tree", "traversal"],
+    "homepage": "http://stefangabos.ro/php-libraries/zebra-mptt/",
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "Stefan Gabos",
+            "email": "contact@stefangabos.ro",
+            "homepage": "http://stefangabos.ro/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=4.4.9",
+        "mysql": ">=4.1.22",
+    },
+    "version": "2.2.3",
+    "autoload": {
+        "psr-0": { "Zebra_Mptt": "" }
+    }
+}
