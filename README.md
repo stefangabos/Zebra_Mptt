@@ -74,4 +74,4 @@ $mptt->get_tree();
 ?>
 ```
 
-Visit the **[project's homepage](http://stefangabos.ro/php-libraries/zebra_mptt/)** for more information.
+Visit the **[project's homepage](http://stefangabos.ro/php-libraries/zebra-mptt/)** for more information.
