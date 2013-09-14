@@ -20,7 +20,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.2.3 (last revision: July 14, 2013)
+ *  @version    2.2.4 (last revision: September 14, 2013)
  *  @copyright  (c) 2009 - 2013 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
@@ -1382,7 +1382,7 @@ class Zebra_Mptt
             foreach ($node as $key => $elem)
 
                 // generate output and if the node has children nodes, call this method recursively
-                $out .= '<li>' . $elem['id'] . ':' . $elem['title'] . (is_array($elem['children']) ? $this->to_list($elem['children'], $list_type) : '') . '</li>';
+                $out .= '<li>' . $elem[$this->properties['id_column']] . ':' . $elem[$this->properties['title_column']] . (is_array($elem['children']) ? $this->to_list($elem['children'], $list_type) : '') . '</li>';
 
             // return generated output
             return $out . '</' . $list_type . '>';
