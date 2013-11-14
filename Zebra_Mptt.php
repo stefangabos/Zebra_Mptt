@@ -20,7 +20,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.2.4 (last revision: September 14, 2013)
+ *  @version    2.2.5 (last revision: November 14, 2013)
  *  @copyright  (c) 2009 - 2013 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
@@ -702,7 +702,7 @@ class Zebra_Mptt
     /**
      *  Returns an unidimensional (flat) array with the children nodes of a given parent node.
      *
-     *  <i>For a multi-dimensional array use the {@link get_tree()} method.</i>
+     *  <i>For a multidimensional array use the {@link get_tree()} method.</i>
      *
      *  @param  integer     $parent             (Optional) The ID of the node for which to return children nodes.
      *
@@ -1013,7 +1013,7 @@ class Zebra_Mptt
      *  children nodes and so on) of a given node.
      *
      *  @param  integer     $node               (Optional) The ID of the node for which to return all descendant nodes
-     *                                          as a multi-dimensional array.
+     *                                          as a multidimensional array.
      *
      *                                          Default is "0" - return all the nodes.
      *
@@ -1337,6 +1337,64 @@ class Zebra_Mptt
     }
 
     /**
+     *  Updates a node's title.
+     *
+     *  <code>
+     *  // add a topmost node
+     *  $node = $mptt->add(0, 'Main');
+     *
+     *  // change the node's title
+     *  $mptt->update($node, 'Primary');
+     *  </code>
+     *
+     *  @param  integer     $node       The ID of the node to update the title for.
+     *
+     *  @param  string      $title      The new title to be set for the node.
+     *
+     *  @return boolean                 TRUE on success or FALSE upon error.
+     *
+     *  @since  2.2.5
+     */
+    function update($node, $title) {
+
+        // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
+        $this->_init();
+
+        // continue only if target node exists in the lookup array
+        if (isset($this->lookup[$node])) {
+
+            // lock table to prevent other sessions from modifying the data and thus preserving data integrity
+            mysql_query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+
+            // update node's title
+            mysql_query('
+
+                UPDATE
+                    ' . $this->properties['table_name'] . '
+                SET
+                    ' . $this->properties['title_column'] . ' = "' . $title . '"
+                WHERE
+                    ' . $this->properties['id_column'] . ' = ' . $node . '
+
+            ');
+
+            // release table lock
+            mysql_query('UNLOCK TABLES');
+
+            // update lookup array
+            $this->lookup[$node][$this->properties['title_column']] = $title;
+
+            // return true as everything went well
+            return true;
+
+        }
+
+        // if scripts gets this far, return false as something must've went wrong
+        return false;
+
+    }
+
+    /**
      *  Transforms a node and it's subnodes to an ordered/unordered list.
      *
      *  <code>
@@ -1439,7 +1497,7 @@ class Zebra_Mptt
      */
     function _reorder_lookup_array() {
 
-        // re-order the lookup array
+        // reorder the lookup array
 
         // iterate through the nodes in the lookup array
         foreach ($this->lookup as $properties)
