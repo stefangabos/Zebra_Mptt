@@ -963,7 +963,7 @@ class Zebra_Mptt
                 // if we find a topmost node
                 if ($properties[$this->properties['parent_column']] == 0) {
 
-                    // if the $categories variable is set, save the categories we have so far
+                    // if the $nodes variable is set, save the what we have so far
                     if (isset($nodes)) $result += $nodes;
 
                     // reset the categories and parents arrays
