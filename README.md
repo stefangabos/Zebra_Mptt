@@ -55,8 +55,8 @@ $red = $mptt->add($fruit, 'Red');
 $yellow = $mptt->add($fruit, 'Yellow');
 
 // add a fruit of each color
-$mptt->add($red, 'Cherry');
-$mptt->add($yellow, 'Banana');
+$cherry = $mptt->add($red, 'Cherry');
+$banana = $mptt->add($yellow, 'Banana');
 
 // add two kinds of meat
 $mptt->add($meat, 'Beef');
