@@ -43,6 +43,14 @@ class Zebra_Mptt
      *  $mptt = new Zebra_Mptt();
      *  </code>
      *
+     *  @param  resource    $link           An object representing the connection to a MySQL Server, as returned by
+     *                                      calling {@link http://www.php.net/manual/en/mysqli.construct.php mysqli_connect}.
+     *
+     *                                      If you use {@link http://stefangabos.ro/php-libraries/zebra-database/ Zebra_Database}
+     *                                      to connect to the database, you can get the connection to the MySQL server
+     *                                      via Zebra_Database's {@link http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#methodget_link get_link}
+     *                                      method.
+     *
      *  @param  string      $table_name     (Optional) MySQL table name to be used for storing items.
      *
      *                                      Default is <i>mptt</i>
@@ -69,10 +77,13 @@ class Zebra_Mptt
      *
      *  @return void
      */
-    function __construct($table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
+    function __construct(&$link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
+
+        // store the connection link
+        $this->link = $link;
 
         // continue only if there is an active MySQL connection
-        if (@mysql_ping())
+        if (@mysqli_ping($this->link))
 
             // initialize properties
             $this->properties = array(
@@ -223,10 +234,10 @@ class Zebra_Mptt
             }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysql_query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -237,7 +248,7 @@ class Zebra_Mptt
 
             ');
 
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -249,7 +260,7 @@ class Zebra_Mptt
             ');
 
             // insert the new node into the database
-            mysql_query('
+            mysqli_query($this->link, '
                 INSERT INTO
                     ' . $this->properties['table_name'] . '
                     (
@@ -260,7 +271,7 @@ class Zebra_Mptt
                     )
                 VALUES
                     (
-                        "' . mysql_real_escape_string($title) . '",
+                        "' . mysqli_real_escape_string($this->link, $title) . '",
                         ' . ($boundary + 1) . ',
                         ' . ($boundary + 2) . ',
                         ' . $parent . '
@@ -268,10 +279,10 @@ class Zebra_Mptt
             ');
 
             // get the ID of the newly inserted node
-            $node_id = mysql_insert_id();
+            $node_id = mysqli_insert_id($this->link);
 
             // release table lock
-            mysql_query('UNLOCK TABLES');
+            mysqli_query($this->link, 'UNLOCK TABLES');
 
             // add the node to the lookup array
             $this->lookup[$node_id] = array(
@@ -445,10 +456,10 @@ class Zebra_Mptt
             }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysql_query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -459,7 +470,7 @@ class Zebra_Mptt
 
             ');
 
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -483,7 +494,7 @@ class Zebra_Mptt
                 $properties[$this->properties['right_column']] += $shift;
 
                 // insert into the database
-                mysql_query('
+                mysqli_query($this->link, '
                     INSERT INTO
                         ' . $this->properties['table_name'] . '
                         (
@@ -494,7 +505,7 @@ class Zebra_Mptt
                         )
                     VALUES
                         (
-                            "' . mysql_real_escape_string($properties[$this->properties['title_column']]) . '",
+                            "' . mysqli_real_escape_string($this->link, $properties[$this->properties['title_column']]) . '",
                             ' . $properties[$this->properties['left_column']] . ',
                             ' . $properties[$this->properties['right_column']] . ',
                             ' . $properties[$this->properties['parent_column']] . '
@@ -502,7 +513,7 @@ class Zebra_Mptt
                 ');
 
                 // get the ID of the newly inserted node
-                $node_id = mysql_insert_id();
+                $node_id = mysqli_insert_id($this->link);
 
                 // because the node may have children nodes and its ID just changed
                 // we need to find its children and update the reference to the parent ID
@@ -527,7 +538,7 @@ class Zebra_Mptt
             unset($properties);
 
             // release table lock
-            mysql_query('UNLOCK TABLES');
+            mysqli_query($this->link, 'UNLOCK TABLES');
 
             // at this point, we have the nodes in the database but we need to also update the lookup array
 
@@ -616,10 +627,10 @@ class Zebra_Mptt
                 unset($this->lookup[$child[$this->properties['id_column']]]);
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysql_query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
 
             // also remove nodes from the database
-            mysql_query('
+            mysqli_query($this->link, '
 
                 DELETE
                 FROM
@@ -664,7 +675,7 @@ class Zebra_Mptt
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -675,7 +686,7 @@ class Zebra_Mptt
 
             ');
 
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -687,7 +698,7 @@ class Zebra_Mptt
             ');
 
             // release table lock
-            mysql_query('UNLOCK TABLES');
+            mysqli_query($this->link, 'UNLOCK TABLES');
 
             // return true as everything went well
             return true;
@@ -1129,11 +1140,11 @@ class Zebra_Mptt
             $source_boundary = $this->lookup[$source][$this->properties['left_column']];
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysql_query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
 
             // we'll multiply the "left" and "right" values of the nodes we're about to move with "-1", in order to
             // prevent the values being changed further in the script
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -1167,7 +1178,7 @@ class Zebra_Mptt
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -1178,7 +1189,7 @@ class Zebra_Mptt
 
             ');
 
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -1254,7 +1265,7 @@ class Zebra_Mptt
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -1265,7 +1276,7 @@ class Zebra_Mptt
 
             ');
 
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -1296,7 +1307,7 @@ class Zebra_Mptt
             // also update the entries in the database
             // (notice that we're subtracting rather than adding and that finally we multiply by -1 so that the values
             // turn positive again)
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -1309,7 +1320,7 @@ class Zebra_Mptt
             ');
 
             // finally, update the parent of the source node
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -1321,7 +1332,7 @@ class Zebra_Mptt
             ');
 
             // release table lock
-            mysql_query('UNLOCK TABLES');
+            mysqli_query($this->link, 'UNLOCK TABLES');
 
             // reorder the lookup array
             $this->_reorder_lookup_array();
@@ -1364,10 +1375,10 @@ class Zebra_Mptt
         if (isset($this->lookup[$node])) {
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysql_query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
 
             // update node's title
-            mysql_query('
+            mysqli_query($this->link, '
 
                 UPDATE
                     ' . $this->properties['table_name'] . '
@@ -1379,7 +1390,7 @@ class Zebra_Mptt
             ');
 
             // release table lock
-            mysql_query('UNLOCK TABLES');
+            mysqli_query($this->link, 'UNLOCK TABLES');
 
             // update lookup array
             $this->lookup[$node][$this->properties['title_column']] = $title;
@@ -1463,7 +1474,7 @@ class Zebra_Mptt
         if (!isset($this->lookup)) {
     
             // fetch data from the database
-            $result = mysql_query('
+            $result = mysqli_query($this->link, '
 
                 SELECT
                     *
@@ -1477,12 +1488,10 @@ class Zebra_Mptt
             $this->lookup = array();
 
             // iterate through the found records
-            while ($row = mysql_fetch_assoc($result)) {
+            while ($row = mysqli_fetch_assoc($result))
 
                 // put all records in an array; use the ID column as index
                 $this->lookup[$row[$this->properties['id_column']]] = $row;
-
-            }
 
         }
 

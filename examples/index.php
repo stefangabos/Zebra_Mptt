@@ -24,35 +24,31 @@
         <?php
 
         // database connection details
-        $MySQL_host     = '';
-        $MySQL_username = '';
-        $MySQL_password = '';
-        $MySQL_database = '';
+        $mysql_host     = '';
+        $mysql_username = '';
+        $mysql_password = '';
+        $mysql_database = '';
 
         // if could not connect to database
-        if (!($connection = @mysql_connect($MySQL_host, $MySQL_username, $MySQL_password))) {
+        ($connection = @mysqli_connect($mysql_host, $mysql_username, $mysql_password)) or
 
             // stop execution and display error message
             die('Error connecting to the database!<br>Make sure you have specified correct values for host, username and password.');
 
-        }
-
         // if database could not be selected
-        if (!@mysql_select_db($MySQL_database, $connection)) {
+        @mysqli_select_db($connection, $mysql_database) or
 
             // stop execution and display error message
             die('Error selecting database!<br>Make sure you have specified an existing and accessible database.');
 
-        }
-
         // first, clear everything in the database
-        mysql_query('TRUNCATE TABLE mptt');
+        mysqli_query($connection, 'TRUNCATE TABLE mptt');
 
         // include the Zebra_Mptt class
         require '../Zebra_Mptt.php';
 
         // instantiate the Zebra_Mptt object
-        $mptt = new Zebra_Mptt();
+        $mptt = new Zebra_Mptt($connection);
 
         // populate the table
 
