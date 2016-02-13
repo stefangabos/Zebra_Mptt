@@ -20,8 +20,8 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.2.5 (last revision: November 14, 2013)
- *  @copyright  (c) 2009 - 2013 Stefan Gabos
+ *  @version    2.2.6 (last revision: February 13, 2016)
+ *  @copyright  (c) 2009 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
  */
@@ -69,7 +69,7 @@ class Zebra_Mptt
      *
      *  @return void
      */
-    function Zebra_Mptt($table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
+    function __construct($table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
 
         // continue only if there is an active MySQL connection
         if (@mysql_ping())
