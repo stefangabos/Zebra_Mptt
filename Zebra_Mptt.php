@@ -1529,6 +1529,9 @@ class Zebra_Mptt
         // the updated lookup array
         $this->lookup = $tmp;
 
+        // free memory
+        unset($tmp);
+
     }
 
 }
