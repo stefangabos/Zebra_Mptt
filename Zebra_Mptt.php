@@ -20,7 +20,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.2.6 (last revision: February 13, 2016)
+ *  @version    2.2.6 (last revision: February 15, 2016)
  *  @copyright  (c) 2009 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
@@ -98,10 +98,8 @@ class Zebra_Mptt
             );
 
         // if no MySQL connections could be found
-        else
-
-            // trigger a fatal error message and stop execution
-            trigger_error('<br>No MySQL connection!<br>Error', E_USER_ERROR);
+        // trigger a fatal error message and stop execution
+        else trigger_error('<br>No MySQL connection!<br>Error', E_USER_ERROR);
 
     }
 
@@ -175,10 +173,8 @@ class Zebra_Mptt
             $children = $this->get_children($parent, true);
 
             // if node is to be inserted in the default position (as the last of the parent node's children)
-            if ($position === false)
-
-                // give a numerical value to the position
-                $position = count($children);
+            // give a numerical value to the position
+            if ($position === false) $position = count($children);
 
             // if a custom position was specified
             else {
@@ -187,10 +183,8 @@ class Zebra_Mptt
                 $position = (int)$position;
 
                 // if position is a bogus number
-                if ($position > count($children) || $position < 0)
-
-                    // use the default position (as the last of the parent node's children)
-                    $position = count($children);
+                // use the default position (as the last of the parent node's children)
+                if ($position > count($children) || $position < 0) $position = count($children);
 
             }
 
@@ -755,10 +749,8 @@ class Zebra_Mptt
                     // if we only need the first level children, check if children node's parent node is the parent given as argument
                     (!$children_only || ($children_only && $this->lookup[$item][$this->properties['parent_column']] == $parent))
 
-                )
-
-                    // save to array
-                    $children[$this->lookup[$item][$this->properties['id_column']]] = $this->lookup[$item];
+                // save to array
+                ) $children[$this->lookup[$item][$this->properties['id_column']]] = $this->lookup[$item];
 
             // return children nodes
             return $children;
@@ -886,7 +878,7 @@ class Zebra_Mptt
         $parents = array();
 
         // if node exists in the lookup array
-        if (isset($this->lookup[$node])) {
+        if (isset($this->lookup[$node]))
 
             // iterate through all the nodes in the lookup array
             foreach ($this->lookup as $id => $properties)
@@ -899,12 +891,8 @@ class Zebra_Mptt
 
                     $properties[$this->properties['right_column']] > $this->lookup[$node][$this->properties['right_column']]
 
-                )
-
-                    // save the parent node's information
-                    $parents[$properties[$this->properties['id_column']]] = $properties;
-
-        }
+                // save the parent node's information
+                ) $parents[$properties[$this->properties['id_column']]] = $properties;
 
         // add also the node given as argument
         $parents[$node] = $this->lookup[$node];
@@ -948,13 +936,8 @@ class Zebra_Mptt
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
 
-        // continue only if
-        if (
-
-            // parent node exists in the lookup array OR is 0 (indicating topmost node)
-            isset($this->lookup[$node]) || $node == 0
-
-        ) {
+        // continue only if parent node exists in the lookup array OR is 0 (indicating topmost node)
+        if (isset($this->lookup[$node]) || $node == 0) {
 
             // the resulting array and a temporary array
             $result = $parents = array();
@@ -962,12 +945,9 @@ class Zebra_Mptt
             // get node's children nodes
             $children = $this->get_children($node);
             
-            // if node is not 0
-            if ($node != 0)
+            // if node is not 0, prepend the item itself to the list
+            if ($node != 0) array_unshift($children, $this->lookup[$node]);
 
-                // prepend the item itself to the list
-                array_unshift($children, $this->lookup[$node]);
-                
             // iterate through the nodes
             foreach ($children as $id => $properties) {
 
@@ -1004,10 +984,8 @@ class Zebra_Mptt
             }
 
             // may not be set when there are no nodes at all
-            if (isset($nodes))
-
-                // finalize the result
-                $result += $nodes;
+            // finalize the result
+            if (isset($nodes)) $result += $nodes;
 
             // return the resulting array
             return $result;
@@ -1204,10 +1182,8 @@ class Zebra_Mptt
             $target_children = $this->get_children((int)$target, true);
             
             // if node is to be inserted in the default position (as the last of target node's children nodes)
-            if ($position === false)
-
-                // give a numerical value to the position
-                $position = count($target_children);
+            // give a numerical value to the position
+            if ($position === false) $position = count($target_children);
 
             // if a custom position was specified
             else {
