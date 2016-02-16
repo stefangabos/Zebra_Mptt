@@ -20,7 +20,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.2.6 (last revision: February 16, 2016)
+ *  @version    2.2.6 (last revision: February 17, 2016)
  *  @copyright  (c) 2009 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
@@ -170,7 +170,7 @@ class Zebra_Mptt
         ) {
 
             // get parent's children nodes (no deeper than the first level)
-            $children = $this->get_children($parent, true);
+            $children = $this->get_descendants($parent);
 
             // if node is to be inserted in the default position (as the last of the parent node's children)
             // give a numerical value to the position
@@ -357,7 +357,7 @@ class Zebra_Mptt
         ) {
 
             // get the source's children nodes (if any)
-            $source_children = $this->get_children($source);
+            $source_children = $this->get_descendants($source, false);
 
             // this array will hold the items we need to copy
             // by default we add the source item to it
@@ -386,7 +386,7 @@ class Zebra_Mptt
             $source_boundary = $this->lookup[$source][$this->properties['left_column']];
 
             // get target node's children (no deeper than the first level)
-            $target_children = $this->get_children($target, true);
+            $target_children = $this->get_descendants($target);
 
             // if copy is to be inserted in the default position (as the last of the target node's children)
             if ($position === false)
@@ -612,7 +612,7 @@ class Zebra_Mptt
         if (isset($this->lookup[$node])) {
 
             // get target node's children nodes (if any)
-            $children = $this->get_children($node);
+            $children = $this->get_descendants($node, false);
 
             // iterate through target node's children nodes
             foreach ($children as $child)
@@ -705,31 +705,32 @@ class Zebra_Mptt
     }
 
     /**
-     *  Returns an unidimensional (flat) array with the children nodes of a given parent node.
+     *  Returns an unidimensional (flat) array with the descendant nodes of a given parent node.
      *
      *  <i>For a multidimensional array use the {@link get_tree()} method.</i>
      *
-     *  @param  integer     $parent             (Optional) The ID of the node for which to return children nodes.
+     *  @param  integer     $parent                     (Optional) The ID of the node for which to return children nodes.
      *
-     *                                          Default is "0" - return all the nodes.
+     *                                                  When not specified or given as "0", the "root" node is implied.
      *
-     *  @param  boolean     $children_only      (Optional) Set this to TRUE to return only the node's direct children nodes
-     *                                          (and no children nodes of children nodes of children nodes...)
+     *  @param  boolean     $direct_descendants_only    (Optional) Set this to TRUE if you want <b>all the descendants</b>
+     *                                                  (including descendants of descendants), and not just the <b>direct
+     *                                                  descendants</b>.
      *
-     *                                          Default is FALSE
+     *                                                  Default is TRUE
      *
-     *  @return array                           Returns an unidimensional array with the children nodes of the given
-     *                                          parent node.
+     *  @return array                                   Returns an unidimensional array with the descendant nodes of a
+     *                                                  given parent node.
      */
-    function get_children($parent = 0, $children_only = false) {
+    function get_descendants($node = 0, $direct_descendants_only = true) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
 
         // if parent node exists in the lookup array OR we're looking for the topmost nodes
-        if (isset($this->lookup[$parent]) || $parent === 0) {
+        if (isset($this->lookup[$node]) || $node === 0) {
 
-            $children = array();
+            $descendants = array();
 
             // get the keys in the lookup array
             $keys = array_keys($this->lookup);
@@ -741,19 +742,19 @@ class Zebra_Mptt
                 if (
 
                     // node's "left" is higher than parent node's "left" (or, if parent is 0, if it is higher than 0)
-                    $this->lookup[$item][$this->properties['left_column']] > ($parent !== 0 ? $this->lookup[$parent][$this->properties['left_column']] : 0) &&
+                    $this->lookup[$item][$this->properties['left_column']] > ($node !== 0 ? $this->lookup[$node][$this->properties['left_column']] : 0) &&
 
                     // node's "left" is smaller than parent node's "right" (or, if parent is 0, if it is smaller than PHP's maximum integer value)
-                    $this->lookup[$item][$this->properties['left_column']] < ($parent !== 0 ? $this->lookup[$parent][$this->properties['right_column']] : PHP_INT_MAX) &&
+                    $this->lookup[$item][$this->properties['left_column']] < ($node !== 0 ? $this->lookup[$node][$this->properties['right_column']] : PHP_INT_MAX) &&
 
                     // if we only need the first level children, check if children node's parent node is the parent given as argument
-                    (!$children_only || ($children_only && $this->lookup[$item][$this->properties['parent_column']] == $parent))
+                    (!$direct_descendants_only || ($direct_descendants_only && $this->lookup[$item][$this->properties['parent_column']] == $node))
 
                 // save to array
-                ) $children[$this->lookup[$item][$this->properties['id_column']]] = $this->lookup[$item];
+                ) $descendants[$this->lookup[$item][$this->properties['id_column']]] = $this->lookup[$item];
 
             // return children nodes
-            return $children;
+            return $descendants;
 
         }
 
@@ -765,18 +766,22 @@ class Zebra_Mptt
     /**
      *  Returns the number of descendant nodes of a given node.
      *
-     *  @param  integer     $node               The ID of the node for which to return the number of direct descendant nodes.
+     *  @param  integer     $node                       The ID of the node for which to return the number of direct
+     *                                                  descendant nodes.
      *
-     *  @param  boolean     $recursive          Specifies whether to count <b>direct descendants only</b>, or to recursively
-     *                                          count <b>all the descendants</b> (including descendants of descendants)
+     *  @param  boolean     $direct_descendants_only    (Optional) Specifies whether to count <b>direct descendants only</b>,
+     *                                                  or to count <b>all the descendants</b> (including descendants of
+     *                                                  descendants)
      *
-     *  @return integer                         Returns the number of direct descendant nodes of a parent node, or FALSE
-     *                                          on error.
+     *                                                  Default is TRUE
      *
-     *                                          <i>Since this method may return both "0" and FALSE, make sure you use ===
-     *                                          to verify the returned result!</i>
+     *  @return integer                                 Returns the number of direct descendant nodes of a parent node,
+     *                                                  or FALSE on error.
+     *
+     *                                                  <i>Since this method may return both "0" and FALSE, make sure you
+     *                                                  use === to verify the returned result!</i>
      */
-    function get_descendant_count($node, $recursive = false) {
+    function get_descendant_count($node, $direct_descendants_only = true) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -785,7 +790,7 @@ class Zebra_Mptt
         if (isset($this->lookup[$node]))
 
             // if we require all the descendants (not direct only)
-            if ($recursive)
+            if (!$direct_descendants_only)
 
                 // return the total number of descendant nodes
                 return ($this->lookup[$node][$this->properties['right_column']] - $this->lookup[$node][$this->properties['left_column']] - 1) / 2;
@@ -926,7 +931,7 @@ class Zebra_Mptt
             $result = $parents = array();
 
             // get node's children nodes
-            $children = $this->get_children($node);
+            $children = $this->get_descendants($node, false);
             
             // if node is not 0, prepend the item itself to the list
             if ($node != 0) array_unshift($children, $this->lookup[$node]);
@@ -996,7 +1001,7 @@ class Zebra_Mptt
     function get_tree($node = 0) {
 
         // get direct children nodes
-        $result = $this->get_children($node, true);
+        $result = $this->get_descendants($node);
 
         // iterate through the direct children nodes
         foreach ($result as $id => $properties)
@@ -1062,7 +1067,7 @@ class Zebra_Mptt
             (isset($this->lookup[$target]) || $target == 0) &&
             
             // target node is not a child node of the source node (that would cause infinite loop)
-            !in_array($target, array_keys($this->get_children($source)))
+            !in_array($target, array_keys($this->get_descendants($source, false)))
             
         ) {
         
@@ -1070,7 +1075,7 @@ class Zebra_Mptt
             $this->lookup[$source][$this->properties['parent_column']] = $target;
 
             // get source node's children nodes (if any)
-            $source_children = $this->get_children($source);
+            $source_children = $this->get_descendants($source, false);
 
             // this array will hold the nodes we need to move
             // by default we add the source node to it
@@ -1162,7 +1167,7 @@ class Zebra_Mptt
             ');
 
             // get children nodes of target node (first level only)
-            $target_children = $this->get_children((int)$target, true);
+            $target_children = $this->get_descendants((int)$target);
             
             // if node is to be inserted in the default position (as the last of target node's children nodes)
             // give a numerical value to the position
