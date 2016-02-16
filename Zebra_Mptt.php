@@ -20,7 +20,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.2.6 (last revision: February 15, 2016)
+ *  @version    2.2.6 (last revision: February 16, 2016)
  *  @copyright  (c) 2009 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
@@ -763,59 +763,20 @@ class Zebra_Mptt
     }
 
     /**
-     *  Returns the number of direct children nodes that a given node has (excluding children nodes of children nodes of
-     *  children nodes and so on)
+     *  Returns the number of descendant nodes of a given node.
      *
-     *  @param  integer     $node               The ID of the node for which to return the number of direct children nodes.
+     *  @param  integer     $node               The ID of the node for which to return the number of direct descendant nodes.
      *
-     *  @return integer                         Returns the number of direct children nodes that a given node has, or
-     *                                          FALSE on error.
+     *  @param  boolean     $recursive          Specifies whether to count <b>direct descendants only</b>, or to recursively
+     *                                          count <b>all the descendants</b> (including descendants of descendants)
      *
-     *                                          <i>Since this method may return both "0" and FALSE, make sure you use ===
-     *                                          to verify the returned result!</i>
-     */
-    function get_children_count($node) {
-
-        // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
-        $this->_init();
-
-        // if node exists in the lookup array
-        if (isset($this->lookup[$node])) {
-
-            $result = 0;
-
-            // iterate through all the records in the lookup array
-            foreach ($this->lookup as $id => $properties)
-
-                // if node is a direct children of the parent node
-                if ($this->lookup[$id][$this->properties['parent_column']] == $node)
-
-                    // increment the number of direct children
-                    $result++;
-
-            // return the number of direct children nodes
-            return $result;
-
-        }
-
-        // if script gets this far, return false as something must've went wrong
-        return false;
-
-    }
-
-    /**
-     *  Returns the number of total children nodes that a given node has, including children nodes of children nodes of
-     *  children nodes and so on.
-     *
-     *  @param  integer     $node               The ID of the node for which to return the total number of descendant nodes.
-     *
-     *  @return integer                         Returns the number of total children nodes that a given node has, or
-     *                                          FALSE on error.
+     *  @return integer                         Returns the number of direct descendant nodes of a parent node, or FALSE
+     *                                          on error.
      *
      *                                          <i>Since this method may return both "0" and FALSE, make sure you use ===
      *                                          to verify the returned result!</i>
      */
-    function get_descendants_count($node) {
+    function get_descendant_count($node, $recursive = false) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -823,8 +784,30 @@ class Zebra_Mptt
         // if parent node exists in the lookup array
         if (isset($this->lookup[$node]))
 
-            // return the total number of descendant nodes
-            return ($this->lookup[$node][$this->properties['right_column']] - $this->lookup[$node][$this->properties['left_column']] - 1) / 2;
+            // if we require all the descendants (not direct only)
+            if ($recursive)
+
+                // return the total number of descendant nodes
+                return ($this->lookup[$node][$this->properties['right_column']] - $this->lookup[$node][$this->properties['left_column']] - 1) / 2;
+
+            // if we require direct descendants only
+            else {
+
+                $result = 0;
+
+                // iterate through all the records in the lookup array
+                foreach ($this->lookup as $id => $properties)
+
+                    // if node is a direct descendant of the parent node
+                    if ($this->lookup[$id][$this->properties['parent_column']] == $node)
+
+                        // increment the number of direct descendant nodes
+                        $result++;
+
+                // return the number of direct descendant nodes
+                return $result;
+
+            }
 
         // if script gets this far, return false as something must've went wrong
         return false;
