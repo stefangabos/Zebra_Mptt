@@ -894,102 +894,6 @@ class Zebra_Mptt
     }
 
     /**
-     *  Returns an unidimensional (flat) array with the descendant nodes of the node given as argument, indented using
-     *  whatever given in the <i>$separator</i> argument, and ready to be used in a <select> element.
-     *
-     *  <code>
-     *  $selectables = $mptt->get_selectables($node_id);
-     *
-     *  echo '<select name="myselect">';
-     *
-     *  foreach ($selectables as $value => $caption)
-     *
-     *      echo '<option value="' . $value . '">' . $caption . '</option>';
-     *
-     *  echo '</select>';
-     *  </code>
-     *
-     *  @param  integer     $node       (Optional) The ID of a node for which to get the descendant nodes and return
-     *                                  everything as a unidimensional (flat) array, indented using whatever given in the
-     *                                  <i>$separator</i> argument, and ready to be used in a <select> control.
-     *
-     *                                  When not given, or given as "0", will return an array with *all* the available
-     *                                  nodes.
-     *
-     *  @param  string      $separator  (Optional) A string to indent the nodes by.
-     *
-     *                                  Default is " &rarr; "
-     *
-     *  @return array                   Returns an array of children nodes of a node given as argument, indented and ready
-     *                                  to be used in a <select> control.
-     */
-    public function get_selectables($node = 0, $separator = ' &rarr; ') {
-    
-        // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
-        $this->_init();
-
-        // continue only if parent node exists in the lookup array OR is 0 (indicating topmost node)
-        if (isset($this->lookup[$node]) || $node == 0) {
-
-            // the resulting array and a temporary array
-            $result = $parents = array();
-
-            // get node's descendant nodes
-            $descendants = $this->get_descendants($node, false);
-            
-            // if node is not 0, prepend the item itself to the list
-            if ($node != 0) array_unshift($descendants, $this->lookup[$node]);
-
-            // iterate through the nodes
-            foreach ($descendants as $id => $properties) {
-
-                // if we find a topmost node
-                if ($properties[$this->properties['parent_column']] == 0) {
-
-                    // if the $nodes variable is set, save the what we have so far
-                    if (isset($nodes)) $result += $nodes;
-
-                    // reset the categories and parents arrays
-                    $nodes = $parents = array();
-
-                }
-
-                // if the node has any parents
-                if (count($parents) > 0) {
-
-                    $keys = array_keys($parents);
-
-                    // iterate through the array of parent nodes
-                    while (array_pop($keys) < $properties[$this->properties['right_column']])
-
-                        // and remove parents that are not parents of current node
-                        array_pop($parents);
-
-                }
-
-                // add node to the stack of nodes
-                $nodes[$properties[$this->properties['id_column']]] = (!empty($parents) ? str_repeat($separator, count($parents)) : '') . $properties[$this->properties['title_column']];
-
-                // add node to the stack of parents
-                $parents[$properties[$this->properties['right_column']]] = $properties[$this->properties['title_column']];
-
-            }
-
-            // may not be set when there are no nodes at all
-            // finalize the result
-            if (isset($nodes)) $result += $nodes;
-
-            // return the resulting array
-            return $result;
-            
-        }
-        
-        // if the script gets this far, return false as something must've went wrong
-        return false;
-
-    }
-
-    /**
      *  Returns a multidimensional array with all the descendant nodes (including children nodes of children nodes of
      *  children nodes and so on) of a given node.
      *
@@ -1373,6 +1277,102 @@ class Zebra_Mptt
         }
 
         // if scripts gets this far, return false as something must've went wrong
+        return false;
+
+    }
+
+    /**
+     *  Returns an unidimensional (flat) array with the descendant nodes of the node given as argument, indented using
+     *  whatever given in the <i>$separator</i> argument, and ready to be used in a <select> element.
+     *
+     *  <code>
+     *  $selectables = $mptt->get_selectables($node_id);
+     *
+     *  echo '<select name="myselect">';
+     *
+     *  foreach ($selectables as $value => $caption)
+     *
+     *      echo '<option value="' . $value . '">' . $caption . '</option>';
+     *
+     *  echo '</select>';
+     *  </code>
+     *
+     *  @param  integer     $node       (Optional) The ID of a node for which to get the descendant nodes and return
+     *                                  everything as a unidimensional (flat) array, indented using whatever given in the
+     *                                  <i>$separator</i> argument, and ready to be used in a <select> control.
+     *
+     *                                  When not given, or given as "0", will return an array with *all* the available
+     *                                  nodes.
+     *
+     *  @param  string      $separator  (Optional) A string to indent the nodes by.
+     *
+     *                                  Default is " &rarr; "
+     *
+     *  @return array                   Returns an array of children nodes of a node given as argument, indented and ready
+     *                                  to be used in a <select> control.
+     */
+    public function to_select($node = 0, $separator = ' &rarr; ') {
+
+        // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
+        $this->_init();
+
+        // continue only if parent node exists in the lookup array OR is 0 (indicating topmost node)
+        if (isset($this->lookup[$node]) || $node == 0) {
+
+            // the resulting array and a temporary array
+            $result = $parents = array();
+
+            // get node's descendant nodes
+            $descendants = $this->get_descendants($node, false);
+
+            // if node is not 0, prepend the item itself to the list
+            if ($node != 0) array_unshift($descendants, $this->lookup[$node]);
+
+            // iterate through the nodes
+            foreach ($descendants as $id => $properties) {
+
+                // if we find a topmost node
+                if ($properties[$this->properties['parent_column']] == 0) {
+
+                    // if the $nodes variable is set, save the what we have so far
+                    if (isset($nodes)) $result += $nodes;
+
+                    // reset the categories and parents arrays
+                    $nodes = $parents = array();
+
+                }
+
+                // if the node has any parents
+                if (count($parents) > 0) {
+
+                    $keys = array_keys($parents);
+
+                    // iterate through the array of parent nodes
+                    while (array_pop($keys) < $properties[$this->properties['right_column']])
+
+                        // and remove parents that are not parents of current node
+                        array_pop($parents);
+
+                }
+
+                // add node to the stack of nodes
+                $nodes[$properties[$this->properties['id_column']]] = (!empty($parents) ? str_repeat($separator, count($parents)) : '') . $properties[$this->properties['title_column']];
+
+                // add node to the stack of parents
+                $parents[$properties[$this->properties['right_column']]] = $properties[$this->properties['title_column']];
+
+            }
+
+            // may not be set when there are no nodes at all
+            // finalize the result
+            if (isset($nodes)) $result += $nodes;
+
+            // return the resulting array
+            return $result;
+
+        }
+
+        // if the script gets this far, return false as something must've went wrong
         return false;
 
     }
