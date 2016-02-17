@@ -40,11 +40,11 @@ class Zebra_Mptt
      *  require 'path/to/Zebra_Mptt.php';
      *
      *  // instantiate the class
-     *  $mptt = new Zebra_Mptt();
+     *  $mptt = new Zebra_Mptt($db_link);
      *  </code>
      *
-     *  @param  resource    $link           An object representing the connection to a MySQL Server, as returned by
-     *                                      calling {@link http://www.php.net/manual/en/mysqli.construct.php mysqli_connect}.
+     *  @param  resource    &$link          An object representing the connection to a MySQL Server, as returned by
+     *                                      {@link http://www.php.net/manual/en/mysqli.construct.php mysqli_connect}.
      *
      *                                      If you use {@link http://stefangabos.ro/php-libraries/zebra-database/ Zebra_Database}
      *                                      to connect to the database, you can get the connection to the MySQL server
@@ -83,7 +83,7 @@ class Zebra_Mptt
         if (version_compare(phpversion(), '5.0.5') < 0) trigger_error('PHP 5.0.5 or greater required', E_USER_ERROR);
 
         // stop if the mysqli extension is not loaded
-        if (extension_loaded('mysqli')) trigger_error('mysqli extension is required', E_USER_ERROR);
+        if (!extension_loaded('mysqli')) trigger_error('mysqli extension is required', E_USER_ERROR);
 
         // store the connection link
         $this->link = $link;
@@ -141,11 +141,11 @@ class Zebra_Mptt
      *
      *  @param  string      $title      The title of the node.
      *
-     *  @param  integer     $position   (Optional) The position the node will have amongst the {@link $parent}'s
+     *  @param  integer     $position   (Optional) The position the node will have among the {@link $parent}'s
      *                                  children nodes.
      *
      *                                  When {@link $parent} is "0", this refers to the position the node will have
-     *                                  amongst the topmost nodes.
+     *                                  among the topmost nodes.
      *
      *                                  The values are 0-based, meaning that if you want the node to be inserted as
      *                                  the first in the list of {@link $parent}'s children nodes, you have to use "0".<br>
@@ -154,7 +154,7 @@ class Zebra_Mptt
      *                                  Default is "0" - the node will be inserted as last of the {@link $parent}'s
      *                                  children nodes.
      *
-     *  @return mixed                   Returns the ID of the newly inserted node or FALSE upon error.
+     *  @return mixed                   Returns the ID of the newly inserted node or FALSE on error.
      */
     public function add($parent, $title, $position = false) {
     
@@ -175,12 +175,12 @@ class Zebra_Mptt
 
         ) {
 
-            // get parent's children nodes (no deeper than the first level)
-            $children = $this->get_descendants($parent);
+            // get parent's descendant nodes (no deeper than the first level)
+            $descendants = $this->get_descendants($parent);
 
             // if node is to be inserted in the default position (as the last of the parent node's children)
             // give a numerical value to the position
-            if ($position === false) $position = count($children);
+            if ($position === false) $position = count($descendants);
 
             // if a custom position was specified
             else {
@@ -190,29 +190,29 @@ class Zebra_Mptt
 
                 // if position is a bogus number
                 // use the default position (as the last of the parent node's children)
-                if ($position > count($children) || $position < 0) $position = count($children);
+                if ($position > count($descendants) || $position < 0) $position = count($descendants);
 
             }
 
-            // if parent has no children OR the node is to be inserted as the parent node's first child
-            if (empty($children) || $position == 0)
+            // if parent has no descendants OR the node is to be inserted as the parent node's first child
+            if (empty($descendants) || $position == 0)
 
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
                 // if parent is not found (meaning that we're inserting a topmost node) set the boundary to 0
                 $boundary = isset($this->lookup[$parent]) ? $this->lookup[$parent][$this->properties['left_column']] : 0;
 
-            // if parent node has children nodes and/or the node needs to be inserted at a specific position
+            // if parent node has descendant nodes and/or the node needs to be inserted at a specific position
             else {
 
                 // find the child node that currently exists at the position where the new node needs to be inserted to
-                $slice = array_slice($children, $position - 1, 1);
+                $slice = array_slice($descendants, $position - 1, 1);
 
-                $children = array_shift($slice);
+                $descendants = array_shift($slice);
 
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
-                $boundary = $children[$this->properties['right_column']];
+                $boundary = $descendants[$this->properties['right_column']];
 
             }
 
@@ -307,7 +307,7 @@ class Zebra_Mptt
     }
 
     /**
-     *  Creates a copy of a node (including its children nodes) as the child node of a given parent node.
+     *  Creates a copy of a node (including its descendant nodes) as the child node of a given node.
      *
      *  <code>
      *  // insert a topmost node
@@ -323,28 +323,28 @@ class Zebra_Mptt
      *  $mptt->copy($child2, $child1);
      *  </code>
      *
-     *  @param  integer     $source     The ID of the node to copy.
+     *  @param  integer     $source     The ID of a node to copy.
      *
-     *                                  Remember that the node will be copied with all its children nodes!
+     *                                  <i>Remember that the node will be copied together with all its descendant nodes!</i>
      *
-     *  @param  integer     $target     The ID of the node which will become the copy's parent node.
+     *  @param  integer     $target     The ID of a node which will become the copy's parent node.
      *
-     *                                  Use "0" to create a copy as a topmost node.
+     *                                  Use "0" to make the copy a topmost node.
      *
-     *  @param  integer     $position   (Optional) The position the node will have amongst the {@link $target}'s
-     *                                  children nodes.
+     *  @param  integer     $position   (Optional) The position the node will have among the <i>$target</i>'s children
+     *                                  nodes.
      *
-     *                                  When {@link $target} is "0", this refers to the position the node will have
-     *                                  amongst the topmost nodes.
+     *                                  When <i>$target</i> is "0", this refers to the position the node will have
+     *                                  among the topmost nodes.
      *
      *                                  The values are 0-based, meaning that if you want the node to be inserted as
-     *                                  the first in the list of {@link $parent}'s children nodes, you have to use "0".<br>
-     *                                  If you want it to be second use "1", and so on.
+     *                                  the first child of <i>$parent</i>, you have to use "0", if you want it to
+     *                                  be second, use "1", and so on.
      *
-     *                                  Default is "0" - the node will be inserted as last of the {@link $parent}'s
-     *                                  children nodes.
+     *                                  If not given (or given as boolean FALSE), the node will be inserted as the last
+     *                                  of <i>$parent</i>'s children nodes.
      *
-     *  @return mixed                   Returns the ID of the newly created copy or FALSE upon error.
+     *  @return mixed                   Returns the ID of the newly created copy, or FALSE on error.
      */
     public function copy($source, $target, $position = false) {
     
@@ -589,7 +589,7 @@ class Zebra_Mptt
     }
 
     /**
-     *  Deletes a node, including the node's children nodes.
+     *  Deletes a node, including the node's descendant nodes.
      *
      *  <code>
      *  // add a topmost node
@@ -607,7 +607,7 @@ class Zebra_Mptt
      *
      *  @param  integer     $node       The ID of the node to delete.
      *
-     *  @return boolean                 TRUE on success or FALSE upon error.
+     *  @return boolean                 TRUE on success or FALSE on error.
      */
     public function delete($node) {
 
@@ -617,14 +617,14 @@ class Zebra_Mptt
         // continue only if target node exists in the lookup array
         if (isset($this->lookup[$node])) {
 
-            // get target node's children nodes (if any)
-            $children = $this->get_descendants($node, false);
+            // get target node's descendant nodes (if any)
+            $descendants = $this->get_descendants($node, false);
 
-            // iterate through target node's children nodes
-            foreach ($children as $child)
+            // iterate through target node's descendant nodes
+            foreach ($descendants as $descendant)
 
                 // remove node from the lookup array
-                unset($this->lookup[$child[$this->properties['id_column']]]);
+                unset($this->lookup[$descendant[$this->properties['id_column']]]);
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
             mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
@@ -715,13 +715,13 @@ class Zebra_Mptt
      *
      *  <i>For a multidimensional array use the {@link get_tree()} method.</i>
      *
-     *  @param  integer     $parent                     (Optional) The ID of the node for which to return children nodes.
+     *  @param  integer     $node                       (Optional) The ID of a node for which to return the descendant nodes.
      *
      *                                                  When not specified or given as "0", the "root" node is implied.
      *
-     *  @param  boolean     $direct_descendants_only    (Optional) Set this to TRUE if you want <b>all the descendants</b>
+     *  @param  boolean     $direct_descendants_only    (Optional) Set this to FALSE if you want <b>all the descendants</b>
      *                                                  (including descendants of descendants), and not just the <b>direct
-     *                                                  descendants</b>.
+     *                                                  descendants</b> (children) of the node.
      *
      *                                                  Default is TRUE
      *
@@ -826,16 +826,13 @@ class Zebra_Mptt
     }
 
     /**
-     *  Returns information about the node's direct parent node.
+     *  Returns an array containig a node's direct parent node if the node has a parent node, or "0" if the node is a
+     *  topmost node.
      *
-     *  If node given as argument has a direct parent node, returns an array containing the parent node's properties. If
-     *  node given as argument is a topmost node, returns 0.
+     *  @param  integer     $node               The ID of a node for which to return the parent node.
      *
-     *  @param  integer     $node               The ID of a node for which to return the direct parent node's properties.
-     *
-     *  @return mixed                           If node given as argument has a direct parent node, returns an array
-     *                                          containing the parent node's properties. If node given as argument is a
-     *                                          topmost node, returns 0.
+     *  @return mixed                           Returns an array containig a node's direct parent node if the node has a
+     *                                          parent node, or "0" if the node is a topmost node.
      *
      *                                          <i>Since this method may return both "0" and FALSE, make sure you use ===
      *                                          to verify the returned result!</>
@@ -897,8 +894,8 @@ class Zebra_Mptt
     }
 
     /**
-     *  Returns an array of children nodes of a node given as argument, indented and ready to be used in a <select>
-     *  control.
+     *  Returns an unidimensional (flat) array with the descendant nodes of the node given as argument, indented using
+     *  whatever given in the <i>$separator</i> argument, and ready to be used in a <select> element.
      *
      *  <code>
      *  $selectables = $mptt->get_selectables($node_id);
@@ -912,13 +909,14 @@ class Zebra_Mptt
      *  echo '</select>';
      *  </code>
      *
-     *  @param  integer     $node       (Optional) The ID of a node for which to fetch its children nodes and return
-     *                                  the node and its children as an array, indented and ready to be used in a <select>
-     *                                  control.
+     *  @param  integer     $node       (Optional) The ID of a node for which to get the descendant nodes and return
+     *                                  everything as a unidimensional (flat) array, indented using whatever given in the
+     *                                  <i>$separator</i> argument, and ready to be used in a <select> control.
      *
-     *                                  Default is "0" - the generated array contains *all* the available nodes.
+     *                                  When not given, or given as "0", will return an array with *all* the available
+     *                                  nodes.
      *
-     *  @param  string      $separator  A string to indent the nodes by.
+     *  @param  string      $separator  (Optional) A string to indent the nodes by.
      *
      *                                  Default is " &rarr; "
      *
@@ -936,14 +934,14 @@ class Zebra_Mptt
             // the resulting array and a temporary array
             $result = $parents = array();
 
-            // get node's children nodes
-            $children = $this->get_descendants($node, false);
+            // get node's descendant nodes
+            $descendants = $this->get_descendants($node, false);
             
             // if node is not 0, prepend the item itself to the list
-            if ($node != 0) array_unshift($children, $this->lookup[$node]);
+            if ($node != 0) array_unshift($descendants, $this->lookup[$node]);
 
             // iterate through the nodes
-            foreach ($children as $id => $properties) {
+            foreach ($descendants as $id => $properties) {
 
                 // if we find a topmost node
                 if ($properties[$this->properties['parent_column']] == 0) {
@@ -992,13 +990,13 @@ class Zebra_Mptt
     }
 
     /**
-     *  Returns a multi dimensional array with all the descendant nodes (including children nodes of children nodes of
+     *  Returns a multidimensional array with all the descendant nodes (including children nodes of children nodes of
      *  children nodes and so on) of a given node.
      *
-     *  @param  integer     $node               (Optional) The ID of the node for which to return all descendant nodes
-     *                                          as a multidimensional array.
+     *  @param  integer     $node               (Optional) The ID of a node for which to return all descendant nodes, as
+     *                                          a multidimensional array.
      *
-     *                                          Default is "0" - return all the nodes.
+     *                                          Not given or given as "0", will return all the nodes.
      *
      *  @return array                           Returns a multi dimensional array with all the descendant nodes (including
      *                                          children nodes of children nodes of children nodes and so on) of a given
@@ -1007,22 +1005,23 @@ class Zebra_Mptt
     public function get_tree($node = 0) {
 
         // get direct children nodes
-        $result = $this->get_descendants($node);
+        $descendants = $this->get_descendants($node);
 
         // iterate through the direct children nodes
-        foreach ($result as $id => $properties)
+        foreach ($descendants as $id => $properties)
 
             // for each child node create a "children" property
             // and get the node's children nodes, recursively
-            $result[$id]['children'] = $this->get_tree($id);
+            $descendants[$id]['children'] = $this->get_tree($id);
 
         // return the array
-        return $result;
+        return $descendants;
 
     }
 
     /**
-     *  Moves a node, including node's children nodes, as the child of a target node.
+     *  Moves a node, including the node's descendants nodes, into a target node, in order to become the child of that
+     *  node.
      *
      *  <code>
      *  // insert a topmost node
@@ -1036,27 +1035,30 @@ class Zebra_Mptt
      *
      *  // move "Child 2" node to be the first of "Main"'s children nodes
      *  $mptt->move($child2, $node, 0);
+     *
+     *  // move "Child 2" node into "Child 1"
+     *  $mptt->move($child2, $child1);
      *  </code>
      *
-     *  @param  integer     $source     The ID of the node to move.
+     *  @param  integer     $source     The ID of a node to move
      *
-     *  @param  integer     $target     The ID of the node where {@link $source} node needs to be moved to. Use "0" if
+     *  @param  integer     $target     The ID of the node where <i>$source</i> node needs to be moved to. Use "0" if
      *                                  the node does not need a parent node (making it a topmost node).
      *
-     *  @param  integer     $position   (Optional) The position the node will have amongst the {@link $parent}'s
-     *                                  children nodes.
+     *  @param  integer     $position   (Optional) The position the node will have among the <i>$parent</i>'s children
+     *                                  nodes.
      *
-     *                                  When {@link $parent} is "0", this refers to the position the node will have
-     *                                  amongst the topmost nodes.
+     *                                  If <i>$parent</i> is "0", this refers to the position the node will have
+     *                                  among the topmost nodes.
      *
      *                                  The values are 0-based, meaning that if you want the node to be inserted as
-     *                                  the first in the list of {@link $parent}'s children nodes, you have to use "0".<br>
-     *                                  If you want it to be second use "1", and so on.
+     *                                  the first child of <i>$parent</i>, you have to use "0", if you want it to
+     *                                  be second, use "1", and so on.
      *
-     *                                  Default is "0" - the node will be inserted as last of the {@link $parent}'s
-     *                                  children nodes.
+     *                                  If not given (or given as boolean FALSE), the node will be inserted as the last
+     *                                  of <i>$parent</i>'s children nodes.
      *
-     *  @return boolean                 TRUE on success or FALSE upon error
+     *  @return boolean                 TRUE on success or FALSE on error
      */
     public function move($source, $target, $position = false) {
 
@@ -1080,21 +1082,21 @@ class Zebra_Mptt
             // the source's parent node's ID becomes the target node's ID
             $this->lookup[$source][$this->properties['parent_column']] = $target;
 
-            // get source node's children nodes (if any)
-            $source_children = $this->get_descendants($source, false);
+            // get source node's descendant nodes (if any)
+            $source_descendants = $this->get_descendants($source, false);
 
             // this array will hold the nodes we need to move
             // by default we add the source node to it
             $sources = array($this->lookup[$source]);
 
-            // iterate through source node's children
-            foreach ($source_children as $child) {
+            // iterate through source node's descendants
+            foreach ($source_descendants as $descendant) {
 
                 // save them for later use
-                $sources[] = $this->lookup[$child[$this->properties['id_column']]];
+                $sources[] = $this->lookup[$descendant[$this->properties['id_column']]];
 
                 // for now, remove them from the lookup array
-                unset($this->lookup[$child[$this->properties['id_column']]]);
+                unset($this->lookup[$descendant[$this->properties['id_column']]]);
 
             }
 
@@ -1172,12 +1174,12 @@ class Zebra_Mptt
 
             ');
 
-            // get children nodes of target node (first level only)
-            $target_children = $this->get_descendants((int)$target);
+            // get descendant nodes of target node (first level only)
+            $target_descendants = $this->get_descendants((int)$target);
             
             // if node is to be inserted in the default position (as the last of target node's children nodes)
             // give a numerical value to the position
-            if ($position === false) $position = count($target_children);
+            if ($position === false) $position = count($target_descendants);
 
             // if a custom position was specified
             else {
@@ -1186,34 +1188,34 @@ class Zebra_Mptt
                 $position = (int)$position;
 
                 // if position is a bogus number
-                if ($position > count($target_children) || $position < 0)
+                if ($position > count($target_descendants) || $position < 0)
 
                     // use the default position (as the last of the target node's children)
-                    $position = count($target_children);
+                    $position = count($target_descendants);
 
             }
 
             // because of the insert, some nodes need to have their "left" and/or "right" values adjusted
 
-            // if target node has no children nodes OR the node is to be inserted as the target node's first child node
-            if (empty($target_children) || $position == 0)
+            // if target node has no descendant nodes OR the node is to be inserted as the target node's first child node
+            if (empty($target_descendants) || $position == 0)
 
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
                 // if parent is not found (meaning that we're inserting a topmost node) set the boundary to 0
                 $target_boundary = isset($this->lookup[$target]) ? $this->lookup[$target][$this->properties['left_column']] : 0;
 
-            // if target has any children nodes and/or the node needs to be inserted at a specific position
+            // if target has any descendant nodes and/or the node needs to be inserted at a specific position
             else {
             
                 // find the target's child node that currently exists at the position where the new node needs to be inserted to
-                $slice = array_slice($target_children, $position - 1, 1);
+                $slice = array_slice($target_descendants, $position - 1, 1);
 
-                $target_children = array_shift($slice);
+                $target_descendants = array_shift($slice);
 
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
-                $target_boundary = $target_children[$this->properties['right_column']];
+                $target_boundary = $target_descendants[$this->properties['right_column']];
 
             }
 
@@ -1328,11 +1330,11 @@ class Zebra_Mptt
      *  $mptt->update($node, 'Primary');
      *  </code>
      *
-     *  @param  integer     $node       The ID of the node to update the title for.
+     *  @param  integer     $node       The ID of a node to update the title for.
      *
      *  @param  string      $title      The new title to be set for the node.
      *
-     *  @return boolean                 TRUE on success or FALSE upon error.
+     *  @return boolean                 TRUE on success or FALSE on error.
      *
      *  @since  2.2.5
      */
@@ -1378,10 +1380,12 @@ class Zebra_Mptt
     /**
      *  Transforms a node and it's subnodes to an ordered/unordered list.
      *
-     *  <code>
-     *  // include the php file
-     *  require 'path/to/Zebra_Mptt.php';
+     *  The list items will have the class attribute set to "zebra_mptt_item zebra_mptt_item_xx" where "xx" is the ID
+     *  of the respective node.
      *
+     *  <i>You can further customize the output with regular expressions to suit your needs</i>
+     *
+     *  <code>
      *  // instantiate the class
      *  $mptt = new Zebra_Mptt();
      *
@@ -1390,9 +1394,9 @@ class Zebra_Mptt
      *  echo $mptt->to_list(0, 'ol', 'class="mylist"');
      *  </code>
      *
-     *  @param  integer     $node           The ID of a starting node.
+     *  @param  integer     $node           The ID of a node.
      *
-     *                                      "0" means "all nodes".
+     *                                      When given as "0", the "root" node is implied.
      *
      *  @param  string      $list_type      (Optional) Can be either "ul" (for an unordered list) or "ol" (for an ordered
      *                                      list).
@@ -1407,7 +1411,7 @@ class Zebra_Mptt
      */
     public function to_list($node, $list_type = 'ul', $attributes = '') {
 
-        // if node is an ID, get the children nodes
+        // if node is an ID, get the descendant nodes
         //  (when called recursively this is an array)
         if (!is_array($node)) $node = $this->get_tree($node);
 
@@ -1421,7 +1425,9 @@ class Zebra_Mptt
             foreach ($node as $key => $elem)
 
                 // generate output and if the node has children nodes, call this method recursively
-                $out .= '<li>' . $elem[$this->properties['id_column']] . ':' . $elem[$this->properties['title_column']] . (is_array($elem['children']) ? $this->to_list($elem['children'], $list_type) : '') . '</li>';
+                $out .= '<li class="zebra_mptt_item zebra_mptt_item_' . $elem[$this->properties['id_column']] . '">' .
+                    $elem[$this->properties['title_column']] . (is_array($elem['children']) ? $this->to_list($elem['children'], $list_type) : '') .
+                '</li>';
 
             // return generated output
             return $out . '</' . $list_type . '>';
