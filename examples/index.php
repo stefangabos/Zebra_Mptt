@@ -71,16 +71,16 @@
         $mptt->add($meat, 'Beef');
         $mptt->add($meat, 'Pork');
 
-        // get children of 'Red'
-        print_r('<p>Children of "Red"');
+        // get descendants of 'Red'
+        print_r('<p>Descendants of "Red"');
         print_r('<pre>');
-        print_r($mptt->get_children($red));
+        print_r($mptt->get_descendants($red, false));
         print_r('</pre>');
 
-        // get children of 'Meat'
-        print_r('<p>Children of "Meat"');
+        // get descendants of 'Meat'
+        print_r('<p>Descendants of "Meat"');
         print_r('<pre>');
-        print_r($mptt->get_children($meat));
+        print_r($mptt->get_descendants($meat, false));
         print_r('</pre>');
 
         // data in the database as a multidimensional array
