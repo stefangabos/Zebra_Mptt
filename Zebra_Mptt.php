@@ -754,7 +754,7 @@ class Zebra_Mptt
                     $this->lookup[$item][$this->properties['left_column']] < ($node !== 0 ? $this->lookup[$node][$this->properties['right_column']] : PHP_INT_MAX) &&
 
                     // if we only need the first level children, check if children node's parent node is the parent given as argument
-                    (!$direct_descendants_only || ($direct_descendants_only && $this->lookup[$item][$this->properties['parent_column']] == $node))
+                    (!$direct_descendants_only || $this->lookup[$item][$this->properties['parent_column']] == $node)
 
                 // save to array
                 ) $descendants[$this->lookup[$item][$this->properties['id_column']]] = $this->lookup[$item];
