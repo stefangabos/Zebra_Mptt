@@ -79,6 +79,12 @@ class Zebra_Mptt
      */
     function __construct(&$link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
 
+        // stop if required PHP version is not available
+        if (version_compare(phpversion(), '5.0.5') < 0) trigger_error('PHP 5.0.5 or greater required', E_USER_ERROR);
+
+        // stop if the mysqli extension is not loaded
+        if (extension_loaded('mysqli')) trigger_error('mysqli extension is required', E_USER_ERROR);
+
         // store the connection link
         $this->link = $link;
 
@@ -99,7 +105,7 @@ class Zebra_Mptt
 
         // if no MySQL connections could be found
         // trigger a fatal error message and stop execution
-        else trigger_error('<br>No MySQL connection!<br>Error', E_USER_ERROR);
+        else trigger_error('no MySQL connection', E_USER_ERROR);
 
     }
 
@@ -150,7 +156,7 @@ class Zebra_Mptt
      *
      *  @return mixed                   Returns the ID of the newly inserted node or FALSE upon error.
      */
-    function add($parent, $title, $position = false) {
+    public function add($parent, $title, $position = false) {
     
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -340,7 +346,7 @@ class Zebra_Mptt
      *
      *  @return mixed                   Returns the ID of the newly created copy or FALSE upon error.
      */
-    function copy($source, $target, $position = false) {
+    public function copy($source, $target, $position = false) {
     
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -603,7 +609,7 @@ class Zebra_Mptt
      *
      *  @return boolean                 TRUE on success or FALSE upon error.
      */
-    function delete($node) {
+    public function delete($node) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -722,7 +728,7 @@ class Zebra_Mptt
      *  @return array                                   Returns an unidimensional array with the descendant nodes of a
      *                                                  given parent node.
      */
-    function get_descendants($node = 0, $direct_descendants_only = true) {
+    public function get_descendants($node = 0, $direct_descendants_only = true) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -781,7 +787,7 @@ class Zebra_Mptt
      *                                                  <i>Since this method may return both "0" and FALSE, make sure you
      *                                                  use === to verify the returned result!</i>
      */
-    function get_descendant_count($node, $direct_descendants_only = true) {
+    public function get_descendant_count($node, $direct_descendants_only = true) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -834,7 +840,7 @@ class Zebra_Mptt
      *                                          <i>Since this method may return both "0" and FALSE, make sure you use ===
      *                                          to verify the returned result!</>
      */
-    function get_parent($node) {
+    public function get_parent($node) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -858,7 +864,7 @@ class Zebra_Mptt
      *
      *  @return array                           Returns an unidimensional array with the path to the given node.
      */
-    function get_path($node) {
+    public function get_path($node) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -919,7 +925,7 @@ class Zebra_Mptt
      *  @return array                   Returns an array of children nodes of a node given as argument, indented and ready
      *                                  to be used in a <select> control.
      */
-    function get_selectables($node = 0, $separator = ' &rarr; ') {
+    public function get_selectables($node = 0, $separator = ' &rarr; ') {
     
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -998,7 +1004,7 @@ class Zebra_Mptt
      *                                          children nodes of children nodes of children nodes and so on) of a given
      *                                          node.
      */
-    function get_tree($node = 0) {
+    public function get_tree($node = 0) {
 
         // get direct children nodes
         $result = $this->get_descendants($node);
@@ -1052,7 +1058,7 @@ class Zebra_Mptt
      *
      *  @return boolean                 TRUE on success or FALSE upon error
      */
-    function move($source, $target, $position = false) {
+    public function move($source, $target, $position = false) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -1330,7 +1336,7 @@ class Zebra_Mptt
      *
      *  @since  2.2.5
      */
-    function update($node, $title) {
+    public function update($node, $title) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -1399,7 +1405,7 @@ class Zebra_Mptt
      *
      *  @since  2.2.3
      */
-    function to_list($node, $list_type = 'ul', $attributes = '') {
+    public function to_list($node, $list_type = 'ul', $attributes = '') {
 
         // if node is an ID, get the children nodes
         //  (when called recursively this is an array)
@@ -1432,7 +1438,7 @@ class Zebra_Mptt
      *
      *  @access private
      */
-    function _init() {
+    private function _init() {
     
         // if the results are not already cached
         if (!isset($this->lookup)) {
@@ -1468,7 +1474,7 @@ class Zebra_Mptt
      *
      *  @access private
      */
-    function _reorder_lookup_array() {
+    private function _reorder_lookup_array() {
 
         // reorder the lookup array
 
