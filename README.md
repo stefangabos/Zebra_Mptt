@@ -39,7 +39,6 @@ PHP 5.0.5+, MySQL 4.1.22+
 ## How to use
 
 ```php
-
 // include the Zebra_Mptt class
 require 'path/to/Zebra_Mptt.php';
 
@@ -75,7 +74,6 @@ $mptt->get_children($meat);
 
 // get a multidimensional array (a tree) of all the data in the database
 $mptt->get_tree();
-
 ```
 
 Visit the **[project's homepage](http://stefangabos.ro/php-libraries/zebra-mptt/)** for more information.
