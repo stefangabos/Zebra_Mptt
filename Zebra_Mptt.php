@@ -141,18 +141,17 @@ class Zebra_Mptt
      *
      *  @param  string      $title      The title of the node.
      *
-     *  @param  integer     $position   (Optional) The position the node will have among the {@link $parent}'s
-     *                                  children nodes.
+     *  @param  integer     $position   (Optional) The position the node will have among the parent node's children nodes.
      *
-     *                                  When {@link $parent} is "0", this refers to the position the node will have
+     *                                  When parent node is given as "0", this refers to the position the node will have
      *                                  among the topmost nodes.
      *
      *                                  The values are 0-based, meaning that if you want the node to be inserted as
-     *                                  the first in the list of {@link $parent}'s children nodes, you have to use "0".<br>
-     *                                  If you want it to be second use "1", and so on.
+     *                                  the first child of the target node, you have to use "0", if you want it to
+     *                                  be second, use "1", and so on.
      *
-     *                                  Default is "0" - the node will be inserted as last of the {@link $parent}'s
-     *                                  children nodes.
+     *                                  If not given (or given as boolean FALSE), the node will be inserted as the last
+     *                                  of the parent node's children nodes.
      *
      *  @return mixed                   Returns the ID of the newly inserted node or FALSE on error.
      */
@@ -331,18 +330,18 @@ class Zebra_Mptt
      *
      *                                  Use "0" to make the copy a topmost node.
      *
-     *  @param  integer     $position   (Optional) The position the node will have among the <i>$target</i>'s children
+     *  @param  integer     $position   (Optional) The position the node will have among the target node's children
      *                                  nodes.
      *
-     *                                  When <i>$target</i> is "0", this refers to the position the node will have
-     *                                  among the topmost nodes.
+     *                                  When target node is "0", this refers to the position the node will have among
+     *                                  the topmost nodes.
      *
      *                                  The values are 0-based, meaning that if you want the node to be inserted as
-     *                                  the first child of <i>$parent</i>, you have to use "0", if you want it to
+     *                                  the first child of the target node, you have to use "0", if you want it to
      *                                  be second, use "1", and so on.
      *
      *                                  If not given (or given as boolean FALSE), the node will be inserted as the last
-     *                                  of <i>$parent</i>'s children nodes.
+     *                                  of the target node's children nodes.
      *
      *  @return mixed                   Returns the ID of the newly created copy, or FALSE on error.
      */
@@ -1041,8 +1040,8 @@ class Zebra_Mptt
     }
 
     /**
-     *  Moves a node, including the node's descendants nodes, into a target node, in order to become the child of that
-     *  node.
+     *  Moves a node, including the node's descendants nodes, into another node (becoming that node's child), or
+     *  after/before a node (becoming that node's sibling)
      *
      *  <code>
      *  // insert a topmost node
@@ -1054,30 +1053,37 @@ class Zebra_Mptt
      *  // add another child node
      *  $child2 = $mptt->add($node, 'Child 2');
      *
+     *  // add another child node
+     *  $child3 = $mptt->add($node, 'Child 3');
+     *
      *  // move "Child 2" node to be the first of "Main"'s children nodes
      *  $mptt->move($child2, $node, 0);
      *
      *  // move "Child 2" node into "Child 1"
      *  $mptt->move($child2, $child1);
+     *
+     *  // move "Child 1" after "Child 3"
+     *  $mptt->move($child1, $child3, 'after');
      *  </code>
      *
      *  @param  integer     $source     The ID of a node to move
      *
-     *  @param  integer     $target     The ID of the node where <i>$source</i> node needs to be moved to. Use "0" if
-     *                                  the node does not need a parent node (making it a topmost node).
+     *  @param  integer     $target     The ID of the node relative to which the source node needs to be moved. Use
+     *                                  "0" if the node does not need a parent node (making it a topmost node).
      *
-     *  @param  integer     $position   (Optional) The position the node will have among the <i>$parent</i>'s children
-     *                                  nodes.
+     *  @param  integer     $position   (Optional) The position where to move the node, relative to the target node.
      *
-     *                                  If <i>$parent</i> is "0", this refers to the position the node will have
-     *                                  among the topmost nodes.
+     *                                  Can be a numerical value, indicating that the source node needs to be moved to
+     *                                  become a <b>child of the target node</b>, inserted at the indicated position (
+     *                                  the values are 0-based, meaning that if you want the node to be inserted as
+     *                                  the first child of the target node, you have to use "0", if you want it to
+     *                                  be second, use "1", and so on)
      *
-     *                                  The values are 0-based, meaning that if you want the node to be inserted as
-     *                                  the first child of <i>$parent</i>, you have to use "0", if you want it to
-     *                                  be second, use "1", and so on.
+     *                                  Can also be the literal "after" or "before" string, indicating the the source
+     *                                  node needs to be moved <b>after/before the target node</b>.
      *
      *                                  If not given (or given as boolean FALSE), the node will be inserted as the last
-     *                                  of <i>$parent</i>'s children nodes.
+     *                                  of the target node's children nodes.
      *
      *  @return boolean                 TRUE on success or FALSE on error
      */
@@ -1099,6 +1105,25 @@ class Zebra_Mptt
             !in_array($target, array_keys($this->get_descendants($source, false)))
             
         ) {
+
+            // if we have to move the node after/before another node
+            if ($position === 'after' || $position === 'before') {
+
+                // get the target's parent node
+                $target_parent = $target == 0 ? 0 : $this->lookup[$target]['parent'];
+
+                // get the target's parent's descendant nodes
+                $descendants = $this->get_descendants($target_parent);
+
+                // get the target's position among the descendants
+                $keys = array_keys($descendants);
+                $target_position = array_search($target, $keys);
+
+                // move the source node to the desired position
+                if ($position == 'after') return $this->move($source, $target_parent, $target_position + 1);
+                else return $this->move($source, $target_parent, $target_position == 0 ? 0 : $target_position - 1);
+                
+            }
         
             // the source's parent node's ID becomes the target node's ID
             $this->lookup[$source][$this->properties['parent_column']] = $target;
