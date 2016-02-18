@@ -1,17 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-
+<!doctype html>
 <html>
 
     <head>
-
         <title>Zebra_Mptt example</title>
-
         <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-
-        <meta http-equiv="Content-Script-Type" content="text/javascript">
-
-        <meta http-equiv="Content-Style-Type" content="text/css">
-
     </head>
 
     <body>
@@ -64,12 +56,18 @@
         $yellow = $mptt->add($fruit, 'Yellow');
 
         // add a fruit of each color
-        $mptt->add($red, 'Cherry');
-        $mptt->add($yellow, 'Banana');
+        $cherry = $mptt->add($red, 'Cherry');
+        $banana = $mptt->add($yellow, 'Banana');
+
+        // add a color, but in the wrong position
+        $orange = $mptt->add($banana, 'Orange');
+
+        // now move it to fruits, after the "red" node
+        $orange = $mptt->move($orange, $red, 'after');
 
         // add two kinds of meat
-        $mptt->add($meat, 'Beef');
-        $mptt->add($meat, 'Pork');
+        $meat = $mptt->add($meat, 'Beef');
+        $pork = $mptt->add($meat, 'Pork');
 
         // get descendants of 'Red'
         print_r('<p>Descendants of "Red"');
@@ -92,5 +90,4 @@
         ?>
 
     </body>
-
 </html>
