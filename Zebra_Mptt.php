@@ -20,7 +20,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.2.6 (last revision: February 17, 2016)
+ *  @version    2.2.6 (last revision: February 18, 2016)
  *  @copyright  (c) 2009 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
@@ -826,12 +826,52 @@ class Zebra_Mptt
     }
 
     /**
-     *  Returns an array containig a node's direct parent node if the node has a parent node, or "0" if the node is a
+     *  Returns the next sibling of a node.
+     *
+     *  @param  integer     $node           The ID of a node for which to return the next sibling node.
+     *
+     *  @return mixed                       Returns a node's next sibling node, "0" if a next sibling doesn't exist, or
+     *                                      FALSE on error (if the node doesn't exist).
+     *
+     *                                      <i>Since this method may return both "0" and FALSE, make sure you use === to
+     *                                      verify the returned result!</i>
+     *
+     *  @since  2.2.6
+     */
+    public function get_next_sibling($node) {
+
+        // if parent node exists in the lookup array OR we're looking for the topmost nodes
+        if (isset($this->lookup[$node])) {
+
+            // properties of the node
+            $properties = $this->lookup[$node];
+
+            // get node's siblings
+            $siblings = $this->get_descendants($properties['parent']);
+
+            // get the node's position among the siblings
+            $node_position = array_search($node, array_keys($siblings));
+
+            // get next node
+            $siblings = array_slice($siblings, $node_position + 1, 1);
+
+            // return result
+            return !empty($siblings) ? array_pop($siblings) : 0;
+
+        }
+
+        // if script gets this far, return false as something must've went wrong
+        return false;
+
+    }
+
+    /**
+     *  Returns an array containing a node's direct parent node if the node has a parent node, or "0" if the node is a
      *  topmost node.
      *
      *  @param  integer     $node               The ID of a node for which to return the parent node.
      *
-     *  @return mixed                           Returns an array containig a node's direct parent node if the node has a
+     *  @return mixed                           Returns an array containing a node's direct parent node if the node has a
      *                                          parent node, or "0" if the node is a topmost node.
      *
      *                                          <i>Since this method may return both "0" and FALSE, make sure you use ===
@@ -890,6 +930,83 @@ class Zebra_Mptt
 
         // return the path to the node
         return $parents;
+
+    }
+
+    /**
+     *  Returns the previous sibling of a node.
+     *
+     *  @param  integer     $node           The ID of a node for which to return the previous sibling node.
+     *
+     *  @return mixed                       Returns a node's previous sibling node, "0" if a previous sibling doesn't
+     *                                      exist, or FALSE on error (if the node doesn't exist).
+     *
+     *                                      <i>Since this method may return both "0" and FALSE, make sure you use === to
+     *                                      verify the returned result!</i>
+     *
+     *  @since  2.2.6
+     */
+    public function get_previous_sibling($node) {
+
+        // if parent node exists in the lookup array OR we're looking for the topmost nodes
+        if (isset($this->lookup[$node])) {
+
+            // properties of the node
+            $properties = $this->lookup[$node];
+
+            // get node's siblings
+            $siblings = $this->get_descendants($properties['parent']);
+
+            // get the node's position among the siblings
+            $node_position = array_search($node, array_keys($siblings));
+
+            // get previous node
+            $siblings = array_slice($siblings, $node_position + 1, 1);
+
+            // return result
+            return !empty($siblings) ? array_pop($siblings) : 0;
+
+        }
+
+        // if script gets this far, return false as something must've went wrong
+        return false;
+
+    }
+
+    /**
+     *  Returns an array with a node's sibling nodes.
+     *
+     *  @param  integer     $node           The ID of a node for which to return the node's sibling nodes.
+     *
+     *  @param  boolean     $include_self   Whether the node given as argument should also be present in the returned
+     *                                      array.
+     *
+     *  @return mixed                       Returns an array with a node's sibling nodes, an empty array if the node has
+     *                                      no siblings, or FALSE on error (if the node doesn't exist)
+     *
+     *  @since  2.2.6
+     */
+    public function get_siblings($node, $include_self = false) {
+
+        // if parent node exists in the lookup array OR we're looking for the topmost nodes
+        if (isset($this->lookup[$node])) {
+
+            // properties of the node
+            $properties = $this->lookup[$node];
+
+            // get node's siblings
+            $siblings = $this->get_descendants($properties['parent']);
+
+            // remove self, if required so
+            if (!$include_self) unset($siblings[$node]);
+
+            // return siblings
+            return $siblings;
+
+        }
+
+        // if script gets this far, return false as something must've went wrong
+        return false;
 
     }
 
