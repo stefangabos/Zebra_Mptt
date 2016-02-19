@@ -29,6 +29,7 @@ Zebra\_Mptt uses [table locks](http://dev.mysql.com/doc/refman/5.0/en/lock-table
 - provides methods for adding nodes anywhere in the tree, deleting nodes, moving and copying nodes around the tree and methods for retrieving various information about the nodes
 - uses a caching mechanism which has as result the fact that regardless of the type, or the number of retrieval operations, the database is read only once per script execution
 - uses table locks making sure that database integrity is always preserved and that concurrent MySQL sessions don’t compromise data integrity
+- uses mysqli extension
 - has comprehensive documentation
 - code is heavily commented and generates no warnings/errors/notices when PHP’s error reporting level is set to E_ALL
 
