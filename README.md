@@ -35,7 +35,7 @@ Zebra\_Mptt uses [table locks](http://dev.mysql.com/doc/refman/5.0/en/lock-table
 
 ## Requirements
 
-PHP 5.0.5+, MySQL 4.1.22+
+PHP 5.0.0+, MySQL 4.1.22+
 
 ## How to use
 

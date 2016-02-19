@@ -80,7 +80,7 @@ class Zebra_Mptt
     function __construct(&$link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
 
         // stop if required PHP version is not available
-        if (version_compare(phpversion(), '5.0.5') < 0) trigger_error('PHP 5.0.5 or greater required', E_USER_ERROR);
+        if (version_compare(phpversion(), '5.0.0') < 0) trigger_error('PHP 5.0.0 or greater required', E_USER_ERROR);
 
         // stop if the mysqli extension is not loaded
         if (!extension_loaded('mysqli')) trigger_error('mysqli extension is required', E_USER_ERROR);
