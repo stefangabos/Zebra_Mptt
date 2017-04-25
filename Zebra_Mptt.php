@@ -20,14 +20,13 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.3.2 (last revision: February 19, 2016)
- *  @copyright  (c) 2009 - 2016 Stefan Gabos
+ *  @version    2.3.2 (last revision: April 25, 2016)
+ *  @copyright  (c) 2009 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
  */
 
-class Zebra_Mptt
-{
+class Zebra_Mptt {
 
     /**
      *  Constructor of the class.
@@ -77,7 +76,7 @@ class Zebra_Mptt
      *
      *  @return void
      */
-    function __construct(&$link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
+    public function __construct(&$link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
 
         // stop if required PHP version is not available
         if (version_compare(phpversion(), '5.0.0') < 0) trigger_error('PHP 5.0.0 or greater required', E_USER_ERROR);
@@ -156,7 +155,7 @@ class Zebra_Mptt
      *  @return mixed                   Returns the ID of the newly inserted node or FALSE on error.
      */
     public function add($parent, $title, $position = false) {
-    
+
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
 
@@ -346,7 +345,7 @@ class Zebra_Mptt
      *  @return mixed                   Returns the ID of the newly created copy, or FALSE on error.
      */
     public function copy($source, $target, $position = false) {
-    
+
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
 
@@ -1100,10 +1099,10 @@ class Zebra_Mptt
 
             // target node exists in the lookup array OR is 0 (indicating a topmost node)
             (isset($this->lookup[$target]) || $target == 0) &&
-            
+
             // target node is not a child node of the source node (that would cause infinite loop)
             !in_array($target, array_keys($this->get_descendants($source, false)))
-            
+
         ) {
 
             // if we have to move the node after/before another node
@@ -1122,9 +1121,9 @@ class Zebra_Mptt
                 // move the source node to the desired position
                 if ($position == 'after') return $this->move($source, $target_parent, $target_position + 1);
                 else return $this->move($source, $target_parent, $target_position == 0 ? 0 : $target_position - 1);
-                
+
             }
-        
+
             // the source's parent node's ID becomes the target node's ID
             $this->lookup[$source][$this->properties['parent_column']] = $target;
 
@@ -1222,7 +1221,7 @@ class Zebra_Mptt
 
             // get descendant nodes of target node (first level only)
             $target_descendants = $this->get_descendants((int)$target);
-            
+
             // if node is to be inserted in the default position (as the last of target node's children nodes)
             // give a numerical value to the position
             if ($position === false) $position = count($target_descendants);
@@ -1253,7 +1252,7 @@ class Zebra_Mptt
 
             // if target has any descendant nodes and/or the node needs to be inserted at a specific position
             else {
-            
+
                 // find the target's child node that currently exists at the position where the new node needs to be inserted to
                 $slice = array_slice($target_descendants, $position - 1, 1);
 
@@ -1471,7 +1470,7 @@ class Zebra_Mptt
             if ($node != 0) array_unshift($descendants, $this->lookup[$node]);
 
             // iterate through the nodes
-            foreach ($descendants as $id => $properties) {
+            foreach ($descendants as $properties) {
 
                 // if we find a topmost node
                 if ($properties[$this->properties['parent_column']] == 0) {
@@ -1564,7 +1563,7 @@ class Zebra_Mptt
             $out = '<' . $list_type . ($attributes != '' ? ' ' . $attributes : '') . '>';
 
             // iterate through each node
-            foreach ($node as $key => $elem)
+            foreach ($node as $elem)
 
                 // generate output and if the node has children nodes, call this method recursively
                 $out .= '<li class="zebra_mptt_item zebra_mptt_item_' . $elem[$this->properties['id_column']] . '">' .
@@ -1577,7 +1576,7 @@ class Zebra_Mptt
         }
 
     }
-    
+
     /**
      *  Reads the data from the MySQL table and creates a lookup array. Searches will be done in the lookup array
      *  rather than always querying the database.
@@ -1587,10 +1586,10 @@ class Zebra_Mptt
      *  @access private
      */
     private function _init() {
-    
+
         // if the results are not already cached
         if (!isset($this->lookup)) {
-    
+
             // fetch data from the database
             $result = mysqli_query($this->link, '
 
