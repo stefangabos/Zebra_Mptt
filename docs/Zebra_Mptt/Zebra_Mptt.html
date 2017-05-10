@@ -1,0 +1,929 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Zebra_Mptt, a PHP library providing an implementation of the modified preorder tree traversal algorithm - Class Zebra_Mptt</title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../media/reset.css">
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+<div id="phpdoc">
+<div id="doc_header">
+Package: <strong>Zebra_Mptt</strong>
+<ul class="notype float">
+<!--
+<li><a href="../classtrees_Zebra_Mptt.html">class tree: Zebra_Mptt</a></li>
+-->
+<li><a href="../elementindex_Zebra_Mptt.html">element index: Zebra_Mptt</a></li>
+<!--
+<li class="last"><a href="../elementindex.html">all elements</a></li>
+-->
+</ul>
+<div class="clear"></div>
+</div>
+<table cellspacing="0" cellpadding="0" class="stretch">
+<tr>
+<td valign="top" class="sidebar">
+<div id="doc_sidebar">
+<p><strong>Project's homepage</strong></p>
+<ul>
+<li>
+<a href="https://github.com/stefangabos/Zebra_Mptt" class="projects-homepage">Zebra_Mptt</a>
+</li>
+</ul>
+<p><strong>Packages:</strong></p>
+<ul>
+<li><a href="../li_Zebra_Mptt.html">Zebra_Mptt</a></li>
+</ul>
+<p><strong>Classes:</strong></p>
+<ul>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html">Zebra_Mptt</a></li>
+</ul>
+</div>
+</td>
+<td valign="top" width="100%">
+<div id="doc_content">
+<h2>Class: <strong>Zebra_Mptt</strong></h2>
+<h6><strong>source file:</strong> /Zebra_Mptt.php</h6>
+<h3>Class Overview</h3>
+<pre></pre>
+<p>A PHP library that provides an implementation of the modified preorder tree traversal algorithm making it easy to   implement the MPTT algorithm in your PHP applications.<p>Read more <a href="https://github.com/stefangabos/Zebra_Mptt/">here</a></p></p>
+<h4>Author(s):</h4>
+<ul>
+<li>Stefan Gabos &lt;<a href="mailto:contact@stefangabos.ro">contact@stefangabos.ro</a>&gt;</li>
+</ul>
+<h4>Version:</h4>
+<ul>
+<li>2.3.2 (last revision: April 25, 2016)</li>
+</ul>
+<h4>Copyright:</h4>
+<ul>
+<li>(c) 2009 - 2017 Stefan Gabos</li>
+</ul>
+<a name="top"></a>
+<div class="doc_toc">
+<div class="left">
+<h3>Methods</h3>
+<ul>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#method__construct">__construct</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodcopy">copy</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methoddelete">delete</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_descendants">get_descendants</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_descendant_count">get_descendant_count</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_next_sibling">get_next_sibling</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_parent">get_parent</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_path">get_path</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_previous_sibling">get_previous_sibling</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_siblings">get_siblings</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_tree">get_tree</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodmove">move</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodto_list">to_list</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodto_select">to_select</a>()</li>
+<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodupdate">update</a>()</li>
+</ul>
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+</div>
+<a name="class_methods"></a>
+<h3>Class methods</h3>
+<a name="method__construct"></a>
+<h4 class="method"><span><em>constructor</em></span> __construct()</h4>
+<div class="doc_block">
+<p class="code">
+<em>void</em>
+__construct (
+resource
+&$link
+, 
+[
+string
+$table_name
+= 'mptt']
+, 
+[
+string
+$id_column
+= 'id']
+, 
+[
+string
+$title_column
+= 'title']
+, 
+[
+string
+$left_column
+= 'lft']
+, 
+[
+string
+$right_column
+= 'rgt']
+, 
+[
+string
+$parent_column
+= 'parent']
+)
+</p>
+<p>Constructor of the class.</p>
+<p><em>Make sure that before you instantiate the class you import or execute the SQL code found in the in the
+&quot;install/mptt.sql&quot; file, using the command line or your preferred MySQL manager.</em></p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;include&nbsp;the&nbsp;php&nbsp;file</span></div></li>
+<li><div class="src-line">require&nbsp;<span class="src-str">'path/to/Zebra_Mptt.php'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;instantiate&nbsp;the&nbsp;class</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Zebra_Mptt/Zebra_Mptt.html">Zebra_Mptt</a></span><span class="src-sym">(</span><span class="src-var">$db_link</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>resource</em></td>
+<td valign="top"><strong>&$link</strong></td>
+<td valign="top"><p>An object representing the connection to a MySQL Server, as returned by                                       <a href="http://www.php.net/manual/en/mysqli.construct.php">mysqli_connect</a>.</p><p>If you use <a href="http://stefangabos.ro/php-libraries/zebra-database/">Zebra_Database</a>                                       to connect to the database, you can get the connection to the MySQL server                                       via Zebra_Database's <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#methodget_link">get_link</a>                                       method.</p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$table_name</strong></td>
+<td valign="top"><p>(Optional) MySQL table name to be used for storing items.</p><p>Default is <em>mptt</em></p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$id_column</strong></td>
+<td valign="top"><p>(Optional) Name of the column that uniquely identifies items in the table</p><p>Default is <em>id</em></p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$title_column</strong></td>
+<td valign="top"><p>(Optional) Name of the column that stores item names</p><p>Default is <em>title</em></p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$left_column</strong></td>
+<td valign="top"><p>(Optional) Name of the column that stores &quot;left&quot; values</p><p>Default is <em>lft</em> (&quot;left&quot; is a reserved word in MySQL)</p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$right_column</strong></td>
+<td valign="top"><p>(Optional) Name of the column that stores &quot;right&quot; values</p><p>Default is <em>rgt</em> (&quot;right&quot; is a reserved word in MySQL)</p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$parent_column</strong></td>
+<td valign="top"><p>(Optional) Name of the column that stores the IDs of parent items</p><p>Default is <em>parent</em></p></td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodadd"></a>
+<h4 class="method"><span><em>method</em></span> add()</h4>
+<div class="doc_block">
+<p class="code">
+<em>mixed</em>
+add (
+integer
+$parent
+, 
+string
+$title
+, 
+[
+integer
+$position
+= false]
+)
+</p>
+<p>Adds a new node as the child of a given parent node.</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;a&nbsp;new&nbsp;topmost&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$node&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Main'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;a&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;1'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;another&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;2'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;insert&nbsp;a&nbsp;third&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;notice&nbsp;the&nbsp;&quot;1&quot;&nbsp;as&nbsp;the&nbsp;last&nbsp;argument,&nbsp;instructing&nbsp;the&nbsp;script&nbsp;to&nbsp;insert&nbsp;the&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;as&nbsp;the&nbsp;second&nbsp;child&nbsp;node,&nbsp;after&nbsp;&quot;Child&nbsp;1&quot;</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;remember&nbsp;that&nbsp;the&nbsp;trees&nbsp;are&nbsp;0-based,&nbsp;meaning&nbsp;that&nbsp;the&nbsp;first&nbsp;node&nbsp;in&nbsp;a&nbsp;tree&nbsp;has&nbsp;the&nbsp;index&nbsp;0!</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;3'</span><span class="src-sym">,&nbsp;</span><span class="src-num">1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;and&nbsp;finally,&nbsp;insert&nbsp;a&nbsp;fourth&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;notice&nbsp;the&nbsp;&quot;0&quot;&nbsp;as&nbsp;the&nbsp;last&nbsp;argument,&nbsp;instructing&nbsp;the&nbsp;script&nbsp;to&nbsp;insert&nbsp;the&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;as&nbsp;the&nbsp;very&nbsp;first&nbsp;child&nbsp;node&nbsp;of&nbsp;the&nbsp;parent&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;remember&nbsp;that&nbsp;the&nbsp;trees&nbsp;are&nbsp;0-based,&nbsp;meaning&nbsp;that&nbsp;the&nbsp;first&nbsp;node&nbsp;in&nbsp;a&nbsp;tree&nbsp;has&nbsp;the&nbsp;index&nbsp;0!</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;4'</span><span class="src-sym">,&nbsp;</span><span class="src-num">0</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">Returns the ID of the newly inserted node or FALSE on error.</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$parent</strong></td>
+<td valign="top"><p>The ID of the parent node.</p><p>Use &quot;0&quot; to add a topmost node.</p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$title</strong></td>
+<td valign="top">The title of the node.</td>
+</tr>
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$position</strong></td>
+<td valign="top"><p>(Optional) The position the node will have among the parent node's children nodes.</p><p>When parent node is given as &quot;0&quot;, this refers to the position the node will have                                   among the topmost nodes.</p><p>The values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use &quot;0&quot;, if you want it to                                   be second, use &quot;1&quot;, and so on.</p><p>If not given (or given as boolean FALSE), the node will be inserted as the last                                   of the parent node's children nodes.</p></td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodcopy"></a>
+<h4 class="method"><span><em>method</em></span> copy()</h4>
+<div class="doc_block">
+<p class="code">
+<em>mixed</em>
+copy (
+integer
+$source
+, 
+integer
+$target
+, 
+[
+integer
+$position
+= false]
+)
+</p>
+<p>Creates a copy of a node (including its descendant nodes) as the child node of a given node.</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;insert&nbsp;a&nbsp;topmost&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$node&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Main'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;a&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$child1&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;1'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;another&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$child2&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;2'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;create&nbsp;a&nbsp;copy&nbsp;of&nbsp;&quot;Child&nbsp;2&quot;&nbsp;node&nbsp;and&nbsp;put&nbsp;it&nbsp;as&nbsp;&quot;Child&nbsp;1&quot;'s&nbsp;child</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodcopy">copy</a><span class="src-sym">(</span><span class="src-var">$child2</span><span class="src-sym">,&nbsp;</span><span class="src-var">$child1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">Returns the ID of the newly created copy, or FALSE on error.</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$source</strong></td>
+<td valign="top"><p>The ID of a node to copy.</p><p><em>Remember that the node will be copied together with all its descendant nodes!</em></p></td>
+</tr>
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$target</strong></td>
+<td valign="top"><p>The ID of a node which will become the copy's parent node.</p><p>Use &quot;0&quot; to make the copy a topmost node.</p></td>
+</tr>
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$position</strong></td>
+<td valign="top"><p>(Optional) The position the node will have among the target node's children                                   nodes.</p><p>When target node is &quot;0&quot;, this refers to the position the node will have among                                   the topmost nodes.</p><p>The values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use &quot;0&quot;, if you want it to                                   be second, use &quot;1&quot;, and so on.</p><p>If not given (or given as boolean FALSE), the node will be inserted as the last                                   of the target node's children nodes.</p></td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methoddelete"></a>
+<h4 class="method"><span><em>method</em></span> delete()</h4>
+<div class="doc_block">
+<p class="code">
+<em>boolean</em>
+delete (
+integer
+$node
+)
+</p>
+<p>Deletes a node, including the node's descendant nodes.</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;a&nbsp;topmost&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$node&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Main'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$child1&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;1'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;another&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$child2&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;2'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;delete&nbsp;the&nbsp;&quot;Child&nbsp;2&quot;&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methoddelete">delete</a><span class="src-sym">(</span><span class="src-var">$child2</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">TRUE on success or FALSE on error.</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top">The ID of the node to delete.</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodget_descendants"></a>
+<h4 class="method"><span><em>method</em></span> get_descendants()</h4>
+<div class="doc_block">
+<p class="code">
+<em>array</em>
+get_descendants (
+[
+integer
+$node
+= 0]
+, 
+[
+boolean
+$direct_descendants_only
+= true]
+)
+</p>
+<p>Returns an unidimensional (flat) array with the descendant nodes of a given parent node.</p>
+<p><em>For a multidimensional array use the <a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_tree">get_tree()</a> method.</em></p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">Returns an unidimensional array with the descendant nodes of a                                                   given parent node.</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top"><p>(Optional) The ID of a node for which to return the descendant nodes.</p><p>When not specified or given as &quot;0&quot;, the &quot;root&quot; node is implied.</p></td>
+</tr>
+<tr>
+<td valign="top"><em>boolean</em></td>
+<td valign="top"><strong>$direct_descendants_only</strong></td>
+<td valign="top"><p>(Optional) Set this to FALSE if you want <strong>all the descendants</strong>                                                   (including descendants of descendants), and not just the <strong>direct
+descendants</strong> (children) of the node.</p><p>Default is TRUE</p></td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodget_descendant_count"></a>
+<h4 class="method"><span><em>method</em></span> get_descendant_count()</h4>
+<div class="doc_block">
+<p class="code">
+<em>integer</em>
+get_descendant_count (
+integer
+$node
+, 
+[
+boolean
+$direct_descendants_only
+= true]
+)
+</p>
+<p>Returns the number of descendant nodes of a given node.</p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top"><p>Returns the number of direct descendant nodes of a parent node,                                                   or FALSE on error.</p><p><em>Since this method may return both &quot;0&quot; and FALSE, make sure you
+use === to verify the returned result!</em></p></td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top">The ID of the node for which to return the number of direct                                                   descendant nodes.</td>
+</tr>
+<tr>
+<td valign="top"><em>boolean</em></td>
+<td valign="top"><strong>$direct_descendants_only</strong></td>
+<td valign="top"><p>(Optional) Specifies whether to count <strong>direct descendants only</strong>,                                                   or to count <strong>all the descendants</strong> (including descendants of                                                   descendants)</p><p>Default is TRUE</p></td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodget_next_sibling"></a>
+<h4 class="method"><span><em>method</em></span> get_next_sibling()</h4>
+<div class="doc_block">
+<p class="code">
+<em>mixed</em>
+get_next_sibling (
+integer
+$node
+)
+</p>
+<p>Returns the next sibling of a node.</p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top"><p>Returns a node's next sibling node, &quot;0&quot; if a next sibling doesn't exist, or                                       FALSE on error (if the node doesn't exist).</p><p><em>Since this method may return both &quot;0&quot; and FALSE, make sure you use === to
+verify the returned result!</em></p></td>
+</tr>
+<tr>
+<td valign="top"><strong>since:</strong></td>
+<td valign="top">2.2.6</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top">The ID of a node for which to return the next sibling node.</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodget_parent"></a>
+<h4 class="method"><span><em>method</em></span> get_parent()</h4>
+<div class="doc_block">
+<p class="code">
+<em>mixed</em>
+get_parent (
+integer
+$node
+)
+</p>
+<p>Returns an array containing a node's direct parent node if the node has a parent node, or &quot;0&quot; if the node is a   topmost node.</p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top"><p>Returns an array containing a node's direct parent node if the node has a                                           parent node, or &quot;0&quot; if the node is a topmost node.</p><p></p></td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top">The ID of a node for which to return the parent node.</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodget_path"></a>
+<h4 class="method"><span><em>method</em></span> get_path()</h4>
+<div class="doc_block">
+<p class="code">
+<em>array</em>
+get_path (
+integer
+$node
+)
+</p>
+<p>Returns an unidimensional (flat) array with the path to the given node (including the node itself).</p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">Returns an unidimensional array with the path to the given node.</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top">The ID of a node for which to return the path.</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodget_previous_sibling"></a>
+<h4 class="method"><span><em>method</em></span> get_previous_sibling()</h4>
+<div class="doc_block">
+<p class="code">
+<em>mixed</em>
+get_previous_sibling (
+integer
+$node
+)
+</p>
+<p>Returns the previous sibling of a node.</p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top"><p>Returns a node's previous sibling node, &quot;0&quot; if a previous sibling doesn't                                       exist, or FALSE on error (if the node doesn't exist).</p><p><em>Since this method may return both &quot;0&quot; and FALSE, make sure you use === to
+verify the returned result!</em></p></td>
+</tr>
+<tr>
+<td valign="top"><strong>since:</strong></td>
+<td valign="top">2.2.6</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top">The ID of a node for which to return the previous sibling node.</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodget_siblings"></a>
+<h4 class="method"><span><em>method</em></span> get_siblings()</h4>
+<div class="doc_block">
+<p class="code">
+<em>mixed</em>
+get_siblings (
+integer
+$node
+, 
+[
+boolean
+$include_self
+= false]
+)
+</p>
+<p>Returns an array with a node's sibling nodes.</p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">Returns an array with a node's sibling nodes, an empty array if the node has                                       no siblings, or FALSE on error (if the node doesn't exist)</td>
+</tr>
+<tr>
+<td valign="top"><strong>since:</strong></td>
+<td valign="top">2.2.6</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top">The ID of a node for which to return the node's sibling nodes.</td>
+</tr>
+<tr>
+<td valign="top"><em>boolean</em></td>
+<td valign="top"><strong>$include_self</strong></td>
+<td valign="top">Whether the node given as argument should also be present in the returned                                       array.</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodget_tree"></a>
+<h4 class="method"><span><em>method</em></span> get_tree()</h4>
+<div class="doc_block">
+<p class="code">
+<em>array</em>
+get_tree (
+[
+integer
+$node
+= 0]
+)
+</p>
+<p>Returns a multidimensional array with all the descendant nodes (including children nodes of children nodes of   children nodes and so on) of a given node.</p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">Returns a multi dimensional array with all the descendant nodes (including                                           children nodes of children nodes of children nodes and so on) of a given                                           node.</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top"><p>(Optional) The ID of a node for which to return all descendant nodes, as                                           a multidimensional array.</p><p>Not given or given as &quot;0&quot;, will return all the nodes.</p></td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodmove"></a>
+<h4 class="method"><span><em>method</em></span> move()</h4>
+<div class="doc_block">
+<p class="code">
+<em>boolean</em>
+move (
+integer
+$source
+, 
+integer
+$target
+, 
+[
+integer
+$position
+= false]
+)
+</p>
+<p>Moves a node, including the node's descendants nodes, into another node (becoming that node's child), or   after/before a node (becoming that node's sibling)</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;insert&nbsp;a&nbsp;topmost&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$node&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Main'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;a&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$child1&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;1'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;another&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$child2&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;2'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;another&nbsp;child&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$child3&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Child&nbsp;3'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;move&nbsp;&quot;Child&nbsp;2&quot;&nbsp;node&nbsp;to&nbsp;be&nbsp;the&nbsp;first&nbsp;of&nbsp;&quot;Main&quot;'s&nbsp;children&nbsp;nodes</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodmove">move</a><span class="src-sym">(</span><span class="src-var">$child2</span><span class="src-sym">,&nbsp;</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-num">0</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;move&nbsp;&quot;Child&nbsp;2&quot;&nbsp;node&nbsp;into&nbsp;&quot;Child&nbsp;1&quot;</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodmove">move</a><span class="src-sym">(</span><span class="src-var">$child2</span><span class="src-sym">,&nbsp;</span><span class="src-var">$child1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;move&nbsp;&quot;Child&nbsp;1&quot;&nbsp;after&nbsp;&quot;Child&nbsp;3&quot;</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodmove">move</a><span class="src-sym">(</span><span class="src-var">$child1</span><span class="src-sym">,&nbsp;</span><span class="src-var">$child3</span><span class="src-sym">,&nbsp;</span><span class="src-str">'after'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">TRUE on success or FALSE on error</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$source</strong></td>
+<td valign="top">The ID of a node to move</td>
+</tr>
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$target</strong></td>
+<td valign="top">The ID of the node relative to which the source node needs to be moved. Use                                   &quot;0&quot; if the node does not need a parent node (making it a topmost node).</td>
+</tr>
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$position</strong></td>
+<td valign="top"><p>(Optional) The position where to move the node, relative to the target node.</p><p>Can be a numerical value, indicating that the source node needs to be moved to                                   become a <strong>child of the target node</strong>, inserted at the indicated position (                                   the values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use &quot;0&quot;, if you want it to                                   be second, use &quot;1&quot;, and so on)</p><p>Can also be the literal &quot;after&quot; or &quot;before&quot; string, indicating the the source                                   node needs to be moved <strong>after/before the target node</strong>.</p><p>If not given (or given as boolean FALSE), the node will be inserted as the last                                   of the target node's children nodes.</p></td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodto_list"></a>
+<h4 class="method"><span><em>method</em></span> to_list()</h4>
+<div class="doc_block">
+<p class="code">
+<em>string</em>
+to_list (
+integer
+$node
+, 
+[
+string
+$list_type
+= 'ul']
+, 
+[
+string
+$attributes
+= '']
+)
+</p>
+<p>Transforms a node and it's subnodes to an ordered/unordered list.</p>
+<p>The list items will have the class attribute set to &quot;zebra_mptt_item zebra_mptt_item_xx&quot; where &quot;xx&quot; is the ID   of the respective node.</p><p><em>You can further customize the output with regular expressions to suit your needs</em></p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;instantiate&nbsp;the&nbsp;class</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Zebra_Mptt/Zebra_Mptt.html">Zebra_Mptt</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;make&nbsp;a&nbsp;list&nbsp;out&nbsp;of&nbsp;all&nbsp;nodes&nbsp;as&nbsp;an&nbsp;ordered&nbsp;list&nbsp;and&nbsp;with&nbsp;the</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;main&nbsp;list&nbsp;having&nbsp;the&nbsp;class&nbsp;&quot;mylist&quot;</span></div></li>
+<li><div class="src-line">echo&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodto_list">to_list</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,&nbsp;</span><span class="src-str">'ol'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'class=&quot;mylist&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>since:</strong></td>
+<td valign="top">2.2.3</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top"><p>The ID of a node.</p><p>When given as &quot;0&quot;, the &quot;root&quot; node is implied.</p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$list_type</strong></td>
+<td valign="top"><p>(Optional) Can be either &quot;ul&quot; (for an unordered list) or &quot;ol&quot; (for an ordered                                       list).</p><p>Default is &quot;ul&quot;.</p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$attributes</strong></td>
+<td valign="top">Additional HTML attributes to set for the main list, like &quot;class&quot; or &quot;style&quot;.</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodto_select"></a>
+<h4 class="method"><span><em>method</em></span> to_select()</h4>
+<div class="doc_block">
+<p class="code">
+<em>array</em>
+to_select (
+[
+integer
+$node
+= 0]
+, 
+[
+string
+$separator
+= ' &amp;rarr; ']
+)
+</p>
+<p>Returns an unidimensional (flat) array with the descendant nodes of the node given as argument, indented using   whatever given in the <em>$separator</em> argument, and ready to be used in a &lt;select&gt; element.</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-var">$selectables&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><span class="src-id">get_selectables</span><span class="src-sym">(</span><span class="src-var">$node_id</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">echo&nbsp;<span class="src-str">'&lt;select&nbsp;name=&quot;myselect&quot;&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-key">foreach&nbsp;</span><span class="src-sym">(</span><span class="src-var">$selectables&nbsp;</span><span class="src-key">as&nbsp;</span><span class="src-var">$value&nbsp;</span>=&gt;&nbsp;<span class="src-var">$caption</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-str">'&lt;option&nbsp;value=&quot;'&nbsp;</span>.&nbsp;<span class="src-var">$value&nbsp;</span>.&nbsp;<span class="src-str">'&quot;&gt;'&nbsp;</span>.&nbsp;<span class="src-var">$caption&nbsp;</span>.&nbsp;<span class="src-str">'&lt;/option&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">echo&nbsp;<span class="src-str">'&lt;/select&gt;'</span><span class="src-sym">;</span></div></li>
+</ol>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">Returns an array of children nodes of a node given as argument, indented and ready                                   to be used in a &lt;select&gt; control.</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top"><p>(Optional) The ID of a node for which to get the descendant nodes and return                                   everything as a unidimensional (flat) array, indented using whatever given in the                                   <em>$separator</em> argument, and ready to be used in a &lt;select&gt; control.</p><p>When not given, or given as &quot;0&quot;, will return an array with *all* the available                                   nodes.</p></td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$separator</strong></td>
+<td valign="top"><p>(Optional) A string to indent the nodes by.</p><p>Default is &quot; &amp;rarr; &quot;</p></td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="methodupdate"></a>
+<h4 class="method"><span><em>method</em></span> update()</h4>
+<div class="doc_block">
+<p class="code">
+<em>boolean</em>
+update (
+integer
+$node
+, 
+string
+$title
+)
+</p>
+<p>Updates a node's title.</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;add&nbsp;a&nbsp;topmost&nbsp;node</span></div></li>
+<li><div class="src-line"><span class="src-var">$node&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Main'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;change&nbsp;the&nbsp;node's&nbsp;title</span></div></li>
+<li><div class="src-line"><span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodupdate">update</a><span class="src-sym">(</span><span class="src-var">$node</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Primary'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>return:</strong></td>
+<td valign="top">TRUE on success or FALSE on error.</td>
+</tr>
+<tr>
+<td valign="top"><strong>since:</strong></td>
+<td valign="top">2.2.5</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong></td>
+<td valign="top">public</td>
+</tr>
+</table>
+<h5>Parameters:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><em>integer</em></td>
+<td valign="top"><strong>$node</strong></td>
+<td valign="top">The ID of a node to update the title for.</td>
+</tr>
+<tr>
+<td valign="top"><em>string</em></td>
+<td valign="top"><strong>$title</strong></td>
+<td valign="top">The new title to be set for the node.</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+</div>
+</td>
+</tr>
+</table>
+<div id="doc_footer">
+Documentation generated on <span>Wed, 10 May 2017 18:31:49 +0200</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+</div>
+</div>
+</body>
+</html>
