@@ -1,23 +1,10 @@
 <?php
 
 /**
- *  Zebra_Mptt is a PHP class that provides an implementation of the modified preorder tree traversal algorithm making
- *  it easy for you to use MPTT in your PHP applications.
+ *  A PHP library that provides an implementation of the modified preorder tree traversal algorithm making it easy to
+ *  implement the MPTT algorithm in your PHP applications.
  *
- *  It provides methods for adding nodes anywhere in the tree, deleting nodes, moving and copying nodes around the tree
- *  and methods for retrieving various information about the nodes.
- *
- *  Zebra_Mptt uses {@link http://dev.mysql.com/doc/refman/5.0/en/ansi-diff-transactions.html MySQL transactions} making
- *  sure that database integrity is always preserved and that SQL operations execute completely or not at all (in the case
- *  there's a problem with the MySQL server). Also, the library uses a caching mechanism ensuring that the database is
- *  accessed in an optimum way.
- *
- *  The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to
- *  E_ALL.
- *
- *  Visit {@link http://stefangabos.ro/php-libraries/zebra-mptt/} for more information.
- *
- *  For more resources visit {@link http://stefangabos.ro/}
+ *  Read more {@link https://github.com/stefangabos/Zebra_Mptt/ here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
  *  @version    2.3.2 (last revision: April 25, 2016)
@@ -1652,5 +1639,3 @@ class Zebra_Mptt {
     }
 
 }
-
-?>
