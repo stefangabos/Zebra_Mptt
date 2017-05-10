@@ -1,3 +1,9 @@
+## version 2.3.3 (May 10, 2017)
+
+- minor source code tweaks
+- documentation is now available in the repository and on GitHub
+- the home of the library is now exclusively on GitHub
+
 ## version 2.3.2 (January 19, 2016)
 
 - fixed an issue with auto-loading when installed via Composer
