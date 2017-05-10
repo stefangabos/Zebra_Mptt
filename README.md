@@ -53,11 +53,13 @@ require_once ('Zebra_Mptt.php');
 
 You can install Zebra_Mptt via [Composer](https://packagist.org/packages/stefangabos/zebra_mptt)
 
-> Notice a directory called *install* containing a file named *mptt.sql*. Use it to create the table required by the library in a MySQL database.
-
 ```
 composer require stefangabos/zebra_mptt:dev-master
 ```
+
+## Install MySQL table
+
+Notice a directory called *install* containing a file named *mptt.sql*. This file contains the SQL code that will create the table used by the class to store its data. Import or execute the SQL code using your preferred MySQL manager (like phpMyAdmin or the fantastic Adminer) into a database of your choice.
 
 ## How to use
 
