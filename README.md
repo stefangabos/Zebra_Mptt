@@ -54,7 +54,7 @@ require_once ('Zebra_Mptt.php');
 You can install Zebra_Mptt via [Composer](https://packagist.org/packages/stefangabos/zebra_mptt)
 
 ```
-composer require stefangabos/zebra_mptt:dev-master
+composer require stefangabos/zebra_mptt
 ```
 
 ## Install MySQL table
