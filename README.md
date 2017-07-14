@@ -46,7 +46,7 @@ PHP 5.0.0+, MySQL 4.1.22+
 Download the latest version, unpack it, and load it in your project
 
 ```php
-require_once ('Zebra_Mptt.php');
+require_once 'Zebra_Mptt.php';
 ```
 
 ## Installation with Composer
