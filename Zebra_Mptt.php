@@ -825,23 +825,18 @@ class Zebra_Mptt {
      */
     public function get_next_sibling($node) {
 
-        // if parent node exists in the lookup array OR we're looking for the topmost nodes
-        if (isset($this->lookup[$node])) {
-
-            // properties of the node
-            $properties = $this->lookup[$node];
-
-            // get node's siblings
-            $siblings = $this->get_descendants($properties['parent']);
+        // if node exists, get its siblings
+        // (if $node exists this will never be an empty array as it will contain at least $node)
+        if ($siblings = $this->get_siblings($node, true)) {
 
             // get the node's position among the siblings
             $node_position = array_search($node, array_keys($siblings));
 
             // get next node
-            $siblings = array_slice($siblings, $node_position + 1, 1);
+            $sibling = array_slice($siblings, $node_position + 1, 1);
 
             // return result
-            return !empty($siblings) ? array_pop($siblings) : 0;
+            return !empty($sibling) ? array_pop($sibling) : 0;
 
         }
 
@@ -933,23 +928,18 @@ class Zebra_Mptt {
      */
     public function get_previous_sibling($node) {
 
-        // if parent node exists in the lookup array OR we're looking for the topmost nodes
-        if (isset($this->lookup[$node])) {
-
-            // properties of the node
-            $properties = $this->lookup[$node];
-
-            // get node's siblings
-            $siblings = $this->get_descendants($properties['parent']);
+        // if node exists, get its siblings
+        // (if $node exists this will never be an empty array as it will contain at least $node)
+        if ($siblings = $this->get_siblings($node, true)) {
 
             // get the node's position among the siblings
             $node_position = array_search($node, array_keys($siblings));
 
             // get previous node
-            $siblings = $node_position > 0 ? array_slice($siblings, $node_position - 1, 1) : array();
+            $sibling = $node_position > 0 ? array_slice($siblings, $node_position - 1, 1) : array();
 
             // return result
-            return !empty($siblings) ? array_pop($siblings) : 0;
+            return !empty($sibling) ? array_pop($sibling) : 0;
 
         }
 
