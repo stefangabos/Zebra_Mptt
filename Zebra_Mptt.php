@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Mptt/ here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.3.5 (last revision: July 14, 2017)
+ *  @version    2.3.4 (last revision: May 20, 2017)
  *  @copyright  (c) 2009 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
@@ -15,6 +15,24 @@
 
 class Zebra_Mptt {
 
+    /**
+     *
+     * @var \Dibi\Connection $link
+     */
+    private $link;
+    
+    /**
+     *
+     * @var array $lookup
+     */
+    private $lookup;
+    
+    /**
+     *
+     * @var array $properties
+     */
+    private $properties;
+    
     /**
      *  Constructor of the class.
      *
@@ -63,7 +81,7 @@ class Zebra_Mptt {
      *
      *  @return void
      */
-    public function __construct(&$link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
+    public function __construct(\Dibi\Connection $link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
 
         // stop if required PHP version is not available
         if (version_compare(phpversion(), '5.0.0') < 0) trigger_error('PHP 5.0.0 or greater required', E_USER_ERROR);
@@ -73,11 +91,10 @@ class Zebra_Mptt {
 
         // store the connection link
         $this->link = $link;
-
-        // continue only if there is an active MySQL connection
-        if (@mysqli_ping($this->link))
-
-            // initialize properties
+        
+        // continue only if there is an active MySQL connection        
+        if ($link->isConnected()) {
+                        // initialize properties
             $this->properties = array(
 
                 'table_name'    =>  $table_name,
@@ -88,11 +105,11 @@ class Zebra_Mptt {
                 'parent_column' =>  $parent_column,
 
             );
-
+        } else {
         // if no MySQL connections could be found
-        // trigger a fatal error message and stop execution
-        else trigger_error('no MySQL connection', E_USER_ERROR);
-
+        // trigger a fatal error message and stop execution            
+            trigger_error('no MySQL connection', E_USER_ERROR);
+        }
     }
 
     /**
@@ -219,40 +236,55 @@ class Zebra_Mptt {
             }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE');
+            //mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            $this->lockTable();
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
+           /* mysqli_query($this->link, '
+
+                UPDATE
+                    ' . $this->properties['table_name'] . '
+                SET
+                    ' . $this->properties['left_column'] . ' = ' . $this->properties['left_column'] . ' + 2
+                WHERE
+                    ' . $this->properties['left_column'] . ' > ' . $boundary . '
+
+            ');
+            *
+            */
+            
+           $this->link->update($this->properties['table_name'] , [$this->properties['left_column'].'%sql' => $this->properties['left_column'] + 2 ])
+                   ->where('[' .$this->properties['left_column'] . '] > %i', $boundary)
+                   ->execute();
+
+           /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` + 2
+                    ' . $this->properties['right_column'] . ' = ' . $this->properties['right_column'] . ' + 2
                 WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $boundary . '
+                    ' . $this->properties['right_column'] . ' > ' . $boundary . '
 
             ');
-
-            mysqli_query($this->link, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` + 2
-                WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $boundary . '
-
-            ');
+            * 
+            */
+           
+           $this->link->update($this->properties['table_name'], [$this->properties['right_column'].'%sql' => $this->properties['right_column'] + 2])
+                   ->where('[' . $this->properties['right_column'] . '] > %i', $boundary)
+                   ->execute();
 
             // insert the new node into the database
+           /*
             mysqli_query($this->link, '
                 INSERT INTO
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                     (
-                        `' . $this->properties['title_column'] . '`,
-                        `' . $this->properties['left_column'] . '`,
-                        `' . $this->properties['right_column'] . '`,
-                        `' . $this->properties['parent_column'] . '`
+                        ' . $this->properties['title_column'] . ',
+                        ' . $this->properties['left_column'] . ',
+                        ' . $this->properties['right_column'] . ',
+                        ' . $this->properties['parent_column'] . '
                     )
                 VALUES
                     (
@@ -262,12 +294,27 @@ class Zebra_Mptt {
                         ' . $parent . '
                     )
             ');
+            * 
+            */
+           
+           $data = [
+                $this->properties['title_column']  => $title, 
+                $this->properties['left_column']   => $boundary + 1,
+                $this->properties['right_column']  => $boundary + 2,
+                $this->properties['parent_column'] => $parent
+               
+           ];
+
+           $this->link->insert($this->properties['table_name'], $data)
+                   ->execute();
 
             // get the ID of the newly inserted node
-            $node_id = mysqli_insert_id($this->link);
+            //$node_id = mysqli_insert_id($this->link);
+           $node_id = $this->link->getInsertId();
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES');
+            //mysqli_query($this->link, 'UNLOCK TABLES');
+            $this->unlockTable();
 
             // add the node to the lookup array
             $this->lookup[$node_id] = array(
@@ -441,30 +488,38 @@ class Zebra_Mptt {
             }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE');
+            //mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            $this->lockTable();
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` + ' . $source_rl_difference . '
+                    ' . $this->properties['left_column'] . ' = ' . $this->properties['left_column'] . ' + ' . $source_rl_difference . '
                 WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $target_boundary . '
+                    ' . $this->properties['left_column'] . ' > ' . $target_boundary . '
 
             ');
+             * 
+             */
 
+            
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` + ' . $source_rl_difference . '
+                    ' . $this->properties['right_column'] . ' = ' . $this->properties['right_column'] . ' + ' . $source_rl_difference . '
                 WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $target_boundary . '
+                    ' . $this->properties['right_column'] . ' > ' . $target_boundary . '
 
             ');
+             * 
+             */
 
             // finally, the nodes that are to be inserted need to have their "left" and "right" values updated
             $shift = $target_boundary - $source_boundary + 1;
@@ -479,14 +534,15 @@ class Zebra_Mptt {
                 $properties[$this->properties['right_column']] += $shift;
 
                 // insert into the database
+                /*
                 mysqli_query($this->link, '
                     INSERT INTO
-                        `' . $this->properties['table_name'] . '`
+                        ' . $this->properties['table_name'] . '
                         (
-                            `' . $this->properties['title_column'] . '`,
-                            `' . $this->properties['left_column'] . '`,
-                            `' . $this->properties['right_column'] . '`,
-                            `' . $this->properties['parent_column'] . '`
+                            ' . $this->properties['title_column'] . ',
+                            ' . $this->properties['left_column'] . ',
+                            ' . $this->properties['right_column'] . ',
+                            ' . $this->properties['parent_column'] . '
                         )
                     VALUES
                         (
@@ -496,9 +552,23 @@ class Zebra_Mptt {
                             ' . $properties[$this->properties['parent_column']] . '
                         )
                 ');
+                 * 
+                 */
+                
+                $data = [
+                    $this->properties['title_column']  => $properties[$this->properties['title_column']],
+                    $this->properties['left_column']   => $properties[$this->properties['left_column']],
+                    $this->properties['right_column']  => $properties[$this->properties['right_column']],
+                    $this->properties['parent_column'] => $properties[$this->properties['parent_column']]
+                    
+                ];
+                
+                $this->link->insert($this->properties['table_name'], $data)
+                        ->execute();
 
                 // get the ID of the newly inserted node
-                $node_id = mysqli_insert_id($this->link);
+                //$node_id = mysqli_insert_id($this->link);
+                $node_id = $this->link->getInsertId();
 
                 // because the node may have children nodes and its ID just changed
                 // we need to find its children and update the reference to the parent ID
@@ -523,7 +593,8 @@ class Zebra_Mptt {
             unset($properties);
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES');
+            //mysqli_query($this->link, 'UNLOCK TABLES');
+            $this->unlockTable();
 
             // at this point, we have the nodes in the database but we need to also update the lookup array
 
@@ -612,17 +683,17 @@ class Zebra_Mptt {
                 unset($this->lookup[$descendant[$this->properties['id_column']]]);
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE');
+            mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
 
             // also remove nodes from the database
             mysqli_query($this->link, '
 
                 DELETE
                 FROM
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 WHERE
-                    `' . $this->properties['left_column'] . '` >= ' . $this->lookup[$node][$this->properties['left_column']] . ' AND
-                    `' . $this->properties['right_column'] . '` <= ' . $this->lookup[$node][$this->properties['right_column']] . '
+                    ' . $this->properties['left_column'] . ' >= ' . $this->lookup[$node][$this->properties['left_column']] . ' AND
+                    ' . $this->properties['right_column'] . ' <= ' . $this->lookup[$node][$this->properties['right_column']] . '
 
             ');
 
@@ -663,22 +734,22 @@ class Zebra_Mptt {
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` - ' . $target_rl_difference . '
+                    ' . $this->properties['left_column'] . ' = ' . $this->properties['left_column'] . ' - ' . $target_rl_difference . '
                 WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $boundary . '
+                    ' . $this->properties['left_column'] . ' > ' . $boundary . '
 
             ');
 
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` - ' . $target_rl_difference . '
+                    ' . $this->properties['right_column'] . ' = ' . $this->properties['right_column'] . ' - ' . $target_rl_difference . '
                 WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $boundary . '
+                    ' . $this->properties['right_column'] . ' > ' . $boundary . '
 
             ');
 
@@ -825,18 +896,23 @@ class Zebra_Mptt {
      */
     public function get_next_sibling($node) {
 
-        // if node exists, get its siblings
-        // (if $node exists this will never be an empty array as it will contain at least $node)
-        if ($siblings = $this->get_siblings($node, true)) {
+        // if parent node exists in the lookup array OR we're looking for the topmost nodes
+        if (isset($this->lookup[$node])) {
+
+            // properties of the node
+            $properties = $this->lookup[$node];
+
+            // get node's siblings
+            $siblings = $this->get_descendants($properties['parent']);
 
             // get the node's position among the siblings
             $node_position = array_search($node, array_keys($siblings));
 
             // get next node
-            $sibling = array_slice($siblings, $node_position + 1, 1);
+            $siblings = array_slice($siblings, $node_position + 1, 1);
 
             // return result
-            return !empty($sibling) ? array_pop($sibling) : 0;
+            return !empty($siblings) ? array_pop($siblings) : 0;
 
         }
 
@@ -928,18 +1004,23 @@ class Zebra_Mptt {
      */
     public function get_previous_sibling($node) {
 
-        // if node exists, get its siblings
-        // (if $node exists this will never be an empty array as it will contain at least $node)
-        if ($siblings = $this->get_siblings($node, true)) {
+        // if parent node exists in the lookup array OR we're looking for the topmost nodes
+        if (isset($this->lookup[$node])) {
+
+            // properties of the node
+            $properties = $this->lookup[$node];
+
+            // get node's siblings
+            $siblings = $this->get_descendants($properties['parent']);
 
             // get the node's position among the siblings
             $node_position = array_search($node, array_keys($siblings));
 
             // get previous node
-            $sibling = $node_position > 0 ? array_slice($siblings, $node_position - 1, 1) : array();
+            $siblings = array_slice($siblings, $node_position + 1, 1);
 
             // return result
-            return !empty($sibling) ? array_pop($sibling) : 0;
+            return !empty($siblings) ? array_pop($siblings) : 0;
 
         }
 
@@ -1136,22 +1217,36 @@ class Zebra_Mptt {
             $source_boundary = $this->lookup[$source][$this->properties['left_column']];
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE');
+            //mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            $this->lockTable();
 
             // we'll multiply the "left" and "right" values of the nodes we're about to move with "-1", in order to
             // prevent the values being changed further in the script
-            mysqli_query($this->link, '
+            /*mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` * -1,
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` * -1
+                    ' . $this->properties['left_column'] . ' = ' . $this->properties['left_column'] . ' * -1,
+                    ' . $this->properties['right_column'] . ' = ' . $this->properties['right_column'] . ' * -1
                 WHERE
-                    `' . $this->properties['left_column'] . '` >= ' . $this->lookup[$source][$this->properties['left_column']] . ' AND
-                    `' . $this->properties['right_column'] . '` <= ' . $this->lookup[$source][$this->properties['right_column']] . '
+                    ' . $this->properties['left_column'] . ' >= ' . $this->lookup[$source][$this->properties['left_column']] . ' AND
+                    ' . $this->properties['right_column'] . ' <= ' . $this->lookup[$source][$this->properties['right_column']] . '
 
             ');
+             *
+             */
+            
+            $data = [
+               $this->properties['left_column'].'%sql'  => $this->properties['left_column'] * -1,
+               $this->properties['right_column'].'%sql' => $this->properties['right_column'] * -1
+            ];
+            
+            
+            $this->link->update($this->properties['table_name'], $data)
+                    ->where('[' . $this->properties['left_column'] . '] >= %i', $this->lookup[$source][$this->properties['left_column']])
+                    ->where('[' . $this->properties['right_column'] . '] <= %i', $this->lookup[$source][$this->properties['right_column']])
+                    ->execute();
 
             // remove the source node from the list
             unset($this->lookup[$source]);
@@ -1174,27 +1269,48 @@ class Zebra_Mptt {
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
+            /*mysqli_query($this->link, '
+
+                UPDATE
+                    ' . $this->properties['table_name'] . '
+                SET
+                    ' . $this->properties['left_column'] . ' = ' . $this->properties['left_column'] . ' - ' . $source_rl_difference . '
+                WHERE
+                    ' . $this->properties['left_column'] . ' > ' . $source_boundary . '
+
+            ');
+             * 
+             */
+            
+            $data = [
+              $this->properties['left_column'].'%sql' => $this->properties['left_column'] . ' - ' . $source_rl_difference
+            ];
+            
+            $this->link->update($this->properties['table_name'], $data)
+                    ->where('[' . $this->properties['left_column'] . '] > %i', $source_boundary)
+                    ->execute();
+
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` - ' . $source_rl_difference . '
+                    ' . $this->properties['right_column'] . ' = ' . $this->properties['right_column'] . ' - ' . $source_rl_difference . '
                 WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $source_boundary . '
+                    ' . $this->properties['right_column'] . ' > ' . $source_boundary . '
 
             ');
-
-            mysqli_query($this->link, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` - ' . $source_rl_difference . '
-                WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $source_boundary . '
-
-            ');
+             * 
+             */
+            
+            $data = [
+              $this->properties['right_column'] . '%sql' => $this->properties['right_column'] . ' - ' . $source_rl_difference
+            ];
+            
+            $this->link->update($this->properties['table_name'], $data)
+                    ->where('[' . $this->properties['right_column'] . '] > %i', $source_boundary)
+                    ->execute();
 
             // get descendant nodes of target node (first level only)
             $target_descendants = $this->get_descendants((int)$target);
@@ -1259,27 +1375,52 @@ class Zebra_Mptt {
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` + ' . $source_rl_difference . '
+                    ' . $this->properties['left_column'] . ' = ' . $this->properties['left_column'] . ' + ' . $source_rl_difference . '
                 WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $target_boundary . '
+                    ' . $this->properties['left_column'] . ' > ' . $target_boundary . '
 
             ');
+             *
+             */
+            
+            $data = [
+                $this->properties['left_column'] . '%sql' => $this->properties['left_column'] . ' + ' . $source_rl_difference
+                
+            ];
+            
+            $this->link->update($this->properties['table_name'], $data)
+                    ->where('[' . $this->properties['left_column']. '] > %i', $target_boundary)
+                    ->execute();
 
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` + ' . $source_rl_difference . '
+                    ' . $this->properties['right_column'] . ' = ' . $this->properties['right_column'] . ' + ' . $source_rl_difference . '
                 WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $target_boundary . '
+                    ' . $this->properties['right_column'] . ' > ' . $target_boundary . '
 
             ');
+             *
+             */
+            
+            $data = [
+                $this->properties['right_column'].'%sql' => $this->properties['right_column'] . ' + ' . $source_rl_difference
+            ];
+            
+            $this->link->update($this->properties['table_name'], $data)
+                    ->where('[' . $this->properties['right_column'] . '] > %i', $target_boundary)
+                    ->execute();
+            
+            $data = null;
 
             // finally, the nodes that are to be inserted need to have their "left" and "right" values updated
             $shift = $target_boundary - $source_boundary + 1;
@@ -1301,32 +1442,53 @@ class Zebra_Mptt {
             // also update the entries in the database
             // (notice that we're subtracting rather than adding and that finally we multiply by -1 so that the values
             // turn positive again)
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['left_column'] . '` = (`' . $this->properties['left_column'] . '` - ' . $shift . ') * -1,
-                    `' . $this->properties['right_column'] . '` = (`' . $this->properties['right_column'] . '` - ' . $shift . ') * -1
+                    ' . $this->properties['left_column'] . ' = (' . $this->properties['left_column'] . ' - ' . $shift . ') * -1,
+                    ' . $this->properties['right_column'] . ' = (' . $this->properties['right_column'] . ' - ' . $shift . ') * -1
                 WHERE
-                    `' . $this->properties['left_column'] . '` < 0
+                    ' . $this->properties['left_column'] . ' < 0
 
             ');
+             * 
+             */
+            
+            $data = [
+                $this->properties['left_column'] . '%sql'  => '(' . $this->properties['left_column'] . ' - ' . $shift . ') * -1',
+                $this->properties['right_column'] . '%sql' => '(' . $this->properties['right_column'] . ' - ' . $shift . ') * -1'
+            ];
+            
+            $this->link->update($this->properties['table_name'], $data)
+                    ->where('[' . $this->properties['left_column'] . '] < %i', 0)
+                    ->execute();
 
             // finally, update the parent of the source node
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['parent_column'] . '` = ' . $target . '
+                    ' . $this->properties['parent_column'] . ' = ' . $target . '
                 WHERE
-                    `' . $this->properties['id_column'] . '` = ' . $source . '
+                    ' . $this->properties['id_column'] . ' = ' . $source . '
 
             ');
+             * 
+             */
+            
+            $this->link->update($this->properties['table_name'], [$this->properties['parent_column'] => $target])
+                    ->where('[' . $this->properties['id_column'] . '] = %i', $source)
+                    ->execute();
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES');
+            //mysqli_query($this->link, 'UNLOCK TABLES');
+            //$this->link->query('UNLOCK TABLES');
+            $this->unlockTable();
 
             // reorder the lookup array
             $this->_reorder_lookup_array();
@@ -1369,22 +1531,32 @@ class Zebra_Mptt {
         if (isset($this->lookup[$node])) {
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE');
+            //mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            $this->lockTable();
 
             // update node's title
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 SET
-                    `' . $this->properties['title_column'] . '` = "' . $title . '"
+                    ' . $this->properties['title_column'] . ' = "' . $title . '"
                 WHERE
-                    `' . $this->properties['id_column'] . '` = ' . $node . '
+                    ' . $this->properties['id_column'] . ' = ' . $node . '
 
             ');
+             * 
+             */
+            
+            $this->link->update($this->properties['table_name'], [$this->properties['title_column'] => $title])
+                    ->where('[' . $this->properties['title_column'] .'] = %i', $node)
+                    ->execute();
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES');
+            //mysqli_query($this->link, 'UNLOCK TABLES');
+            //$this->link->query('UNLOCK TABLES');
+            $this->unlockTable();
 
             // update lookup array
             $this->lookup[$node][$this->properties['title_column']] = $title;
@@ -1568,14 +1740,15 @@ class Zebra_Mptt {
         if (!isset($this->lookup)) {
 
             // fetch data from the database
+            /*
             $result = mysqli_query($this->link, '
 
                 SELECT
                     *
                 FROM
-                    `' . $this->properties['table_name'] . '`
+                    ' . $this->properties['table_name'] . '
                 ORDER BY
-                    `' . $this->properties['left_column'] . '`
+                    ' . $this->properties['left_column'] . '
 
             ');
 
@@ -1586,7 +1759,21 @@ class Zebra_Mptt {
 
                 // put all records in an array; use the ID column as index
                 $this->lookup[$row[$this->properties['id_column']]] = $row;
-
+             * 
+             */
+            
+            $this->lookup = [];
+            
+            $result = $this->link
+                    ->select('*')
+                    ->from($this->properties['table_name'])
+                    ->orderBy($this->properties['left_column'])
+                    ->fetchAll();
+            
+            foreach ($result as $row) {
+                $arrayRow = $row->toArray();
+                $this->lookup[$arrayRow[$this->properties['id_column']]] = $arrayRow;
+            }
         }
 
     }
@@ -1626,6 +1813,16 @@ class Zebra_Mptt {
         // free memory
         unset($tmp);
 
+    }
+    
+    private function lockTable()
+    {
+        $this->link->query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+    }
+    
+    private function unlockTable()
+    {
+        $this->link->query('UNLOCK TABLES');
     }
 
 }
