@@ -683,9 +683,11 @@ class Zebra_Mptt {
                 unset($this->lookup[$descendant[$this->properties['id_column']]]);
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            //mysqli_query($this->link, 'LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
+            $this->lockTable();
 
             // also remove nodes from the database
+            /*
             mysqli_query($this->link, '
 
                 DELETE
@@ -696,6 +698,13 @@ class Zebra_Mptt {
                     ' . $this->properties['right_column'] . ' <= ' . $this->lookup[$node][$this->properties['right_column']] . '
 
             ');
+             *
+             */
+            
+            $this->link->delete($this->properties['table_name'])
+                    ->where('[' . $this->properties['left_column'] . '] >= %i', $this->lookup[$node][$this->properties['left_column']])
+                    ->where('[' . $this->properties['right_column'] . '] <= %i', $this->lookup[$node][$this->properties['right_column']])
+                    ->execute();
 
             // the value with which items outside the boundary set below, are to be updated with
             $target_rl_difference =
@@ -731,6 +740,7 @@ class Zebra_Mptt {
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
@@ -741,7 +751,14 @@ class Zebra_Mptt {
                     ' . $this->properties['left_column'] . ' > ' . $boundary . '
 
             ');
+             * 
+             */
+            
+            $this->link->update($this->properties['table_name'], [$this->properties['left_column'].'%sql' => $this->properties['left_column'] . ' - ' . $target_rl_difference])
+                    ->where('[' . $this->properties['left_column'] . '] > %i', $boundary)
+                    ->execute();
 
+            /*
             mysqli_query($this->link, '
 
                 UPDATE
@@ -752,9 +769,16 @@ class Zebra_Mptt {
                     ' . $this->properties['right_column'] . ' > ' . $boundary . '
 
             ');
+             *
+             */
+            
+            $this->link->update($this->properties['table_name'], [$this->properties['right_column'].'%sql' => $this->properties['right_column'] . ' - ' . $target_rl_difference])
+                    ->where('[' . $this->properties['right_column'] . '] > %i', $boundary)
+                    ->execute();            
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES');
+            //mysqli_query($this->link, 'UNLOCK TABLES');
+            $this->unlockTable();
 
             // return true as everything went well
             return true;
