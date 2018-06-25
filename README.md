@@ -1,6 +1,6 @@
 <img src="https://github.com/stefangabos/zebrajs/blob/master/docs/images/logo.png" alt="zebrajs" align="right">
 
-# Zebra_Mptt
+# Zebra_Mptt using dibi
 
 *A PHP library providing an implementation of the modified preorder tree traversal algorithm*
 
