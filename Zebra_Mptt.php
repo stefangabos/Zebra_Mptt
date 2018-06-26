@@ -47,7 +47,7 @@ class Zebra_Mptt {
      *  $mptt = new Zebra_Mptt($db_link);
      *  </code>
      *
-     *  @param  resource    &$link          An object representing the connection to a MySQL Server, as returned by
+     *  @param  \Dibi\Connection    $link          An object representing the connection to a MySQL Server, as returned by
      *                                      {@link http://www.php.net/manual/en/mysqli.construct.php mysqli_connect}.
      *
      *                                      If you use {@link http://stefangabos.ro/php-libraries/zebra-database/ Zebra_Database}
@@ -92,24 +92,14 @@ class Zebra_Mptt {
         // store the connection link
         $this->link = $link;
         
-        // continue only if there is an active MySQL connection        
-        if ($link->isConnected()) {
-                        // initialize properties
-            $this->properties = array(
-
+        $this->properties = array(
                 'table_name'    =>  $table_name,
                 'id_column'     =>  $id_column,
                 'title_column'  =>  $title_column,
                 'left_column'   =>  $left_column,
                 'right_column'  =>  $right_column,
                 'parent_column' =>  $parent_column,
-
             );
-        } else {
-        // if no MySQL connections could be found
-        // trigger a fatal error message and stop execution            
-            trigger_error('no MySQL connection', E_USER_ERROR);
-        }
     }
 
     /**
