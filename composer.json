@@ -1,5 +1,5 @@
 {
-    "name": "stefangabos/zebra_mptt",
+    "name": "rendix2/zebra_mptt",
     "type": "library",
     "description": "A PHP library providing an implementation of the modified preorder tree traversal algorithm",
     "keywords": ["php","mptt", "modified", "preorder", "tree", "traversal"],
