@@ -1,3 +1,9 @@
+## version 2.3.5 (July 06, 2018)
+
+- fixed [#5](https://github.com/stefangabos/Zebra_Mptt/issues/5) where `get_previous_sibling` was in fact returning the `next` sibling. Thanks [@kinnevo](https://github.com/kinnevo)!
+- performance tweaks for `get_previous_sibling` and `get_next_sibling` methods
+- escape custom table and column names; thanks [@dominikfiala](https://github.com/dominikfiala)!
+
 ## version 2.3.4 (May 20, 2017)
 
 - unnecessary files are no more included when downloading from GitHub or via Composer
