@@ -24,10 +24,6 @@ It provides methods for adding nodes anywhere in the tree, deleting nodes, movin
 
 Zebra\_Mptt uses [table locks](http://dev.mysql.com/doc/refman/5.0/en/lock-tables.html) making sure that database integrity is always preserved and that concurrent MySQL sessions don't compromise data integrity. Also, Zebra_Mptt uses a caching mechanism which has as result the fact that regardless of the type, or the number of retrieval operations, **the database is read only once per script execution!**
 
-## Support the development of this library
-
-[![Donate](https://img.shields.io/badge/Be%20kind%20%7C%20Donate%20$3%20with%20-%20PayPal%20-brightgreen.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=49VT6G7L5GPAS)
-
 ## Features
 
 - provides methods for adding nodes anywhere in the tree, deleting nodes, moving and copying nodes around the tree and methods for retrieving various information about the nodes
@@ -37,19 +33,15 @@ Zebra\_Mptt uses [table locks](http://dev.mysql.com/doc/refman/5.0/en/lock-table
 - has [awesome documentation](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html)
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to [E_ALL](https://web.archive.org/web/20160226192832/http://www.php.net/manual/en/function.error-reporting.php)
 
+## Support the development of this library
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=49VT6G7L5GPAS)
+
 ## Requirements
 
 PHP 5.0.0+, MySQL 4.1.22+
 
 ## Installation
-
-Download the latest version, unpack it, and load it in your project
-
-```php
-require_once 'Zebra_Mptt.php';
-```
-
-## Installation with Composer
 
 You can install Zebra_Mptt via [Composer](https://packagist.org/packages/stefangabos/zebra_mptt)
 
@@ -59,6 +51,12 @@ composer require stefangabos/zebra_mptt
 
 # get the latest commit
 composer require stefangabos/zebra_mptt:dev-master
+```
+
+Or you can install it manually by downloading the latest version, unpacking it, and then including it in your project
+
+```php
+require_once 'path/to/Zebra_Mptt.php';
 ```
 
 ## Install MySQL table
