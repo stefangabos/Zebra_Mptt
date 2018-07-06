@@ -7,8 +7,8 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Mptt/ here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.3.5 (last revision: July 14, 2017)
- *  @copyright  (c) 2009 - 2017 Stefan Gabos
+ *  @version    2.3.5 (last revision: July 6, 2018)
+ *  @copyright  (c) 2009 - 2018 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
  */
