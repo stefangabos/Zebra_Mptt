@@ -39,13 +39,16 @@ Package: <strong>Zebra_Mptt</strong>
 <ul>
 <li><a href="../Zebra_Mptt/Zebra_Mptt.html">Zebra_Mptt</a></li>
 </ul>
+<p><strong>Files:</strong></p>
+<ul>
+<li><a href="../Zebra_Mptt/_Zebra_Mptt.php.html">Zebra_Mptt.php</a></li>
+</ul>
 </div>
 </td>
 <td valign="top" width="100%">
 <div id="doc_content">
 <h2>Class: <strong>Zebra_Mptt</strong></h2>
 <h6><strong>source file:</strong> /Zebra_Mptt.php</h6>
-<h3>Class Overview</h3>
 <pre></pre>
 <p>A PHP library that provides an implementation of the modified preorder tree traversal algorithm making it easy to   implement the MPTT algorithm in your PHP applications.<p>Read more <a href="https://github.com/stefangabos/Zebra_Mptt/">here</a></p></p>
 <h4>Author(s):</h4>
@@ -54,33 +57,35 @@ Package: <strong>Zebra_Mptt</strong>
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.3.5 (last revision: July 14, 2017)</li>
+<li>2.3.5 (last revision: July 6, 2018)</li>
 </ul>
 <h4>Copyright:</h4>
 <ul>
-<li>(c) 2009 - 2017 Stefan Gabos</li>
+<li>(c) 2009 - 2018 Stefan Gabos</li>
 </ul>
 <a name="top"></a>
 <div class="doc_toc">
 <div class="left">
 <h3>Methods</h3>
 <ul>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#method__construct">__construct</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodadd">add</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodcopy">copy</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methoddelete">delete</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_descendants">get_descendants</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_descendant_count">get_descendant_count</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_next_sibling">get_next_sibling</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_parent">get_parent</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_path">get_path</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_previous_sibling">get_previous_sibling</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_siblings">get_siblings</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodget_tree">get_tree</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodmove">move</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodto_list">to_list</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodto_select">to_select</a>()</li>
-<li><a href="../Zebra_Mptt/Zebra_Mptt.html#methodupdate">update</a>()</li>
+</ul>
+<ul>
+<li><a href="#method__construct">__construct</a></li>
+<li><a href="#methodadd">add</a></li>
+<li><a href="#methodcopy">copy</a></li>
+<li><a href="#methoddelete">delete</a></li>
+<li><a href="#methodget_descendants">get_descendants</a></li>
+<li><a href="#methodget_descendant_count">get_descendant_count</a></li>
+<li><a href="#methodget_next_sibling">get_next_sibling</a></li>
+<li><a href="#methodget_parent">get_parent</a></li>
+<li><a href="#methodget_path">get_path</a></li>
+<li><a href="#methodget_previous_sibling">get_previous_sibling</a></li>
+<li><a href="#methodget_siblings">get_siblings</a></li>
+<li><a href="#methodget_tree">get_tree</a></li>
+<li><a href="#methodmove">move</a></li>
+<li><a href="#methodto_list">to_list</a></li>
+<li><a href="#methodto_select">to_select</a></li>
+<li><a href="#methodupdate">update</a></li>
 </ul>
 </div>
 <div class="clear"></div>
@@ -89,7 +94,7 @@ Package: <strong>Zebra_Mptt</strong>
 <a name="class_methods"></a>
 <h3>Class methods</h3>
 <a name="method__construct"></a>
-<h4 class="method"><span><em>constructor</em></span> __construct()</h4>
+<h4 class="method"><span><em>constructor</em></span> __construct() <span class="smalllinenumber">[line 66]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -139,7 +144,7 @@ $parent_column
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -185,7 +190,7 @@ $parent_column
 <div class="clear"></div>
 </div>
 <a name="methodadd"></a>
-<h4 class="method"><span><em>method</em></span> add()</h4>
+<h4 class="method"><span><em>method</em></span> add() <span class="smalllinenumber">[line 144]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -227,11 +232,11 @@ $position
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns the ID of the newly inserted node or FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -257,7 +262,7 @@ $position
 <div class="clear"></div>
 </div>
 <a name="methodcopy"></a>
-<h4 class="method"><span><em>method</em></span> copy()</h4>
+<h4 class="method"><span><em>method</em></span> copy() <span class="smalllinenumber">[line 334]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -290,11 +295,11 @@ $position
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns the ID of the newly created copy, or FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -320,7 +325,7 @@ $position
 <div class="clear"></div>
 </div>
 <a name="methoddelete"></a>
-<h4 class="method"><span><em>method</em></span> delete()</h4>
+<h4 class="method"><span><em>method</em></span> delete() <span class="smalllinenumber">[line 597]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -345,11 +350,11 @@ $node
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">TRUE on success or FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -365,7 +370,7 @@ $node
 <div class="clear"></div>
 </div>
 <a name="methodget_descendants"></a>
-<h4 class="method"><span><em>method</em></span> get_descendants()</h4>
+<h4 class="method"><span><em>method</em></span> get_descendants() <span class="smalllinenumber">[line 716]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -386,11 +391,11 @@ $direct_descendants_only
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an unidimensional array with the descendant nodes of a                                                   given parent node.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -412,7 +417,7 @@ descendants</strong> (children) of the node.</p><p>Default is TRUE</p></td>
 <div class="clear"></div>
 </div>
 <a name="methodget_descendant_count"></a>
-<h4 class="method"><span><em>method</em></span> get_descendant_count()</h4>
+<h4 class="method"><span><em>method</em></span> get_descendant_count() <span class="smalllinenumber">[line 775]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>integer</em>
@@ -430,12 +435,12 @@ $direct_descendants_only
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>Returns the number of direct descendant nodes of a parent node,                                                   or FALSE on error.</p><p><em>Since this method may return both &quot;0&quot; and FALSE, make sure you
 use === to verify the returned result!</em></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -456,7 +461,7 @@ use === to verify the returned result!</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodget_next_sibling"></a>
-<h4 class="method"><span><em>method</em></span> get_next_sibling()</h4>
+<h4 class="method"><span><em>method</em></span> get_next_sibling() <span class="smalllinenumber">[line 826]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -469,16 +474,16 @@ $node
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>Returns a node's next sibling node, &quot;0&quot; if a next sibling doesn't exist, or                                       FALSE on error (if the node doesn't exist).</p><p><em>Since this method may return both &quot;0&quot; and FALSE, make sure you use === to
 verify the returned result!</em></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.2.6</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -494,7 +499,7 @@ verify the returned result!</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodget_parent"></a>
-<h4 class="method"><span><em>method</em></span> get_parent()</h4>
+<h4 class="method"><span><em>method</em></span> get_parent() <span class="smalllinenumber">[line 860]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -507,11 +512,11 @@ $node
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>Returns an array containing a node's direct parent node if the node has a                                           parent node, or &quot;0&quot; if the node is a topmost node.</p><p></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -527,7 +532,7 @@ $node
 <div class="clear"></div>
 </div>
 <a name="methodget_path"></a>
-<h4 class="method"><span><em>method</em></span> get_path()</h4>
+<h4 class="method"><span><em>method</em></span> get_path() <span class="smalllinenumber">[line 884]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -540,11 +545,11 @@ $node
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an unidimensional array with the path to the given node.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -560,7 +565,7 @@ $node
 <div class="clear"></div>
 </div>
 <a name="methodget_previous_sibling"></a>
-<h4 class="method"><span><em>method</em></span> get_previous_sibling()</h4>
+<h4 class="method"><span><em>method</em></span> get_previous_sibling() <span class="smalllinenumber">[line 929]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -573,16 +578,16 @@ $node
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>Returns a node's previous sibling node, &quot;0&quot; if a previous sibling doesn't                                       exist, or FALSE on error (if the node doesn't exist).</p><p><em>Since this method may return both &quot;0&quot; and FALSE, make sure you use === to
 verify the returned result!</em></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.2.6</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -598,7 +603,7 @@ verify the returned result!</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodget_siblings"></a>
-<h4 class="method"><span><em>method</em></span> get_siblings()</h4>
+<h4 class="method"><span><em>method</em></span> get_siblings() <span class="smalllinenumber">[line 964]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -616,15 +621,15 @@ $include_self
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an array with a node's sibling nodes, an empty array if the node has                                       no siblings, or FALSE on error (if the node doesn't exist)</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.2.6</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -645,7 +650,7 @@ $include_self
 <div class="clear"></div>
 </div>
 <a name="methodget_tree"></a>
-<h4 class="method"><span><em>method</em></span> get_tree()</h4>
+<h4 class="method"><span><em>method</em></span> get_tree() <span class="smalllinenumber">[line 1001]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -660,11 +665,11 @@ $node
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns a multi dimensional array with all the descendant nodes (including                                           children nodes of children nodes of children nodes and so on) of a given                                           node.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -680,7 +685,7 @@ $node
 <div class="clear"></div>
 </div>
 <a name="methodmove"></a>
-<h4 class="method"><span><em>method</em></span> move()</h4>
+<h4 class="method"><span><em>method</em></span> move() <span class="smalllinenumber">[line 1066]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -722,11 +727,11 @@ $position
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">TRUE on success or FALSE on error</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -752,7 +757,7 @@ $position
 <div class="clear"></div>
 </div>
 <a name="methodto_list"></a>
-<h4 class="method"><span><em>method</em></span> to_list()</h4>
+<h4 class="method"><span><em>method</em></span> to_list() <span class="smalllinenumber">[line 1530]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>string</em>
@@ -782,11 +787,11 @@ $attributes
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.2.3</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -812,7 +817,7 @@ $attributes
 <div class="clear"></div>
 </div>
 <a name="methodto_select"></a>
-<h4 class="method"><span><em>method</em></span> to_select()</h4>
+<h4 class="method"><span><em>method</em></span> to_select() <span class="smalllinenumber">[line 1432]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -842,11 +847,11 @@ $separator
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an array of children nodes of a node given as argument, indented and ready                                   to be used in a &lt;select&gt; control.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -867,7 +872,7 @@ $separator
 <div class="clear"></div>
 </div>
 <a name="methodupdate"></a>
-<h4 class="method"><span><em>method</em></span> update()</h4>
+<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 1363]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -889,15 +894,15 @@ $title
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">TRUE on success or FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.2.5</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -922,7 +927,7 @@ $title
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Fri, 14 Jul 2017 07:00:55 +0200</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Fri, 06 Jul 18</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 </body>
