@@ -1863,6 +1863,26 @@ class Zebra_Mptt {
 
     }
     
+    public function getLeafs()
+    {
+        return $this->link->select('*')
+                ->from($this->properties['table_name'])
+                ->where('%n = %n + %i', $this->properties['right_column'], $this->properties['left_column'], 1)
+                ->fetchAll();
+    }
+    
+    public function isLeaf($node)
+    {
+        $leafs    = $this->getLeafs();
+        $tmpLeafs = [];        
+        
+        foreach ($leafs as $leafs) {
+            $tmpLeafs[] = $leafs->{$this->properties['id_column']};
+        }
+        
+        return in_array($node, $tmpLeafs, true);
+    }    
+    
     private function lockTable()
     {
         $this->link->query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
