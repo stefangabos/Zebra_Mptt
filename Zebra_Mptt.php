@@ -172,7 +172,9 @@ class Zebra_Mptt {
 
             // if node is to be inserted in the default position (as the last of the parent node's children)
             // give a numerical value to the position
-            if ($position === false) $position = count($descendants);
+            if ($position === false) { 
+                $position = count($descendants);
+            }
 
             // if a custom position was specified
             else {
@@ -182,30 +184,61 @@ class Zebra_Mptt {
 
                 // if position is a bogus number
                 // use the default position (as the last of the parent node's children)
-                if ($position > count($descendants) || $position < 0) $position = count($descendants);
+                if ($position > count($descendants) || $position < 0)  {
+                    $position = count($descendants);
+                }
 
             }
 
             // if parent has no descendants OR the node is to be inserted as the parent node's first child
-            if (empty($descendants) || $position == 0)
+            if (empty($descendants) || $position == 0) {
 
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
                 // if parent is not found (meaning that we're inserting a topmost node) set the boundary to 0
                 $boundary = isset($this->lookup[$parent]) ? $this->lookup[$parent][$this->properties['left_column']] : 0;
+                
+                // if its top level
+                if ($boundary === 0) {
+                   
+                    // add node as last node of tree
+                   $node_id = $this->link->query(
+                           'INSERT INTO %n (%n, %n, %n) SELECT IFNULL(MAX(%n), 0) + 1, IFNULL(MAX(%n), 0) + 2, %s FROM %n',
+                           $this->properties['table_name'],
+                           $this->properties['left_column'],
+                           $this->properties['right_column'],
+                           $this->properties['title_column'],
+                           $this->properties['right_column'],
+                           $this->properties['right_column'],
+                           $title,
+                           $this->properties['table_name']
+                    );
+
+                   // back compatibility, we found the node
+                   $node = $this->link->select('*')
+                           ->from($this->properties['table_name'])
+                           ->where('%n = %i', $this->properties['id_column'], $node_id)
+                           ->fetch();
+                   
+                   // and put the node into lookup array
+                   $this->lookup[$node_id] = $node->toArray();
+                   
+                   return $node_id;
+                }
+            }
 
             // if parent node has descendant nodes and/or the node needs to be inserted at a specific position
             else {
-
+                
                 // find the child node that currently exists at the position where the new node needs to be inserted to
-                $slice = array_slice($descendants, $position - 1, 1);
+                $slice = array_slice($descendants, $position - 1, 1);               
 
                 $descendants = array_shift($slice);
-
+                
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
+                
                 $boundary = $descendants[$this->properties['right_column']];
-
             }
 
             // iterate through all the records in the lookup array
@@ -243,7 +276,7 @@ class Zebra_Mptt {
             *
             */
             
-           $this->link->update($this->properties['table_name'] , [$this->properties['left_column'].'%sql' => $this->properties['left_column'] + 2 ])
+           $this->link->update($this->properties['table_name'] , [$this->properties['left_column'].'%sql' => $this->properties['left_column'] . ' + 2' ])
                    ->where('[' .$this->properties['left_column'] . '] > %i', $boundary)
                    ->execute();
 
@@ -261,7 +294,9 @@ class Zebra_Mptt {
             * 
             */
            
-           $this->link->update($this->properties['table_name'], [$this->properties['right_column'].'%sql' => $this->properties['right_column'] + 2])
+           $this->link->update($this->properties['table_name'], 
+                   [
+                       $this->properties['right_column'].'%sql' => $this->properties['right_column']  . ' + 2'])
                    ->where('[' . $this->properties['right_column'] . '] > %i', $boundary)
                    ->execute();
 
@@ -316,7 +351,7 @@ class Zebra_Mptt {
             );
 
             // reorder the lookup array
-            $this->_reorder_lookup_array();
+            $this->_reorder_lookup_array();           
 
             // return the ID of the newly inserted node
             return $node_id;
@@ -1789,7 +1824,6 @@ class Zebra_Mptt {
                 $this->lookup[$arrayRow[$this->properties['id_column']]] = $arrayRow;
             }
         }
-
     }
 
     /**
