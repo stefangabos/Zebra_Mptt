@@ -1881,8 +1881,23 @@ class Zebra_Mptt {
         }
         
         return in_array($node, $tmpLeafs, true);
-    }    
-    
+    }
+
+    public function getBreadCrumb($node)
+    {        
+        $nodeData = $this->link->select('*')
+                ->from($this->properties['table_name'])
+                ->where('%n = %i', $this->properties['id_column'], $node)
+                ->fetch();
+        
+        return $this->link->select('*')
+                ->from($this->properties['table_name'])
+                ->where('%n <= %i', $this->properties['left_column'], $nodeData->forum_left)
+                ->where('%n >= %i', $this->properties['right_column'], $nodeData->forum_right)
+                ->orderBy($this->properties['left_column'])
+                ->fetchAll();        
+    }
+
     private function lockTable()
     {
         $this->link->query('LOCK TABLE ' . $this->properties['table_name'] . ' WRITE');
