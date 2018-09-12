@@ -198,6 +198,7 @@ class Zebra_Mptt {
                 // if parent is not found (meaning that we're inserting a topmost node) set the boundary to 0
                 $boundary = isset($this->lookup[$parent]) ? $this->lookup[$parent][$this->properties['left_column']] : 0;
                 
+                /*
                 // if its top level
                 if ($boundary === 0) {
                    
@@ -225,6 +226,8 @@ class Zebra_Mptt {
                    
                    return $node_id;
                 }
+                 * 
+                 */
             }
 
             // if parent node has descendant nodes and/or the node needs to be inserted at a specific position
@@ -1287,8 +1290,8 @@ class Zebra_Mptt {
              */
             
             $data = [
-               $this->properties['left_column'].'%sql'  => $this->properties['left_column'] * -1,
-               $this->properties['right_column'].'%sql' => $this->properties['right_column'] * -1
+               $this->properties['left_column'].'%sql'  => $this->properties['left_column'] .'* -1',
+               $this->properties['right_column'].'%sql' => $this->properties['right_column'] .'* -1'
             ];
             
             
@@ -1507,8 +1510,8 @@ class Zebra_Mptt {
              */
             
             $data = [
-                $this->properties['left_column'] . '%sql'  => '(' . $this->properties['left_column'] . ' - ' . $shift . ') * -1',
-                $this->properties['right_column'] . '%sql' => '(' . $this->properties['right_column'] . ' - ' . $shift . ') * -1'
+                $this->properties['left_column'] . '%sql'  => '(' . $this->properties['left_column'] . ' - (' . $shift . ')) * -1',
+                $this->properties['right_column'] . '%sql' => '(' . $this->properties['right_column'] . ' - (' . $shift . ')) * -1'
             ];
             
             $this->link->update($this->properties['table_name'], $data)
