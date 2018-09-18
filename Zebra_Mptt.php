@@ -1895,8 +1895,8 @@ class Zebra_Mptt {
         
         return $this->link->select('*')
                 ->from($this->properties['table_name'])
-                ->where('%n <= %i', $this->properties['left_column'], $nodeData->forum_left)
-                ->where('%n >= %i', $this->properties['right_column'], $nodeData->forum_right)
+                ->where('%n <= %i', $this->properties['left_column'], $nodeData->{$this->properties['left_column']})
+                ->where('%n >= %i', $this->properties['right_column'], $nodeData->{$this->properties['right_column']})
                 ->orderBy($this->properties['left_column'])
                 ->fetchAll();        
     }
