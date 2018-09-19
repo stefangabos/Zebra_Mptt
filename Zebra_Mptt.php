@@ -1404,7 +1404,7 @@ class Zebra_Mptt {
      *  whatever given in the <i>$separator</i> argument, and ready to be used in a <select> element.
      *
      *  <code>
-     *  $selectables = $mptt->get_selectables($node_id);
+     *  $selectables = $mptt->to_select($node_id);
      *
      *  echo '<select name="myselect">';
      *
