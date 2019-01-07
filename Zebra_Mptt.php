@@ -7,8 +7,8 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Mptt/ here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.3.5 (last revision: September 19, 2018)
- *  @copyright  (c) 2009 - 2018 Stefan Gabos
+ *  @version    2.3.6 (last revision: January 07, 2019)
+ *  @copyright  (c) 2009 - 2019 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
  */
@@ -1415,21 +1415,30 @@ class Zebra_Mptt {
      *  echo '</select>';
      *  </code>
      *
-     *  @param  integer     $node       (Optional) The ID of a node for which to get the descendant nodes and return
-     *                                  everything as a unidimensional (flat) array, indented using whatever given in the
-     *                                  <i>$separator</i> argument, and ready to be used in a <select> control.
+     *  @param  integer     $node               (Optional) The ID of a node for which to get the descendant nodes and
+     *                                          return everything as a unidimensional (flat) array, indented using whatever
+     *                                          given in the <i>$separator</i> argument, and ready to be used in a <select>
+     *                                          control.
      *
-     *                                  When not given, or given as "0", will return an array with *all* the available
-     *                                  nodes.
+     *                                          When not given, or given as "0", will return an array with *all* the
+     *                                          available nodes.
      *
-     *  @param  string      $separator  (Optional) A string to indent the nodes by.
+     *  @param  string      $separator          (Optional) A string used to separate nodes.
      *
-     *                                  Default is " &rarr; "
+     *                                          Default is " &rarr; "
      *
-     *  @return array                   Returns an array of children nodes of a node given as argument, indented and ready
-     *                                  to be used in a <select> control.
+     *  @param  boolean     $show_full_path     (Optional) By default, parent nodes are not shown.
+     *
+     *                                          Set this to TRUE to show full path to each node.
+     *
+     *                                          Default is FALSE.
+     *
+     *                                          This option was added in <b>2.3.6</b>
+     *
+     *  @return array                           Returns an array of children nodes of a node given as argument, indented
+     *                                          and ready to be used in a <select> control.
      */
-    public function to_select($node = 0, $separator = ' &rarr; ') {
+    public function to_select($node = 0, $separator = ' &rarr; ', $show_full_path = false) {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -1474,7 +1483,7 @@ class Zebra_Mptt {
                 }
 
                 // add node to the stack of nodes
-                $nodes[$properties[$this->properties['id_column']]] = (!empty($parents) ? str_repeat($separator, count($parents)) : '') . $properties[$this->properties['title_column']];
+                $nodes[$properties[$this->properties['id_column']]] = (!empty($parents) ? ($show_full_path ? implode($separator, $parents) . $separator : str_repeat($separator, count($parents))) : '') . $properties[$this->properties['title_column']];
 
                 // add node to the stack of parents
                 $parents[$properties[$this->properties['right_column']]] = $properties[$this->properties['title_column']];
