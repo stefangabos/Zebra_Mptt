@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Zebra_Mptt, a PHP library providing an implementation of the modified preorder tree traversal algorithm - Class Zebra_Mptt</title>
+<title>Zebra_Mptt, a PHP library providing an implementation of the modified preorder tree traversal algorithm - Class: Zebra_Mptt</title>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="../media/reset.css">
 <link rel="stylesheet" type="text/css" href="../media/style.css">
@@ -31,17 +31,9 @@ Package: <strong>Zebra_Mptt</strong>
 <a href="https://github.com/stefangabos/Zebra_Mptt" class="projects-homepage">Zebra_Mptt</a>
 </li>
 </ul>
-<p><strong>Packages:</strong></p>
-<ul>
-<li><a href="../li_Zebra_Mptt.html">Zebra_Mptt</a></li>
-</ul>
 <p><strong>Classes:</strong></p>
 <ul>
 <li><a href="../Zebra_Mptt/Zebra_Mptt.html">Zebra_Mptt</a></li>
-</ul>
-<p><strong>Files:</strong></p>
-<ul>
-<li><a href="../Zebra_Mptt/_Zebra_Mptt.php.html">Zebra_Mptt.php</a></li>
 </ul>
 </div>
 </td>
@@ -57,11 +49,11 @@ Package: <strong>Zebra_Mptt</strong>
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.3.5 (last revision: July 6, 2018)</li>
+<li>2.3.6 (last revision: January 07, 2019)</li>
 </ul>
 <h4>Copyright:</h4>
 <ul>
-<li>(c) 2009 - 2018 Stefan Gabos</li>
+<li>(c) 2009 - 2019 Stefan Gabos</li>
 </ul>
 <a name="top"></a>
 <div class="doc_toc">
@@ -757,7 +749,7 @@ $position
 <div class="clear"></div>
 </div>
 <a name="methodto_list"></a>
-<h4 class="method"><span><em>method</em></span> to_list() <span class="smalllinenumber">[line 1530]</span></h4>
+<h4 class="method"><span><em>method</em></span> to_list() <span class="smalllinenumber">[line 1539]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>string</em>
@@ -817,7 +809,7 @@ $attributes
 <div class="clear"></div>
 </div>
 <a name="methodto_select"></a>
-<h4 class="method"><span><em>method</em></span> to_select() <span class="smalllinenumber">[line 1432]</span></h4>
+<h4 class="method"><span><em>method</em></span> to_select() <span class="smalllinenumber">[line 1441]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -831,10 +823,15 @@ $node
 string
 $separator
 = ' &amp;rarr; ']
+, 
+[
+boolean
+$show_full_path
+= false]
 )
 </p>
 <p>Returns an unidimensional (flat) array with the descendant nodes of the node given as argument, indented using   whatever given in the <em>$separator</em> argument, and ready to be used in a &lt;select&gt; element.</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-var">$selectables&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><span class="src-id">get_selectables</span><span class="src-sym">(</span><span class="src-var">$node_id</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<p><ol class="code"><li><div class="src-line"><span class="src-var">$selectables&nbsp;</span>=&nbsp;<span class="src-var">$mptt</span><span class="src-sym">-&gt;</span><a href="../Zebra_Mptt/Zebra_Mptt.html#methodto_select">to_select</a><span class="src-sym">(</span><span class="src-var">$node_id</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">echo&nbsp;<span class="src-str">'&lt;select&nbsp;name=&quot;myselect&quot;&gt;'</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
@@ -848,7 +845,7 @@ $separator
 <table cellspacing="0" cellpadding="0">
 <tr>
 <td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
-<td valign="top">Returns an array of children nodes of a node given as argument, indented and ready                                   to be used in a &lt;select&gt; control.</td>
+<td valign="top">Returns an array of children nodes of a node given as argument, indented                                           and ready to be used in a &lt;select&gt; control.</td>
 </tr>
 <tr>
 <td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
@@ -860,12 +857,17 @@ $separator
 <tr>
 <td valign="top"><em>integer</em></td>
 <td valign="top"><strong>$node</strong></td>
-<td valign="top"><p>(Optional) The ID of a node for which to get the descendant nodes and return                                   everything as a unidimensional (flat) array, indented using whatever given in the                                   <em>$separator</em> argument, and ready to be used in a &lt;select&gt; control.</p><p>When not given, or given as &quot;0&quot;, will return an array with *all* the available                                   nodes.</p></td>
+<td valign="top"><p>(Optional) The ID of a node for which to get the descendant nodes and                                           return everything as a unidimensional (flat) array, indented using whatever                                           given in the <em>$separator</em> argument, and ready to be used in a &lt;select&gt;                                           control.</p><p>When not given, or given as &quot;0&quot;, will return an array with *all* the                                           available nodes.</p></td>
 </tr>
 <tr>
 <td valign="top"><em>string</em></td>
 <td valign="top"><strong>$separator</strong></td>
-<td valign="top"><p>(Optional) A string to indent the nodes by.</p><p>Default is &quot; &amp;rarr; &quot;</p></td>
+<td valign="top"><p>(Optional) A string used to separate nodes.</p><p>Default is &quot; &amp;rarr; &quot;</p></td>
+</tr>
+<tr>
+<td valign="top"><em>boolean</em></td>
+<td valign="top"><strong>$show_full_path</strong></td>
+<td valign="top"><p>(Optional) By default, parent nodes are not shown.</p><p>Set this to TRUE to show full path to each node.</p><p>Default is FALSE.</p><p>This option was added in <strong>2.3.6</strong></p></td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -927,7 +929,7 @@ $title
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Fri, 06 Jul 18</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Mon, 07 Jan 19</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 </body>
