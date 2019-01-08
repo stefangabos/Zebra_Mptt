@@ -1,3 +1,8 @@
+## version 2.3.6 (January 08, 2019)
+
+- added `show_full_path` argument to the [to_select](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html#methodto_select) method; thanks to **Jiri Melcak** for suggesting
+- the library will now stop on MySQL errors; previously, because it uses TABLE LOCKs, errors while in a lock would not be reported, making it difficult to debug; thanks to **Jiri Melcak** for suggesting!
+
 ## version 2.3.5 (July 06, 2018)
 
 - fixed [#5](https://github.com/stefangabos/Zebra_Mptt/issues/5) where `get_previous_sibling` was in fact returning the `next` sibling. Thanks [@kinnevo](https://github.com/kinnevo)!
