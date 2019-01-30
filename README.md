@@ -105,4 +105,4 @@ $mptt->get_children($meat);
 $mptt->get_tree();
 ```
 
-:books: Checkout the [awesome documentation](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html)!
+:books: Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html)!
