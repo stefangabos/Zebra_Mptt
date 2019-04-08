@@ -55,10 +55,10 @@ You can install Zebra_Mptt via [Composer](https://packagist.org/packages/stefang
 
 ```bash
 # get the latest stable release
-composer require stefangabos/zebra_mptt
+composer require rendix2/zebra_mptt
 
 # get the latest commit
-composer require stefangabos/zebra_mptt:dev-master
+composer require rendix2/zebra_mptt:dev-master
 ```
 
 ## Install MySQL table
