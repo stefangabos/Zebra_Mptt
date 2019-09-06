@@ -20,5 +20,21 @@
         "classmap": [
             "Zebra_Mptt.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZebraTests\\": "tests"
+        }
+    },
+    "require-dev": {
+        "php": ">=7.2",
+        "phpunit/phpunit": "^8",
+        "ext-mysqli": "*",
+        "ext-pdo": "*"
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit --bootstrap tests/bootstrap.php tests"
+        ]
     }
 }
