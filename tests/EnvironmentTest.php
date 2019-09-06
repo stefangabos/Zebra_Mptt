@@ -14,8 +14,6 @@ use ZebraTests\Utility\DatabaseStubHelpMethodsInterface;
 use ZebraTests\Utility\Environment;
 use ZebraTests\Utility\MysqliInMemoryDummy;
 
-require_once 'Utility/functions.php';
-
 class EnvironmentTest extends TestCase
 {
     /**
