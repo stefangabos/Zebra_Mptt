@@ -14,6 +14,8 @@ use ZebraTests\Utility\DatabaseStubHelpMethodsInterface;
 use ZebraTests\Utility\Environment;
 use ZebraTests\Utility\MysqliInMemoryDummy;
 
+require_once 'Utility/functions.php';
+
 class EnvironmentTest extends TestCase
 {
     /**
@@ -42,8 +44,5 @@ class EnvironmentTest extends TestCase
         $this->connection->query($content);
         $this->assertEquals(true, $this->connection->tableExists('mptt'),"Installing script doesn't work");
     }
-
-
-
 
 }
