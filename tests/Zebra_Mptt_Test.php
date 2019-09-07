@@ -9,6 +9,7 @@ namespace ZebraTests\Mptt;
  */
 
 use PHPUnit\Framework\TestCase;
+use Zebra\Mptt\Mptt;
 use ZebraTests\Mptt\Utility\Environment;
 use ZebraTests\Mptt\Utility\InMemoryDriver;
 
@@ -28,7 +29,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_addNode()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $before = $this->countRows();
         $nodeId = $zebra->add(0, "root");
@@ -52,7 +53,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_getDescendants()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $parentId = $zebra->add(0, "root");
         $aId = $zebra->add($parentId, "A");
@@ -76,7 +77,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_getDescendantsCount()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $parentId = $zebra->add(0, "root");
         $aId = $zebra->add($parentId, "A");
@@ -93,7 +94,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_copy()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "rootA");
         $B = $zebra->add(0, "rootB");
@@ -111,7 +112,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_move()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "rootA");
         $B = $zebra->add(0, "rootB");
@@ -128,7 +129,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_deleteOnce()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "A");
         $B = $zebra->add($A, "B");
@@ -148,7 +149,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_deleteSubtree()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "A");
         $B = $zebra->add($A, "B");
@@ -164,7 +165,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_nextSibling()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "A");
         $B = $zebra->add($A, "B");
@@ -178,7 +179,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_previousSibling()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "A");
         $B = $zebra->add($A, "B");
@@ -192,7 +193,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_Siblings()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "A");
         $B = $zebra->add($A, "B");
@@ -205,7 +206,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_getParent()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "A");
         $B = $zebra->add($A, "B");
@@ -217,7 +218,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_getPath()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "A");
         $B = $zebra->add($A, "B");
@@ -232,7 +233,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_update()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = $zebra->add(0, "A");
         $B = $zebra->add($A, "B");
@@ -245,7 +246,7 @@ class Zebra_Mptt_Test extends TestCase
 
     public function test_getTree()
     {
-        $zebra = new \Zebra_Mptt($this->db);
+        $zebra = new Mptt($this->db);
 
         $A = (int)$zebra->add(0, "A");
         $B = (int)$zebra->add($A, "B");
