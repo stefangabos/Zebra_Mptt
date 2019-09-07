@@ -131,8 +131,8 @@ class PDODriver extends AbstractSqlDriver
      */
     public function delete($tableName, $conditions)
     {
-        $sql = $this->delete($tableName, $conditions);
-        return $this->db->exec($sql) > 0;
+        $sql = $this->getQueryDelete($tableName, $conditions);
+        return $this->exec($sql);
     }
 
     /**
