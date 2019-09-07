@@ -45,4 +45,20 @@ interface DatabaseDriverInterface
      * @return bool
      */
     public function update($tableName,/* array*/ $sets,/* array*/ $conditions);
+
+    /**
+     * mysqli_real_escape_string
+     * @param string $string
+     * @return string
+     */
+    public function escape($string);
+
+    /**
+     * Insert row to the table.
+     * @param string $tableName
+     * @param array $columns
+     * @param array $values
+     * @return bool
+     */
+    public function insert($tableName, $columns, $values);
 }

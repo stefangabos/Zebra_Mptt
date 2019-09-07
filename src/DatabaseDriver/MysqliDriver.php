@@ -24,7 +24,7 @@ class MysqliDriver extends AbstractDatabaseDriver
             trigger_error('mysqli extension is required', E_USER_ERROR);
         }
 
-        if (!$mysqliLink instanceof \mysqli){
+        if (!$mysqliLink instanceof \mysqli) {
             trigger_error('provided link should be mysqli connection', E_USER_ERROR);
         }
 
@@ -78,7 +78,7 @@ class MysqliDriver extends AbstractDatabaseDriver
      */
     public function update($tableName, $sets, $conditions)
     {
-        $sql = 'UPDATE '.$tableName.' '.$this->getSetsSql($sets).' '.$this->getConditionsSql($conditions);
+        $sql = 'UPDATE ' . $tableName . ' ' . $this->getSetsSql($sets) . ' ' . $this->getConditionsSql($conditions);
         return mysqli_query($this->db, $sql) !== false;
     }
 
@@ -91,10 +91,10 @@ class MysqliDriver extends AbstractDatabaseDriver
     private function getSetsSql($sets)
     {
         $sql = 'SET ';
-        foreach($sets as $name=>$value){
-            $sql.= ' '.$name.' = '.$value.',';
+        foreach ($sets as $name => $value) {
+            $sql .= ' ' . $name . ' = ' . $value . ',';
         }
-        return rtrim($sql,',');
+        return rtrim($sql, ',');
     }
 
     /**
@@ -105,14 +105,39 @@ class MysqliDriver extends AbstractDatabaseDriver
      */
     private function getConditionsSql(array $conditions)
     {
-        if (count($conditions)==0){
+        if (count($conditions) == 0) {
             return '';
         }
         $conditionsWithOperators = $this->splitConditions($conditions);
         $sql = 'WHERE';
-        foreach($conditionsWithOperators as $contition){
-            $sql .= ' '.$contition[0].' '.$contition[1].' '.$contition[2].' AND';
+        foreach ($conditionsWithOperators as $contition) {
+            $sql .= ' ' . $contition[0] . ' ' . $contition[1] . ' ' . $contition[2] . ' AND';
         }
-        return substr($sql,0,-3); //skip last AND
+        return substr($sql, 0, -3); //skip last AND
+    }
+
+    /**
+     * mysqli_real_escape_string
+     * @param string $string
+     * @return string
+     */
+    public function escape($string)
+    {
+        return mysqli_real_escape_string($string);
+    }
+
+    /**
+     * Insert row to the table.
+     * @param string $tableName
+     * @param array $columns
+     * @param array $values
+     * @return bool
+     */
+    public function insert($tableName, $columns, $values)
+    {
+        $columnsString = '`' . implode('`,`', $columns) . '`';
+        $valueString = '"' . implode('","', $values) . '"';
+        $sql = 'INSERT INTO ' . $tableName . ' (' . $columnsString . ') VALUES (' . $valueString . ')';
+        return mysqli_query($this->db, $sql) !== false;
     }
 }
