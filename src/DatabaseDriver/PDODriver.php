@@ -89,7 +89,7 @@ class PDODriver extends AbstractSqlDriver
     public function update($tableName, $sets, $conditions)
     {
         $sql = $this->getQueryUpdate($tableName,$sets,$conditions);
-        return $this->db->exec($sql) >0;
+        return $this->exec($sql);
     }
 
     /**
@@ -112,7 +112,7 @@ class PDODriver extends AbstractSqlDriver
     public function insert($tableName, $columns, $values)
     {
         $sql = $this->getQueryInsert($tableName, $columns, $values);
-        return $this->db->exec($sql) >0;
+        return $this->exec($sql);
     }
 
     /**
@@ -165,5 +165,20 @@ class PDODriver extends AbstractSqlDriver
     public function query($query)
     {
         return new PDOResult($this->db->query($query));
+    }
+
+    /**
+     * Safe execute.
+     * @param $sql
+     * @return bool
+     */
+    private function exec($sql)
+    {
+        try {
+            $this->db->exec($sql);
+        }catch(PDOException $e){
+            return false;
+        }
+        return true;
     }
 }
