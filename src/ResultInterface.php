@@ -6,7 +6,7 @@
  * Time: 15:52
  */
 
-namespace Zebra;
+namespace Zebra\Mptt;
 
 
 interface ResultInterface

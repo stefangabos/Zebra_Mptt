@@ -1,6 +1,8 @@
 <?php
 
-namespace Zebra;
+namespace Zebra\Mptt;
+use Zebra\Mptt\DatabaseDriverInterface;
+
 /**
  * Created by PhpStorm.
  * User: writ3it

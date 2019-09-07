@@ -6,10 +6,10 @@
  * Time: 15:58
  */
 
-namespace Zebra\DatabaseDriver;
+namespace Zebra\Mptt\DatabaseDriver;
 
 
-use Zebra\ResultInterface;
+use Zebra\Mptt\ResultInterface;
 
 class PDOResult implements ResultInterface
 {

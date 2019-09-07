@@ -6,13 +6,13 @@
  * Time: 15:58
  */
 
-namespace Zebra\DatabaseDriver;
+namespace Zebra\Mptt\DatabaseDriver;
 
 
 use PDO;
 use PDOException;
-use Zebra\AbstractDatabaseDriver;
-use Zebra\ResultInterface;
+use Zebra\Mptt\AbstractDatabaseDriver;
+use Zebra\Mptt\ResultInterface;
 
 class PDODriver extends AbstractSqlDriver
 {

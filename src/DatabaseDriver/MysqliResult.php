@@ -6,10 +6,10 @@
  * Time: 15:53
  */
 
-namespace Zebra\DatabaseDriver;
+namespace Zebra\Mptt\DatabaseDriver;
 
 
-use Zebra\AbstractResult;
+use Zebra\Mptt\AbstractResult;
 
 class MysqliResult extends AbstractResult
 {

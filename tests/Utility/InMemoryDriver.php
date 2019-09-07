@@ -4,7 +4,7 @@ namespace ZebraTests\Utility;
 
 use mysqli;
 use PDO;
-use Zebra\DatabaseDriver\PDODriver;
+use Zebra\Mptt\DatabaseDriver\PDODriver;
 
 /**
  * Created by PhpStorm.

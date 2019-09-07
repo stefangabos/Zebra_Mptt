@@ -1,7 +1,7 @@
 <?php
 
 
-use Zebra\Mptt;
+use Zebra\Mptt\Mptt;
 
 /**
  * Class Zebra_Mptt

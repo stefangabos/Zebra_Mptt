@@ -23,7 +23,7 @@
             "Zebra_Mptt.php"
         ],
         "psr-4": {
-            "Zebra\\": "src/"
+            "Zebra\\Mptt\\": "src/"
         }
     },
     "autoload-dev": {

@@ -6,10 +6,10 @@
  * Time: 23:11
  */
 
-namespace Zebra\DatabaseDriver;
+namespace Zebra\Mptt\DatabaseDriver;
 
-use Zebra\AbstractDatabaseDriver;
-use Zebra\ResultInterface;
+use Zebra\Mptt\AbstractDatabaseDriver;
+use Zebra\Mptt\ResultInterface;
 
 class MysqliDriver extends AbstractSqlDriver
 {

@@ -6,7 +6,7 @@
  * Time: 14:06
  */
 
-namespace Zebra;
+namespace Zebra\Mptt;
 
 
 interface DatabaseDriverInterface

@@ -6,10 +6,10 @@
  * Time: 16:09
  */
 
-namespace Zebra\DatabaseDriver;
+namespace Zebra\Mptt\DatabaseDriver;
 
 
-use Zebra\AbstractDatabaseDriver;
+use Zebra\Mptt\AbstractDatabaseDriver;
 
 abstract class AbstractSqlDriver extends AbstractDatabaseDriver
 {
