@@ -488,10 +488,11 @@ class Mptt
             $sources[0][$this->properties['parent_column']] = $target;
 
             // iterate through source node's children
-            foreach ($source_children as $child)
+            foreach ($source_children as $child) {
 
                 // save them for later use
                 $sources[] = $this->lookup[$child[$this->properties['id_column']]];
+            }
 
             // the value with which items outside the boundary set below, are to be updated with
             $source_rl_difference =
@@ -510,13 +511,13 @@ class Mptt
             $target_children = $this->get_descendants($target);
 
             // if copy is to be inserted in the default position (as the last of the target node's children)
-            if ($position === false)
+            if ($position === false) {
 
                 // give a numerical value to the position
                 $position = count($target_children);
 
-            // if a custom position was specified
-            else {
+                // if a custom position was specified
+            } else {
 
                 // make sure given position is an integer value
                 $position = (int)$position;
@@ -589,14 +590,16 @@ class Mptt
             // finally, the nodes that are to be inserted need to have their "left" and "right" values updated
             $shift = $target_boundary - $source_boundary + 1;
 
+            $s = false;
+
             // iterate through the nodes that are to be inserted
-            foreach ($sources as $id => &$properties) {
+            foreach ($sources as $id => $properties) {
 
                 // update "left" value
-                $properties[$this->properties['left_column']] += $shift;
+                $sources[$id][$this->properties['left_column']] += $shift;
 
                 // update "right" value
-                $properties[$this->properties['right_column']] += $shift;
+                $sources[$id][$this->properties['right_column']] += $shift;
 
                 // insert into the database
                 $this->db->insert($this->properties['table_name'], array(
@@ -605,7 +608,7 @@ class Mptt
                     $this->properties['right_column'],
                     $this->properties['parent_column']
                 ), array(
-                        $properties[$this->properties['title_column']],
+                        $this->db->escape($properties[$this->properties['title_column']]),
                         $properties[$this->properties['left_column']],
                         $properties[$this->properties['right_column']],
                         $properties[$this->properties['parent_column']]
@@ -615,23 +618,27 @@ class Mptt
                 // get the ID of the newly inserted node
                 $node_id = $this->db->getLastInsertId();
 
+
                 // because the node may have children nodes and its ID just changed
                 // we need to find its children and update the reference to the parent ID
-                foreach ($sources as $key => $value)
+                foreach ($sources as $key => $value) {
 
                     // if a child node was found
-                    if ($value[$this->properties['parent_column']] == $properties[$this->properties['id_column']])
+                    if ($value[$this->properties['parent_column']] == $properties[$this->properties['id_column']]) {
 
                         // update the reference to the parent ID
                         $sources[$key][$this->properties['parent_column']] = $node_id;
+                    }
+
+                }
 
                 // update the node's properties with the ID
                 $properties[$this->properties['id_column']] = $node_id;
 
                 // update the array of inserted items
                 $sources[$id] = $properties;
-
             }
+
 
             // a reference of a $properties and the last array element remain even after the foreach loop
             // we have to destroy it
