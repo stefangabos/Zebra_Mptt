@@ -18,13 +18,13 @@ interface DatabaseDriverInterface
     public function isConnected();
 
     /**
-     * Returns description of last error
+     * Returns description of last error.
      * @return string
      */
     public function getErrorInfo();
 
     /**
-     * Locks the table for write operation
+     * Locks the table for write operation.
      * TODO: other types?
      * @param string $table_name
      * @return bool
@@ -32,8 +32,17 @@ interface DatabaseDriverInterface
     public function lockTableForWrite($table_name);
 
     /**
-     * Unlock all tables
+     * Unlock all tables.
      * @return bool
      */
     public function unlockAllTables();
+
+    /**
+     * Updates data in table.
+     * @param string $tableName
+     * @param array $sets
+     * @param array $conditions
+     * @return bool
+     */
+    public function update($tableName,/* array*/ $sets,/* array*/ $conditions);
 }

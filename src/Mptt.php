@@ -232,16 +232,11 @@ class Mptt
             $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` + 2
-                WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $boundary . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['left_column'] => $this->properties['left_column'].' + 2'
+            ),array(
+                $this->properties['left_column'].' >' =>$boundary
+            )) or $this->triggerError();
 
             mysqli_query($this->db, '
 

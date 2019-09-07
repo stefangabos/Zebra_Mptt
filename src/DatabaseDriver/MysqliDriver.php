@@ -41,7 +41,7 @@ class MysqliDriver extends AbstractDatabaseDriver
     }
 
     /**
-     * Returns description of last error
+     * Returns description of last error.
      * @return string
      */
     public function getErrorInfo()
@@ -50,7 +50,7 @@ class MysqliDriver extends AbstractDatabaseDriver
     }
 
     /**
-     * Locks the table for write operation
+     * Locks the table for write operation.
      * TODO: other types?
      * @param string $tableName
      * @return bool
@@ -61,11 +61,58 @@ class MysqliDriver extends AbstractDatabaseDriver
     }
 
     /**
-     * Unlock all tables
+     * Unlock all tables.
      * @return bool
      */
     public function unlockAllTables()
     {
         return mysqli_query($this->db, 'UNLOCK TABLES') !== false;
+    }
+
+    /**
+     * Updates data in table.
+     * @param string $tableName
+     * @param array $sets
+     * @param array $conditions
+     * @return bool
+     */
+    public function update($tableName, $sets, $conditions)
+    {
+        $sql = 'UPDATE '.$tableName.' '.$this->getSetsSql($sets).' '.$this->getConditionsSql($conditions);
+        return mysqli_query($this->db, $sql) !== false;
+    }
+
+    /**
+     * Returns sql part of SET at UPDATE.
+     * TODO: column escaping
+     * @param array $sets
+     * @return string
+     */
+    private function getSetsSql($sets)
+    {
+        $sql = 'SET ';
+        foreach($sets as $name=>$value){
+            $sql.= ' '.$name.' = '.$value.',';
+        }
+        return rtrim($sql,',');
+    }
+
+    /**
+     * Returns sql part of WHERE
+     * TODO: column escaping
+     * @param array $conditions
+     * @return bool|string
+     */
+    private function getConditionsSql(array $conditions)
+    {
+        if (count($conditions)==0){
+            return '';
+        }
+        $conditionsWithOperators = $this->splitConditions($conditions);
+        $sql = 'WHERE';
+        foreach($conditionsWithOperators as $contition){
+            $sql .= ' '.$contition[0].' '.$contition[1].' '.$contition[2].' AND';
+        }
+        return substr($sql,0,-3); //skip last AND
     }
 }
