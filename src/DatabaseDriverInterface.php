@@ -26,10 +26,10 @@ interface DatabaseDriverInterface
     /**
      * Locks the table for write operation.
      * TODO: other types?
-     * @param string $table_name
+     * @param string $tableName
      * @return bool
      */
-    public function lockTableForWrite($table_name);
+    public function lockTableForWrite($tableName);
 
     /**
      * Unlock all tables.
@@ -80,7 +80,7 @@ interface DatabaseDriverInterface
     /**
      * Select data from table.
      * @param array $selectedColumns
-     * @param array $tableName
+     * @param string $tableName
      * @param array $conditions
      * @param array $orderBy
      * @return ResultInterface

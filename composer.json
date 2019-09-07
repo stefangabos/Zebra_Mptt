@@ -15,7 +15,8 @@
     ],
     "require": {
         "php": ">=5.0.0",
-        "ext-mysqli": "*"
+        "ext-mysqli": "*",
+        "ext-pdo": "*"
     },
     "autoload": {
         "classmap": [

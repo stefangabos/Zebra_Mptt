@@ -2,33 +2,38 @@
 /**
  * Created by PhpStorm.
  * User: writ3it
- * Date: 06.09.19
- * Time: 23:11
+ * Date: 07.09.19
+ * Time: 15:58
  */
 
 namespace Zebra\DatabaseDriver;
 
-use Zebra\AbstractDatabaseDriver;
 
-class MysqliDriver extends AbstractSqlDriver
+use PDO;
+use PDOException;
+use Zebra\AbstractDatabaseDriver;
+use Zebra\ResultInterface;
+
+class PDODriver extends AbstractSqlDriver
 {
+
     /**
-     * @var \mysqli
+     * @var \PDO
      */
     private $db;
 
-    public function __construct($mysqliLink)
+    public function __construct($pdoLink)
     {
         // stop if the mysqli extension is not loaded
-        if (!extension_loaded('mysqli')) {
-            trigger_error('mysqli extension is required', E_USER_ERROR);
+        if (!extension_loaded('pdo')) {
+            trigger_error('pdo extension is required', E_USER_ERROR);
         }
 
-        if (!$mysqliLink instanceof \mysqli) {
-            trigger_error('provided link should be mysqli connection', E_USER_ERROR);
+        if (!$pdoLink instanceof PDO) {
+            trigger_error('provided link should be pdo connection', E_USER_ERROR);
         }
 
-        $this->db = $mysqliLink;
+        $this->db = $pdoLink;
     }
 
     /**
@@ -37,7 +42,12 @@ class MysqliDriver extends AbstractSqlDriver
      */
     public function isConnected()
     {
-        return @mysqli_ping($this->db);
+        try {
+            $this->db->query('SELECT 1');
+        } catch (PDOException $e) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -46,7 +56,7 @@ class MysqliDriver extends AbstractSqlDriver
      */
     public function getErrorInfo()
     {
-        return mysqli_error($this->db);
+        return implode('|',$this->db->errorInfo());
     }
 
     /**
@@ -57,7 +67,7 @@ class MysqliDriver extends AbstractSqlDriver
      */
     public function lockTableForWrite($tableName)
     {
-        return mysqli_query($this->db, $this->getQueryLockTableForWrite($tableName)) !== false;
+        return $this->db->exec($this->getQueryLockTableForWrite($tableName))>0;
     }
 
     /**
@@ -66,7 +76,7 @@ class MysqliDriver extends AbstractSqlDriver
      */
     public function unlockAllTables()
     {
-        return mysqli_query($this->db, $this->getQueryUnlockAllTables()) !== false;
+        return $this->db->exec($this->getQueryUnlockAllTables())>0;
     }
 
     /**
@@ -79,9 +89,8 @@ class MysqliDriver extends AbstractSqlDriver
     public function update($tableName, $sets, $conditions)
     {
         $sql = $this->getQueryUpdate($tableName,$sets,$conditions);
-        return mysqli_query($this->db, $sql) !== false;
+        return $this->db->exec($sql) >0;
     }
-
 
     /**
      * mysqli_real_escape_string
@@ -90,7 +99,7 @@ class MysqliDriver extends AbstractSqlDriver
      */
     public function escape($string)
     {
-        return mysqli_real_escape_string($string);
+        return $this->db->quote($string);
     }
 
     /**
@@ -103,7 +112,7 @@ class MysqliDriver extends AbstractSqlDriver
     public function insert($tableName, $columns, $values)
     {
         $sql = $this->getQueryInsert($tableName, $columns, $values);
-        return mysqli_query($this->db, $sql) !== false;
+        return $this->db->exec($sql) >0;
     }
 
     /**
@@ -112,7 +121,7 @@ class MysqliDriver extends AbstractSqlDriver
      */
     public function getLastInsertId()
     {
-        return mysqli_insert_id($this->db);
+        return $this->db->lastInsertId();
     }
 
     /**
@@ -122,8 +131,8 @@ class MysqliDriver extends AbstractSqlDriver
      */
     public function delete($tableName, $conditions)
     {
-        $sql = $this->getQueryDelete($tableName, $conditions);
-        return mysqli_query($this->db, $sql) !== false;
+        $sql = $this->delete($tableName, $conditions);
+        return $this->db->exec($sql) > 0;
     }
 
     /**
@@ -132,15 +141,11 @@ class MysqliDriver extends AbstractSqlDriver
      * @param string $tableName
      * @param array $conditions
      * @param array $orderBy
-     * @return mixed
+     * @return ResultInterface
      */
     public function select($selectedColumns, $tableName, $conditions, $orderBy)
     {
         $sql = $this->getQuerySelect($selectedColumns,$tableName,$conditions,$orderBy);
-        return new MysqliResult(mysqli_query($this->db, $sql));
+        return new PDOResult($this->db->query($sql));
     }
-
-
-
-
 }
