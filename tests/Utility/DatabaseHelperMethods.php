@@ -6,7 +6,7 @@
  * Time: 16:29
  */
 
-namespace ZebraTests\Utility;
+namespace ZebraTests\Mptt\Utility;
 
 
 interface DatabaseHelperMethods

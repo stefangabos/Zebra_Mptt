@@ -6,7 +6,7 @@
  * Time: 22:30
  */
 
-namespace ZebraTests\Utility;
+namespace ZebraTests\Mptt\Utility;
 
 
 class Environment

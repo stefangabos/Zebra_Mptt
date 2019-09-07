@@ -1,6 +1,6 @@
 <?php
 
-namespace ZebraTests\Utility;
+namespace ZebraTests\Mptt\Utility;
 
 use mysqli;
 use PDO;

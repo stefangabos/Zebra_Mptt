@@ -1,6 +1,6 @@
 <?php
 
-namespace ZebraTests;
+namespace ZebraTests\Mptt;
 /**
  * Created by PhpStorm.
  * User: writ3it
@@ -9,8 +9,8 @@ namespace ZebraTests;
  */
 
 use PHPUnit\Framework\TestCase;
-use ZebraTests\Utility\Environment;
-use ZebraTests\Utility\InMemoryDriver;
+use ZebraTests\Mptt\Utility\Environment;
+use ZebraTests\Mptt\Utility\InMemoryDriver;
 
 class Zebra_Mptt_Test extends TestCase
 {

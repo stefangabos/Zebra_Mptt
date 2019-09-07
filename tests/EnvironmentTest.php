@@ -6,13 +6,12 @@
  * Time: 21:53
  */
 
-namespace ZebraTests;
+namespace ZebraTests\Mptt;
 
 
 use PHPUnit\Framework\TestCase;
-use ZebraTests\Utility\DatabaseStubHelpMethodsInterface;
-use ZebraTests\Utility\Environment;
-use ZebraTests\Utility\InMemoryDriver;
+use ZebraTests\Mptt\Utility\Environment;
+use ZebraTests\Mptt\Utility\InMemoryDriver;
 
 class EnvironmentTest extends TestCase
 {

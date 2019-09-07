@@ -28,7 +28,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "ZebraTests\\": "tests"
+            "ZebraTests\\Mptt\\": "tests"
         }
     },
     "require-dev": {
