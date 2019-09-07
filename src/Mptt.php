@@ -729,10 +729,11 @@ class Mptt
             $descendants = $this->get_descendants($node, false);
 
             // iterate through target node's descendant nodes
-            foreach ($descendants as $descendant)
+            foreach ($descendants as $descendant) {
 
                 // remove node from the lookup array
                 unset($this->lookup[$descendant[$this->properties['id_column']]]);
+            }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
             $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
@@ -759,20 +760,23 @@ class Mptt
             // remove the target node from the lookup array
             unset($this->lookup[$node]);
 
+
             // iterate through nodes in the lookup array
             foreach ($this->lookup as $id => $properties) {
 
                 // if the "left" value of node is outside the boundary
-                if ($this->lookup[$id][$this->properties['left_column']] > $boundary)
+                if ($this->lookup[$id][$this->properties['left_column']] > $boundary) {
 
                     // decrement it
                     $this->lookup[$id][$this->properties['left_column']] -= $target_rl_difference;
+                }
 
                 // if the "right" value of node is outside the boundary
-                if ($this->lookup[$id][$this->properties['right_column']] > $boundary)
+                if ($this->lookup[$id][$this->properties['right_column']] > $boundary) {
 
                     // decrement it
                     $this->lookup[$id][$this->properties['right_column']] -= $target_rl_difference;
+                }
 
             }
 
