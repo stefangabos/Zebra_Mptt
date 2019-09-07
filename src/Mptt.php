@@ -238,16 +238,11 @@ class Mptt
                 $this->properties['left_column'].' >' =>$boundary
             )) or $this->triggerError();
 
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` + 2
-                WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $boundary . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['right_column'] => $this->properties['right_column'].' + 2'
+            ),array(
+                $this->properties['right_column'].' >' =>$boundary
+            )) or $this->triggerError();
 
             // insert the new node into the database
             mysqli_query($this->db, '
@@ -272,7 +267,7 @@ class Mptt
             $node_id = mysqli_insert_id($this->db);
 
             // release table lock
-            mysqli_query($this->db, 'UNLOCK TABLES') or $this->triggerError();
+            $this->db->unlockAllTables() or $this->triggerError();
 
             // add the node to the lookup array
             $this->lookup[$node_id] = array(
@@ -591,27 +586,17 @@ class Mptt
             $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysqli_query($this->db, '
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['left_column'] => $this->properties['left_column'].' + '.$source_rl_difference
+            ),array(
+                $this->properties['left_column'].' >' =>$target_boundary
+            )) or $this->triggerError();
 
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` + ' . $source_rl_difference . '
-                WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $target_boundary . '
-
-            ') or $this->triggerError();
-
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` + ' . $source_rl_difference . '
-                WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $target_boundary . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['right_column'] => $this->properties['right_column'].' + '.$source_rl_difference
+            ),array(
+                $this->properties['right_column'].' >' =>$target_boundary
+            )) or $this->triggerError();
 
             // finally, the nodes that are to be inserted need to have their "left" and "right" values updated
             $shift = $target_boundary - $source_boundary + 1;
@@ -808,30 +793,20 @@ class Mptt
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysqli_query($this->db, '
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['left_column'] => $this->properties['left_column'].' + '.$target_rl_difference
+            ),array(
+                $this->properties['left_column'].' >' => $boundary
+            )) or $this->triggerError();
 
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` - ' . $target_rl_difference . '
-                WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $boundary . '
-
-            ') or $this->triggerError();
-
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` - ' . $target_rl_difference . '
-                WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $boundary . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['right_column'] => $this->properties['right_column'].' + '.$target_rl_difference
+            ),array(
+                $this->properties['right_column'].' >' => $boundary
+            )) or $this->triggerError();
 
             // release table lock
-            mysqli_query($this->db, 'UNLOCK TABLES') or $this->triggerError();
+            $this->db->unlockAllTables() or $this->triggerError();
 
             // return true as everything went well
             return true;
@@ -1206,18 +1181,13 @@ class Mptt
 
             // we'll multiply the "left" and "right" values of the nodes we're about to move with "-1", in order to
             // prevent the values being changed further in the script
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` * -1,
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` * -1
-                WHERE
-                    `' . $this->properties['left_column'] . '` >= ' . $this->lookup[$source][$this->properties['left_column']] . ' AND
-                    `' . $this->properties['right_column'] . '` <= ' . $this->lookup[$source][$this->properties['right_column']] . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['left_column'] => $this->properties['left_column'].' * -1 ',
+                $this->properties['right_column'] => $this->properties['right_column'].' * -1 ',
+            ),array(
+                $this->properties['left_column'].' >= ' => $this->lookup[$source][$this->properties['left_column']],
+                $this->properties['right_column'].' >= ' => $this->lookup[$source][$this->properties['right_column']]
+            )) or $this->triggerError();
 
             // remove the source node from the list
             unset($this->lookup[$source]);
@@ -1240,27 +1210,17 @@ class Mptt
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysqli_query($this->db, '
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['left_column'] => $this->properties['left_column'].' - '.$source_rl_difference
+            ),array(
+                $this->properties['left_column'].' > ' => $source_boundary
+            )) or $this->triggerError();
 
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` - ' . $source_rl_difference . '
-                WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $source_boundary . '
-
-            ') or $this->triggerError();
-
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` - ' . $source_rl_difference . '
-                WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $source_boundary . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['right_column'] => $this->properties['right_column'].' - '.$source_rl_difference
+            ),array(
+                $this->properties['right_column'].' > ' => $source_boundary
+            )) or $this->triggerError();
 
             // get descendant nodes of target node (first level only)
             $target_descendants = $this->get_descendants((int)$target);
@@ -1325,27 +1285,17 @@ class Mptt
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
-            mysqli_query($this->db, '
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['left_column'] => $this->properties['left_column'].' - '.$source_rl_difference
+            ),array(
+                $this->properties['left_column'].' > ' => $target_boundary
+            )) or $this->triggerError();
 
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['left_column'] . '` = `' . $this->properties['left_column'] . '` + ' . $source_rl_difference . '
-                WHERE
-                    `' . $this->properties['left_column'] . '` > ' . $target_boundary . '
-
-            ') or $this->triggerError();
-
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['right_column'] . '` = `' . $this->properties['right_column'] . '` + ' . $source_rl_difference . '
-                WHERE
-                    `' . $this->properties['right_column'] . '` > ' . $target_boundary . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['right_column'] => $this->properties['right_column'].' - '.$source_rl_difference
+            ),array(
+                $this->properties['right_column'].' > ' => $target_boundary
+            )) or $this->triggerError();
 
             // finally, the nodes that are to be inserted need to have their "left" and "right" values updated
             $shift = $target_boundary - $source_boundary + 1;
@@ -1367,32 +1317,22 @@ class Mptt
             // also update the entries in the database
             // (notice that we're subtracting rather than adding and that finally we multiply by -1 so that the values
             // turn positive again)
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['left_column'] . '` = (`' . $this->properties['left_column'] . '` - ' . $shift . ') * -1,
-                    `' . $this->properties['right_column'] . '` = (`' . $this->properties['right_column'] . '` - ' . $shift . ') * -1
-                WHERE
-                    `' . $this->properties['left_column'] . '` < 0
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['left_column'] => '('.$this->properties['left_column'].' - '.$shift.') * -1',
+                $this->properties['right_column'] => '('.$this->properties['right_column'].' - '.$shift.') * -1',
+            ),array(
+                $this->properties['left_column'].' < ' => 0
+            )) or $this->triggerError();
 
             // finally, update the parent of the source node
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['parent_column'] . '` = ' . $target . '
-                WHERE
-                    `' . $this->properties['id_column'] . '` = ' . $source . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['parent_column'] => $target
+            ),array(
+                $this->properties['id_column'] => $source
+            )) or $this->triggerError();
 
             // release table lock
-            mysqli_query($this->db, 'UNLOCK TABLES') or $this->triggerError();
+            $this->db->unlockAllTables() or $this->triggerError();
 
             // reorder the lookup array
             $this->_reorder_lookup_array();
@@ -1439,19 +1379,14 @@ class Mptt
             $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // update node's title
-            mysqli_query($this->db, '
-
-                UPDATE
-                    `' . $this->properties['table_name'] . '`
-                SET
-                    `' . $this->properties['title_column'] . '` = "' . $title . '"
-                WHERE
-                    `' . $this->properties['id_column'] . '` = ' . $node . '
-
-            ') or $this->triggerError();
+            $this->db->update($this->properties['table_name'],array(
+                $this->properties['title_column'] => $title
+            ),array(
+                $this->properties['id_column'] => $node
+            )) or $this->triggerError();
 
             // release table lock
-            mysqli_query($this->db, 'UNLOCK TABLES') or $this->triggerError();
+            $this->db->unlockAllTables() or $this->triggerError();
 
             // update lookup array
             $this->lookup[$node][$this->properties['title_column']] = $title;
