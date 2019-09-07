@@ -84,7 +84,7 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
     protected function getQueryInsert($tableName, $columns, $values)
     {
         $columnsString = '`' . implode('`,`', $columns) . '`';
-        $valueString = '"' . implode('","', $values) . '"';
+        $valueString = '' . implode(',', $values) . '';
         return 'INSERT INTO ' . $tableName . ' (' . $columnsString . ') VALUES (' . $valueString . ')';
     }
 
