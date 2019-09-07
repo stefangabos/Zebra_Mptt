@@ -10,19 +10,19 @@ namespace ZebraTests;
 
 use PHPUnit\Framework\TestCase;
 use ZebraTests\Utility\Environment;
-use ZebraTests\Utility\MysqliInMemoryDummy;
+use ZebraTests\Utility\InMemoryDriver;
 
-class Zebra_Mtpp_test extends TestCase
+class Zebra_Mtpp_Test extends TestCase
 {
     /**
-     * @var MysqliInMemoryDummy
+     * @var InMemoryDriver
      */
     private $db;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->db = new MysqliInMemoryDummy();
+        $this->db = new InMemoryDriver();
         $this->db->query(Environment::getInstallFileContent());
     }
 
