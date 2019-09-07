@@ -41,7 +41,7 @@ Zebra\_Mptt uses [table locks](http://dev.mysql.com/doc/refman/5.0/en/lock-table
 
 ## Requirements
 
-PHP 5.0.0+, MySQL 4.1.22+
+PHP 5.0.0+, MySQL 4.1.22+, mysqli extension or PDO extension
 
 ## Installation
 
@@ -61,6 +61,12 @@ Or you can install it manually by downloading the latest version, unpacking it, 
 require_once 'path/to/Zebra_Mptt.php';
 ```
 
+or
+
+```php
+use Zebra\Mptt\Mptt;
+``` 
+
 ## Install MySQL table
 
 Notice a directory called *install* containing a file named *mptt.sql*. This file contains the SQL code that will create the table used by the class to store its data. Import or execute the SQL code using your preferred MySQL manager (like phpMyAdmin or the fantastic Adminer) into a database of your choice.
@@ -71,8 +77,10 @@ Notice a directory called *install* containing a file named *mptt.sql*. This fil
 // include the Zebra_Mptt class
 require 'path/to/Zebra_Mptt.php';
 
+$link = new PDODriver(new PDO( ... ));
+
 // instantiate a new object
-$mptt = new Zebra_Mptt();
+$mptt = new Zebra_Mptt($link);
 
 // populate the table
 
