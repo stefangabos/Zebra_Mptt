@@ -1368,7 +1368,7 @@ class Mptt
 
             // update node's title
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['title_column'] => $title
+                $this->properties['title_column'] => $this->db->escape($title)
             ), array(
                 $this->properties['id_column'] => $node
             )) or $this->triggerError();
