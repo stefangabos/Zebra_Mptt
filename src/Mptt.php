@@ -9,6 +9,11 @@ namespace Zebra;
  */
 
 /**
+ * Questions:
+ * - It's correct to unlock all tables? Another component of the app should expect that its lock of its table will be respected.
+ */
+
+/**
  *  A PHP library that provides an implementation of the modified preorder tree traversal algorithm making it easy to
  *  implement the MPTT algorithm in your PHP applications.
  *
@@ -670,7 +675,7 @@ class Mptt
             unset($properties);
 
             // release table lock
-            mysqli_query($this->db, 'UNLOCK TABLES') or $this->triggerError();
+            $this->db->unlockAllTables() or $this->triggerError();
 
             // at this point, we have the nodes in the database but we need to also update the lookup array
 

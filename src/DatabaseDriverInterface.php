@@ -30,4 +30,10 @@ interface DatabaseDriverInterface
      * @return bool
      */
     public function lockTableForWrite($table_name);
+
+    /**
+     * Unlock all tables
+     * @return bool
+     */
+    public function unlockAllTables();
 }

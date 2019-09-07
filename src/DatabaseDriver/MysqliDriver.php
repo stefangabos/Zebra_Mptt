@@ -59,4 +59,13 @@ class MysqliDriver extends AbstractDatabaseDriver
     {
         return mysqli_query($this->db, 'LOCK TABLE `' . $tableName . '` WRITE') !== false;
     }
+
+    /**
+     * Unlock all tables
+     * @return bool
+     */
+    public function unlockAllTables()
+    {
+        return mysqli_query($this->db, 'UNLOCK TABLES') !== false;
+    }
 }
