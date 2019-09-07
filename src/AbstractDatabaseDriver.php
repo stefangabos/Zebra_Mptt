@@ -43,7 +43,7 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
             $trimmedName = trim($name);
             $operatorDesc = $this->detectOperator($trimmedName);
             $columnName = $operatorDesc[1] == 0 ? $trimmedName : substr($trimmedName,0,$operatorDesc[1]);
-            $output[] = array($columnName,$operatorDesc[0],$value);
+            $output[] = array(trim($columnName),$operatorDesc[0],$value);
         }
         return $output;
     }

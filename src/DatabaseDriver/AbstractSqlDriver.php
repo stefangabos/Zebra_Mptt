@@ -23,14 +23,14 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
     {
         $sql = 'SET ';
         foreach ($sets as $name => $value) {
-            $sql .= ' ' . $name . ' = ' . $value . ',';
+            $sql .= ' `' . $name . '` = ' . $value . ',';
         }
         return rtrim($sql, ',');
     }
 
     /**
      * Returns sql part of WHERE
-     * TODO: column escaping
+     * TODO: more advanced column escaping
      * @param array $conditions
      * @return bool|string
      */
@@ -42,7 +42,7 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
         $conditionsWithOperators = $this->splitConditions($conditions);
         $sql = 'WHERE';
         foreach ($conditionsWithOperators as $condition) {
-            $sql .= ' ' . $condition[0] . ' ' . $condition[1] . ' ' . $condition[2] . ' AND';
+            $sql .= ' `' . $condition[0] . '` ' . $condition[1] . ' ' . $condition[2] . ' AND';
         }
         return substr($sql, 0, -3); //skip last AND
     }
@@ -72,7 +72,7 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
      */
     protected function getQueryToUpdate($tableName, $sets, $conditions)
     {
-        return 'UPDATE ' . $tableName . ' ' . $this->getUpdateDataPartSql($sets) . ' ' . $this->getConditionsSql($conditions);
+        return 'UPDATE `' . $tableName . '` ' . $this->getUpdateDataPartSql($sets) . ' ' . $this->getConditionsSql($conditions);
     }
 
     /**
@@ -85,7 +85,7 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
     {
         $columnsString = '`' . implode('`,`', $columns) . '`';
         $valueString = '' . implode(',', $values) . '';
-        return 'INSERT INTO ' . $tableName . ' (' . $columnsString . ') VALUES (' . $valueString . ')';
+        return 'INSERT INTO `' . $tableName . '` (' . $columnsString . ') VALUES (' . $valueString . ')';
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
      */
     protected function getQueryDelete($tableName, $conditions)
     {
-        return "DELETE FROM " . $tableName . ' ' . $this->getConditionsSql($conditions);
+        return 'DELETE FROM `' . $tableName . '` ' . $this->getConditionsSql($conditions);
     }
 
     /**
@@ -116,6 +116,6 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
         if (count($orderBy)) {
             $orderByString = 'ORDER BY ' . implode(',', $orderBy);
         }
-        return 'SELECT ' . $select . ' FROM ' . $tableName . ' ' . $conditionsString . ' ' . $orderByString;
+        return 'SELECT ' . $select . ' FROM `' . $tableName . '` ' . $conditionsString . ' ' . $orderByString;
     }
 }
