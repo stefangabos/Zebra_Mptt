@@ -86,4 +86,9 @@ interface DatabaseDriverInterface
      * @return ResultInterface
      */
     public function select($selectedColumns, $tableName, $conditions, $orderBy);
+
+    /**
+     * Close connection.
+     */
+    public function close();
 }

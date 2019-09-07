@@ -148,4 +148,12 @@ class PDODriver extends AbstractSqlDriver
         $sql = $this->getQuerySelect($selectedColumns,$tableName,$conditions,$orderBy);
         return new PDOResult($this->db->query($sql));
     }
+
+    /**
+     * Close connection.
+     */
+    public function close()
+    {
+        $this->db = null;
+    }
 }

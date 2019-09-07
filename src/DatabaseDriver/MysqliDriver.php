@@ -141,6 +141,11 @@ class MysqliDriver extends AbstractSqlDriver
     }
 
 
-
-
+    /**
+     * Close connection.
+     */
+    public function close()
+    {
+        $this->db = null;
+    }
 }
