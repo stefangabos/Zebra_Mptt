@@ -14,12 +14,16 @@
         }
     ],
     "require": {
-        "php": ">=5.0.0"
+        "php": ">=5.0.0",
+        "ext-mysqli": "*"
     },
     "autoload": {
         "classmap": [
             "Zebra_Mptt.php"
-        ]
+        ],
+        "psr-4": {
+            "Zebra\\": "src/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
