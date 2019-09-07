@@ -235,13 +235,13 @@ class Mptt
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['left_column'] => $this->properties['left_column'] . ' + 2'
+                $this->properties['left_column'] => '`'.$this->properties['left_column'] . '` + 2'
             ), array(
                 $this->properties['left_column'] . ' >' => $boundary
             )) or $this->triggerError();
 
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['right_column'] => $this->properties['right_column'] . ' + 2'
+                $this->properties['right_column'] => '`'.$this->properties['right_column'] . '` + 2'
             ), array(
                 $this->properties['right_column'] . ' >' => $boundary
             )) or $this->triggerError();
@@ -578,13 +578,13 @@ class Mptt
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['left_column'] => $this->properties['left_column'] . ' + ' . $source_rl_difference
+                $this->properties['left_column'] => '`'.$this->properties['left_column'] . '` + ' . $source_rl_difference
             ), array(
                 $this->properties['left_column'] . ' >' => $target_boundary
             )) or $this->triggerError();
 
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['right_column'] => $this->properties['right_column'] . ' + ' . $source_rl_difference
+                $this->properties['right_column'] => '`'.$this->properties['right_column'] . '` + ' . $source_rl_difference
             ), array(
                 $this->properties['right_column'] . ' >' => $target_boundary
             )) or $this->triggerError();
@@ -784,13 +784,13 @@ class Mptt
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['left_column'] => $this->properties['left_column'] . ' - ' . $target_rl_difference
+                $this->properties['left_column'] => '`'.$this->properties['left_column'] . '` - ' . $target_rl_difference
             ), array(
                 $this->properties['left_column'] . ' >' => $boundary
             )) or $this->triggerError();
 
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['right_column'] => $this->properties['right_column'] . ' - ' . $target_rl_difference
+                $this->properties['right_column'] => '`'.$this->properties['right_column'] . '` - ' . $target_rl_difference
             ), array(
                 $this->properties['right_column'] . ' >' => $boundary
             )) or $this->triggerError();
@@ -1172,8 +1172,8 @@ class Mptt
             // we'll multiply the "left" and "right" values of the nodes we're about to move with "-1", in order to
             // prevent the values being changed further in the script
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['left_column'] => $this->properties['left_column'] . ' * -1 ',
-                $this->properties['right_column'] => $this->properties['right_column'] . ' * -1 ',
+                $this->properties['left_column'] => '`'.$this->properties['left_column'] . '` * -1 ',
+                $this->properties['right_column'] => '`'.$this->properties['right_column'] . '` * -1 ',
             ), array(
                 $this->properties['left_column'] . ' >= ' => $this->lookup[$source][$this->properties['left_column']],
                 $this->properties['right_column'] . ' >= ' => $this->lookup[$source][$this->properties['right_column']]
@@ -1201,13 +1201,13 @@ class Mptt
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['left_column'] => $this->properties['left_column'] . ' - ' . $source_rl_difference
+                $this->properties['left_column'] => '`'.$this->properties['left_column'] . '` - ' . $source_rl_difference
             ), array(
                 $this->properties['left_column'] . ' > ' => $source_boundary
             )) or $this->triggerError();
 
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['right_column'] => $this->properties['right_column'] . ' - ' . $source_rl_difference
+                $this->properties['right_column'] => '`'.$this->properties['right_column'] . '` - ' . $source_rl_difference
             ), array(
                 $this->properties['right_column'] . ' > ' => $source_boundary
             )) or $this->triggerError();
@@ -1276,13 +1276,13 @@ class Mptt
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['left_column'] => $this->properties['left_column'] . ' - ' . $source_rl_difference
+                $this->properties['left_column'] => '`'.$this->properties['left_column'] . '` - ' . $source_rl_difference
             ), array(
                 $this->properties['left_column'] . ' > ' => $target_boundary
             )) or $this->triggerError();
 
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['right_column'] => $this->properties['right_column'] . ' - ' . $source_rl_difference
+                $this->properties['right_column'] => '`'.$this->properties['right_column'] . '` - ' . $source_rl_difference
             ), array(
                 $this->properties['right_column'] . ' > ' => $target_boundary
             )) or $this->triggerError();
@@ -1308,8 +1308,8 @@ class Mptt
             // (notice that we're subtracting rather than adding and that finally we multiply by -1 so that the values
             // turn positive again)
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['left_column'] => '(' . $this->properties['left_column'] . ' - ' . $shift . ') * -1',
-                $this->properties['right_column'] => '(' . $this->properties['right_column'] . ' - ' . $shift . ') * -1',
+                $this->properties['left_column'] => '(`' . $this->properties['left_column'] . '` - ' . $shift . ') * -1',
+                $this->properties['right_column'] => '(`' . $this->properties['right_column'] . '` - ' . $shift . ') * -1',
             ), array(
                 $this->properties['left_column'] . ' < ' => 0
             )) or $this->triggerError();
