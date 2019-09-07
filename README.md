@@ -114,3 +114,20 @@ $mptt->get_tree();
 ```
 
 :books: Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html)!
+
+
+# Testing
+
+Step 1. Clone this repository
+```bash
+git clone git@github.com:stefangabos/Zebra_Mptt.git
+cd Zebra_Mptt
+```
+Step 2. Install dependencies
+```bash
+composer install
+```
+Step 3. Run tests (phpunit, see composer.json scripts)
+```bash
+composer test
+```
