@@ -782,13 +782,13 @@ class Mptt
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['left_column'] => $this->properties['left_column'] . ' + ' . $target_rl_difference
+                $this->properties['left_column'] => $this->properties['left_column'] . ' - ' . $target_rl_difference
             ), array(
                 $this->properties['left_column'] . ' >' => $boundary
             )) or $this->triggerError();
 
             $this->db->update($this->properties['table_name'], array(
-                $this->properties['right_column'] => $this->properties['right_column'] . ' + ' . $target_rl_difference
+                $this->properties['right_column'] => $this->properties['right_column'] . ' - ' . $target_rl_difference
             ), array(
                 $this->properties['right_column'] . ' >' => $boundary
             )) or $this->triggerError();
