@@ -149,4 +149,15 @@ class MysqliDriver extends AbstractDatabaseDriver
     {
         return mysqli_insert_id($this->db);
     }
+
+    /**
+     * @param string $tableName
+     * @param array $conditions
+     * @return bool
+     */
+    public function delete($tableName, $conditions)
+    {
+        $sql = "DELETE FROM " . $tableName . ' ' . $this->getConditionsSql($conditions);
+        return mysqli_query($this->db, $sql) !== false;
+    }
 }

@@ -67,4 +67,11 @@ interface DatabaseDriverInterface
      * @return int
      */
     public function getLastInsertId();
+
+    /**
+     * @param string $tableName
+     * @param array $conditions
+     * @return bool
+     */
+    public function delete($tableName, $conditions);
 }

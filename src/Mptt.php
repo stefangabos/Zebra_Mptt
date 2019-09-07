@@ -738,16 +738,10 @@ class Mptt
             $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // also remove nodes from the database
-            mysqli_query($this->db, '
-
-                DELETE
-                FROM
-                    `' . $this->properties['table_name'] . '`
-                WHERE
-                    `' . $this->properties['left_column'] . '` >= ' . $this->lookup[$node][$this->properties['left_column']] . ' AND
-                    `' . $this->properties['right_column'] . '` <= ' . $this->lookup[$node][$this->properties['right_column']] . '
-
-            ') or $this->triggerError();
+            $this->db->delete($this->properties['table_name'], array(
+                $this->properties['left_column'].' >='=>$this->lookup[$node][$this->properties['left_column']],
+                $this->properties['right_column'].' <='=>$this->lookup[$node][$this->properties['right_column']]
+            )) or $this->triggerError();
 
             // the value with which items outside the boundary set below, are to be updated with
             $target_rl_difference =
