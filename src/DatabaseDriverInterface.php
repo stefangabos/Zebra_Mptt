@@ -44,7 +44,9 @@ interface DatabaseDriverInterface
      * @param array $conditions
      * @return bool
      */
-    public function update($tableName,/* array*/ $sets,/* array*/ $conditions);
+    public function update($tableName,/* array*/
+                           $sets,/* array*/
+                           $conditions);
 
     /**
      * mysqli_real_escape_string
@@ -74,4 +76,14 @@ interface DatabaseDriverInterface
      * @return bool
      */
     public function delete($tableName, $conditions);
+
+    /**
+     * Select data from table.
+     * @param array $selectedColumns
+     * @param array $tableName
+     * @param array $conditions
+     * @param array $orderBy
+     * @return ResultInterface
+     */
+    public function select($selectedColumns, $tableName, $conditions, $orderBy);
 }

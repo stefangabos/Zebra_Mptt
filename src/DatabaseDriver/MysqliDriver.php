@@ -160,4 +160,27 @@ class MysqliDriver extends AbstractDatabaseDriver
         $sql = "DELETE FROM " . $tableName . ' ' . $this->getConditionsSql($conditions);
         return mysqli_query($this->db, $sql) !== false;
     }
+
+    /**
+     * Select data from table.
+     * @param array $selectedColumns
+     * @param array $tableName
+     * @param array $conditions
+     * @param array $orderBy
+     * @return mixed
+     */
+    public function select($selectedColumns, $tableName, $conditions, $orderBy)
+    {
+        $select = '*';
+        if (count($selectedColumns)) {
+            $select = implode(',', $selectedColumns);
+        }
+        $conditionsString = $this->getConditionsSql($conditions);
+        $orderByString = '';
+        if (count($orderBy)){
+            $orderByString = 'ORDER BY '.implode(',',$orderBy);
+        }
+        $sql = 'SELECT '.$select.' FROM '.$tableName.' '.$conditionsString.' '.$orderByString;
+        return new MysqliResult(mysqli_query($this->db, $sql));
+    }
 }

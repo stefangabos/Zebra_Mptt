@@ -301,24 +301,17 @@ class Mptt
         if (!isset($this->lookup)) {
 
             // fetch data from the database
-            $result = mysqli_query($this->db, '
-
-                SELECT
-                    *
-                FROM
-                    `' . $this->properties['table_name'] . '`
-                ORDER BY
-                    `' . $this->properties['left_column'] . '`
-
-            ') or $this->triggerError();
+            /** @var ResultInterface $result */
+            $result = $this->db->select(array(),$this->properties['table_name'],array(),array($this->properties['left_column'])) or $this->triggerError();
 
             $this->lookup = array();
 
             // iterate through the found records
-            while ($row = mysqli_fetch_assoc($result))
+            while ($row = $result->fetchAssoc()) {
 
                 // put all records in an array; use the ID column as index
                 $this->lookup[$row[$this->properties['id_column']]] = $row;
+            }
 
         }
 
