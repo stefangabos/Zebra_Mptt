@@ -91,4 +91,10 @@ interface DatabaseDriverInterface
      * Close connection.
      */
     public function close();
+
+    /**
+     * @param string $query
+     * @return ResultInterface
+     */
+    public function query($query);
 }

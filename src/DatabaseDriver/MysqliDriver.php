@@ -9,6 +9,7 @@
 namespace Zebra\DatabaseDriver;
 
 use Zebra\AbstractDatabaseDriver;
+use Zebra\ResultInterface;
 
 class MysqliDriver extends AbstractSqlDriver
 {
@@ -137,7 +138,7 @@ class MysqliDriver extends AbstractSqlDriver
     public function select($selectedColumns, $tableName, $conditions, $orderBy)
     {
         $sql = $this->getQuerySelect($selectedColumns,$tableName,$conditions,$orderBy);
-        return new MysqliResult(mysqli_query($this->db, $sql));
+        return $this->query($sql);
     }
 
 
@@ -147,5 +148,14 @@ class MysqliDriver extends AbstractSqlDriver
     public function close()
     {
         $this->db = null;
+    }
+
+    /**
+     * @param string $query
+     * @return ResultInterface
+     */
+    public function query($query)
+    {
+        return new MysqliResult(mysqli_query($this->db,$query));
     }
 }
