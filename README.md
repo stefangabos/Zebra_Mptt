@@ -77,10 +77,8 @@ Notice a directory called *install* containing a file named *mptt.sql*. This fil
 // include the Zebra_Mptt class
 require 'path/to/Zebra_Mptt.php';
 
-$link = new PDODriver(new PDO( ... ));
-
 // instantiate a new object
-$mptt = new Zebra_Mptt($link);
+$mptt = new Zebra_Mptt($mysqlLink);
 
 // populate the table
 
