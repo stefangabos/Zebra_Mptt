@@ -39,4 +39,13 @@ class MysqliDriver extends AbstractDatabaseDriver
     {
         return @mysqli_ping($this->db);
     }
+
+    /**
+     * Returns description of last error
+     * @return string
+     */
+    public function getErrorInfo()
+    {
+        return mysqli_error($this->db);
+    }
 }

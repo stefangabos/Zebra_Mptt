@@ -16,4 +16,10 @@ interface DatabaseDriverInterface
      * @return bool
      */
     public function isConnected();
+
+    /**
+     * Returns description of last error
+     * @return string
+     */
+    public function getErrorInfo();
 }
