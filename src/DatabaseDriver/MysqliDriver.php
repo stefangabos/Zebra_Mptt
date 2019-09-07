@@ -79,7 +79,7 @@ class MysqliDriver extends AbstractSqlDriver
      */
     public function update($tableName, $sets, $conditions)
     {
-        $sql = $this->getQueryUpdate($tableName,$sets,$conditions);
+        $sql = $this->getQueryToUpdate($tableName,$sets,$conditions);
         return mysqli_query($this->db, $sql) !== false;
     }
 

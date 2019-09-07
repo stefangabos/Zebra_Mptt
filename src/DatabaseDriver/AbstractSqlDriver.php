@@ -19,7 +19,7 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
      * @param array $sets
      * @return string
      */
-    protected function getSetsSql($sets)
+    protected function getUpdateDataPartSql($sets)
     {
         $sql = 'SET ';
         foreach ($sets as $name => $value) {
@@ -34,7 +34,7 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
      * @param array $conditions
      * @return bool|string
      */
-    protected function getConditionsSql(array $conditions)
+    protected function getConditionsSql($conditions)
     {
         if (count($conditions) == 0) {
             return '';
@@ -70,9 +70,9 @@ abstract class AbstractSqlDriver extends AbstractDatabaseDriver
      * @param array $conditions
      * @return string
      */
-    protected function getQueryUpdate($tableName, $sets, $conditions)
+    protected function getQueryToUpdate($tableName, $sets, $conditions)
     {
-        return 'UPDATE ' . $tableName . ' ' . $this->getSetsSql($sets) . ' ' . $this->getConditionsSql($conditions);
+        return 'UPDATE ' . $tableName . ' ' . $this->getUpdateDataPartSql($sets) . ' ' . $this->getConditionsSql($conditions);
     }
 
     /**

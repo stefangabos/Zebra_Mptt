@@ -88,7 +88,7 @@ class PDODriver extends AbstractSqlDriver
      */
     public function update($tableName, $sets, $conditions)
     {
-        $sql = $this->getQueryUpdate($tableName,$sets,$conditions);
+        $sql = $this->getQueryToUpdate($tableName,$sets,$conditions);
         return $this->exec($sql);
     }
 
