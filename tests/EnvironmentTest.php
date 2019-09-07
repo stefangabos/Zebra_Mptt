@@ -12,19 +12,19 @@ namespace ZebraTests;
 use PHPUnit\Framework\TestCase;
 use ZebraTests\Utility\DatabaseStubHelpMethodsInterface;
 use ZebraTests\Utility\Environment;
-use ZebraTests\Utility\MysqliInMemoryDummy;
+use ZebraTests\Utility\InMemoryDriver;
 
 class EnvironmentTest extends TestCase
 {
     /**
-     * @var DatabaseStubHelpMethodsInterface
+     * @var InMemoryDriver
      */
     private $connection;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->connection = new MysqliInMemoryDummy();
+        $this->connection = new InMemoryDriver();
     }
 
     public function tearDown(): void
