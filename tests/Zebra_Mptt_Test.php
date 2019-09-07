@@ -269,9 +269,4 @@ class Zebra_Mptt_Test extends TestCase
         $this->db->close();
     }
 
-    private function getTree()
-    {
-
-    }
-
 }
