@@ -22,6 +22,16 @@ class InMemoryDriver extends PDODriver implements DatabaseHelperMethods
         parent::__construct($this->db);
     }
 
+    public function lockTableForWrite($tableName)
+    {
+        return true;
+    }
+
+    public function unlockAllTables()
+    {
+        return false;
+    }
+
     public function tableExists(string $tableName):bool
     {
         try {
