@@ -16,6 +16,8 @@
         <?php
 
         // database connection details
+        use Zebra\Mptt\DatabaseDriver\MysqliDriver;
+
         $mysql_host     = '';
         $mysql_username = '';
         $mysql_password = '';
@@ -40,7 +42,7 @@
         require '../Zebra_Mptt.php';
 
         // instantiate the Zebra_Mptt object
-        $mptt = new Zebra_Mptt($connection);
+        $mptt = new Zebra_Mptt(new MysqliDriver($connection));
 
         // populate the table
 
