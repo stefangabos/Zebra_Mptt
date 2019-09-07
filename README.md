@@ -118,6 +118,8 @@ $mptt->get_tree();
 
 # Testing
 
+Tests requires >= php 7.2.
+
 Step 1. Clone this repository
 ```bash
 git clone git@github.com:stefangabos/Zebra_Mptt.git
