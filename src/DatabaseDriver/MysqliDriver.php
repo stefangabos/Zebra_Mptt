@@ -140,4 +140,13 @@ class MysqliDriver extends AbstractDatabaseDriver
         $sql = 'INSERT INTO ' . $tableName . ' (' . $columnsString . ') VALUES (' . $valueString . ')';
         return mysqli_query($this->db, $sql) !== false;
     }
+
+    /**
+     * Get last insert id
+     * @return int
+     */
+    public function getLastInsertId()
+    {
+        return mysqli_insert_id($this->db);
+    }
 }

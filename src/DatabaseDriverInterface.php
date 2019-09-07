@@ -61,4 +61,10 @@ interface DatabaseDriverInterface
      * @return bool
      */
     public function insert($tableName, $columns, $values);
+
+    /**
+     * Get last insert id
+     * @return int
+     */
+    public function getLastInsertId();
 }

@@ -259,7 +259,7 @@ class Mptt
             ) or $this->triggerError();
 
             // get the ID of the newly inserted node
-            $node_id = mysqli_insert_id($this->db);
+            $node_id = $this->db->getLastInsertId();
 
             // release table lock
             $this->db->unlockAllTables() or $this->triggerError();
@@ -620,7 +620,7 @@ class Mptt
                 ) or $this->triggerError();
 
                 // get the ID of the newly inserted node
-                $node_id = mysqli_insert_id($this->db);
+                $node_id = $this->db->getLastInsertId();
 
                 // because the node may have children nodes and its ID just changed
                 // we need to find its children and update the reference to the parent ID
