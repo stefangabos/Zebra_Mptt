@@ -224,7 +224,7 @@ class Mptt
             }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->db, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or $this->triggerError();
+            $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             mysqli_query($this->db, '
@@ -588,7 +588,7 @@ class Mptt
             }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->db, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or $this->triggerError();
+            $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             mysqli_query($this->db, '
@@ -760,7 +760,7 @@ class Mptt
                 unset($this->lookup[$descendant[$this->properties['id_column']]]);
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->db, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or $this->triggerError();
+            $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // also remove nodes from the database
             mysqli_query($this->db, '
@@ -1202,7 +1202,7 @@ class Mptt
             $source_boundary = $this->lookup[$source][$this->properties['left_column']];
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->db, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or $this->triggerError();
+            $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // we'll multiply the "left" and "right" values of the nodes we're about to move with "-1", in order to
             // prevent the values being changed further in the script
@@ -1436,7 +1436,7 @@ class Mptt
         if (isset($this->lookup[$node])) {
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->db, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or $this->triggerError();
+            $this->db->lockTableForWrite($this->properties['table_name']) or $this->triggerError();
 
             // update node's title
             mysqli_query($this->db, '

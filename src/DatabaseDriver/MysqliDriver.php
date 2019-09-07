@@ -48,4 +48,15 @@ class MysqliDriver extends AbstractDatabaseDriver
     {
         return mysqli_error($this->db);
     }
+
+    /**
+     * Locks the table for write operation
+     * TODO: other types?
+     * @param string $tableName
+     * @return bool
+     */
+    public function lockTableForWrite($tableName)
+    {
+        return mysqli_query($this->db, 'LOCK TABLE `' . $tableName . '` WRITE') !== false;
+    }
 }

@@ -22,4 +22,12 @@ interface DatabaseDriverInterface
      * @return string
      */
     public function getErrorInfo();
+
+    /**
+     * Locks the table for write operation
+     * TODO: other types?
+     * @param string $table_name
+     * @return bool
+     */
+    public function lockTableForWrite($table_name);
 }
