@@ -11,6 +11,12 @@
             "email": "contact@stefangabos.ro",
             "homepage": "https://github.com/stefangabos/",
             "role": "Developer"
+        },
+        {
+            "name": "Writ3it",
+            "email": "writ3it@gmail.com",
+            "homepage": "https://github.com/writ3it/",
+            "role": "Contributor"
         }
     ],
     "require": {
@@ -19,6 +25,25 @@
     "autoload": {
         "classmap": [
             "Zebra_Mptt.php"
+        ],
+        "psr-4": {
+            "Zebra\\Mptt\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZebraTests\\Mptt\\": "tests"
+        }
+    },
+    "require-dev": {
+        "php": ">=7.2",
+        "phpunit/phpunit": "^8",
+        "ext-mysqli": "*",
+        "ext-pdo": "*"
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit --bootstrap tests/bootstrap.php tests"
         ]
     }
 }
