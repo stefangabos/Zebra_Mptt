@@ -1,3 +1,7 @@
+## version 2.3.7 (February 12, 2020)
+
+- fixed [#11](https://github.com/stefangabos/Zebra_Mptt/issues/11) where `moving` root nodes and using the `before` / `after` arguments would yield warnings. Thanks [@xVinniVx](https://github.com/xVinniVx)!
+
 ## version 2.3.6 (January 08, 2019)
 
 - added `show_full_path` argument to the [to_select](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html#methodto_select) method; thanks to **Jiri Melcak** for suggesting
