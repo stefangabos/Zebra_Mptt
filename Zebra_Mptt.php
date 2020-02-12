@@ -1094,10 +1094,11 @@ class Zebra_Mptt {
                 // get the target's position among the descendants
                 $keys = array_keys($descendants);
                 $target_position = array_search($target, $keys);
+                $source_position = array_search($source, $keys);
 
                 // move the source node to the desired position
-                if ($position == 'after') return $this->move($source, $target_parent, $target_position + 1);
-                else return $this->move($source, $target_parent, $target_position == 0 ? 0 : $target_position - 1);
+                if ($position == 'after') return $this->move($source, $target_parent, $target_position + ($source_position < $target_position ? 0 : 1));
+                else return $this->move($source, $target_parent, $target_position == 0 ? 0 : $target_position - ($source_position > $target_position ? 0 : 1));
 
             }
 
