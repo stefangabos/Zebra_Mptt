@@ -7,8 +7,8 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Mptt/ here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.3.6 (last revision: January 07, 2019)
- *  @copyright  (c) 2009 - 2019 Stefan Gabos
+ *  @version    2.3.7 (last revision: February 12, 2020)
+ *  @copyright  (c) 2009 - 2020 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
  */
@@ -719,7 +719,7 @@ class Zebra_Mptt {
         $this->_init();
 
         // if parent node exists in the lookup array OR we're looking for the topmost nodes
-        if (isset($this->lookup[$node]) || $node === 0) {
+        if (isset($this->lookup[$node]) || $node == 0) {
 
             $descendants = array();
 
@@ -733,10 +733,10 @@ class Zebra_Mptt {
                 if (
 
                     // node's "left" is higher than parent node's "left" (or, if parent is 0, if it is higher than 0)
-                    $this->lookup[$item][$this->properties['left_column']] > ($node !== 0 ? $this->lookup[$node][$this->properties['left_column']] : 0) &&
+                    $this->lookup[$item][$this->properties['left_column']] > ($node != 0 ? $this->lookup[$node][$this->properties['left_column']] : 0) &&
 
                     // node's "left" is smaller than parent node's "right" (or, if parent is 0, if it is smaller than PHP's maximum integer value)
-                    $this->lookup[$item][$this->properties['left_column']] < ($node !== 0 ? $this->lookup[$node][$this->properties['right_column']] : PHP_INT_MAX) &&
+                    $this->lookup[$item][$this->properties['left_column']] < ($node != 0 ? $this->lookup[$node][$this->properties['right_column']] : PHP_INT_MAX) &&
 
                     // if we only need the first level children, check if children node's parent node is the parent given as argument
                     (!$direct_descendants_only || $this->lookup[$item][$this->properties['parent_column']] == $node)
