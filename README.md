@@ -16,13 +16,13 @@ The tradeoff for this efficiency is that updating, deleting and inserting record
 
 For more information about the modified preorder tree traversal method, read this excellent article called [Storing Hierarchical Data in a Database](https://www.sitepoint.com/hierarchical-data-database/).
 
-## What is Zebra_Mptt
+## What is Zebra Mptt
 
-**Zebra_Mptt** is a PHP library that provides an implementation of the modified preorder tree traversal algorithm making it easy to implement the MPTT algorithm in your PHP applications.
+**Zebra Mptt** is a PHP library that provides an implementation of the modified preorder tree traversal algorithm making it easy to implement the MPTT algorithm in your PHP applications.
 
 It provides methods for adding nodes anywhere in the tree, deleting nodes, moving and copying nodes around the tree and methods for retrieving various information about the nodes.
 
-Zebra\_Mptt uses [table locks](http://dev.mysql.com/doc/refman/8.0/en/lock-tables.html) making sure that database integrity is always preserved and that concurrent MySQL sessions don't compromise data integrity. Also, Zebra_Mptt uses a caching mechanism which has as result the fact that regardless of the type, or the number of retrieval operations, **the database is read only once per script execution!**
+Zebra Mptt uses [table locks](http://dev.mysql.com/doc/refman/8.0/en/lock-tables.html) making sure that database integrity is always preserved and that concurrent MySQL sessions don't compromise data integrity. Also, Zebra Mptt uses a caching mechanism which has as result the fact that regardless of the type, or the number of retrieval operations, **the database is read only once per script execution!**
 
 ## Features
 
@@ -52,7 +52,7 @@ PHP 5.0.0+, MySQL 4.1.22+
 
 ## Installation
 
-You can install Zebra_Mptt via [Composer](https://packagist.org/packages/stefangabos/zebra_mptt)
+You can install Zebra Mptt via [Composer](https://packagist.org/packages/stefangabos/zebra_mptt)
 
 ```bash
 # get the latest stable release
