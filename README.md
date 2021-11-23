@@ -1,8 +1,8 @@
 <img src="https://github.com/stefangabos/zebrajs/blob/master/docs/images/logo.png" alt="zebrajs" align="right">
 
-# Zebra_Mptt
+# Zebra Mptt &nbsp;[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=A+PHP+library+providing+an+implementation+of+the+modified+preorder+tree+traversal+(MPTT)+algorithm+%23php&url=https://github.com/stefangabos/Zebra_Mptt&via=stefangabos)
 
-*A PHP library providing an implementation of the modified preorder tree traversal algorithm*
+*A PHP library providing an implementation of the modified preorder tree traversal (MPTT) algorithm*
 
 [![Latest Stable Version](https://poser.pugx.org/stefangabos/zebra_mptt/v/stable)](https://packagist.org/packages/stefangabos/zebra_mptt) [![Total Downloads](https://poser.pugx.org/stefangabos/zebra_mptt/downloads)](https://packagist.org/packages/stefangabos/zebra_mptt) [![Monthly Downloads](https://poser.pugx.org/stefangabos/zebra_mptt/d/monthly)](https://packagist.org/packages/stefangabos/zebra_mptt) [![Daily Downloads](https://poser.pugx.org/stefangabos/zebra_mptt/d/daily)](https://packagist.org/packages/stefangabos/zebra_mptt) [![License](https://poser.pugx.org/stefangabos/zebra_mptt/license)](https://packagist.org/packages/stefangabos/zebra_mptt)
 
@@ -24,12 +24,6 @@ It provides methods for adding nodes anywhere in the tree, deleting nodes, movin
 
 Zebra\_Mptt uses [table locks](http://dev.mysql.com/doc/refman/5.0/en/lock-tables.html) making sure that database integrity is always preserved and that concurrent MySQL sessions don't compromise data integrity. Also, Zebra_Mptt uses a caching mechanism which has as result the fact that regardless of the type, or the number of retrieval operations, **the database is read only once per script execution!**
 
-:books: Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html)!
-
-## Support the development of this library
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=49VT6G7L5GPAS)
-
 ## Features
 
 - provides methods for adding nodes anywhere in the tree, deleting nodes, moving and copying nodes around the tree and methods for retrieving various information about the nodes
@@ -38,6 +32,19 @@ Zebra\_Mptt uses [table locks](http://dev.mysql.com/doc/refman/5.0/en/lock-table
 - uses **mysqli** extension
 - has [awesome documentation](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html)
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to [E_ALL](https://web.archive.org/web/20160226192832/http://www.php.net/manual/en/function.error-reporting.php)
+
+## :notebook_with_decorative_cover: Documentation
+
+Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html)!
+
+## 🎂 Support the development of this project
+
+Your support means a lot and it keeps me motivated to keep working on open source projects.<br>
+If you like this project please ⭐ it by clicking on the star button at the top of the page.<br>
+If you are feeling generous, you can buy me a coffee by donating through PayPal, or you can become a sponsor.<br>
+Either way - **Thank you!** 🎉
+
+[<img src="https://img.shields.io/github/stars/stefangabos/zebra_mptt?color=green&label=star%20it%20on%20GitHub" width="132" height="20" alt="Star it on GitHub">](https://github.com/stefangabos/Zebra_Mptt) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=49VT6G7L5GPAS) [<img src="https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors">](https://github.com/sponsors/stefangabos)
 
 ## Requirements
 
