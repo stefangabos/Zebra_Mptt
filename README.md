@@ -76,6 +76,7 @@ Notice a directory called *install* containing a file named *mptt.sql*. This fil
 
 ```php
 // include the Zebra_Mptt class
+// (you don't need this if you are using Composer)
 require 'path/to/Zebra_Mptt.php';
 
 // instantiate a new object
