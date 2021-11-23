@@ -111,5 +111,3 @@ $mptt->get_children($meat);
 // get a multidimensional array (a tree) of all the data in the database
 $mptt->get_tree();
 ```
-
-:books: Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Mptt/Zebra_Mptt/Zebra_Mptt.html)!
