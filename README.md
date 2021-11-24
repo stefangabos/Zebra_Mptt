@@ -1,6 +1,6 @@
 <img src="https://github.com/stefangabos/zebrajs/blob/master/docs/images/logo.png" alt="zebrajs" align="right">
 
-# Zebra Mptt &nbsp;[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=A+PHP+library+providing+an+implementation+of+the+modified+preorder+tree+traversal+(MPTT)+algorithm+%23php&url=https://github.com/stefangabos/Zebra_Mptt&via=stefangabos)
+# Zebra Mptt &nbsp;[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=A+PHP+library+providing+an+implementation+of+the+modified+preorder+tree+traversal+(MPTT)+algorithm&url=https://github.com/stefangabos/Zebra_Mptt&via=stefangabos&hashtags=php,mptt)
 
 *A PHP library providing an implementation of the modified preorder tree traversal (MPTT) algorithm*
 
