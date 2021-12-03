@@ -107,7 +107,7 @@ $mptt->add($meat, 'Pork');
 $mptt->move($banana, $meat);
 
 // get a flat array of descendants of 'Meat'
-$mptt->get_children($meat);
+$mptt->get_descendants($meat);
 
 // get a multidimensional array (a tree) of all the data in the database
 $mptt->get_tree();
