@@ -32,9 +32,9 @@ class Zebra_Mptt {
      *  @param  resource    &$link          An object representing the connection to a MySQL Server, as returned by
      *                                      {@link http://www.php.net/manual/en/mysqli.construct.php mysqli_connect}.
      *
-     *                                      If you use {@link http://stefangabos.ro/php-libraries/zebra-database/ Zebra_Database}
+     *                                      If you use {@link https://github.com/stefangabos/Zebra_Database Zebra_Database}
      *                                      to connect to the database, you can get the connection to the MySQL server
-     *                                      via Zebra_Database's {@link http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#methodget_link get_link}
+     *                                      via Zebra_Database's {@link https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodget_link get_link}
      *                                      method.
      *
      *  @param  string      $table_name     (Optional) MySQL table name to be used for storing items.
