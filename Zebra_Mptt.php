@@ -18,8 +18,8 @@ class Zebra_Mptt {
     /**
      *  Constructor of the class.
      *
-     *  <i>Make sure that before you instantiate the class you import or execute the SQL code found in the in the
-     *  "install/mptt.sql" file, using the command line or your preferred MySQL manager.</i>
+     *  >   Make sure that before you instantiate the class you import or execute the SQL code found in the in the
+     *      `install/mptt.sql` file, using the command line or your preferred MySQL manager.
      *
      *  <code>
      *  // include the php file
@@ -39,27 +39,27 @@ class Zebra_Mptt {
      *
      *  @param  string      $table_name     (Optional) MySQL table name to be used for storing items.
      *
-     *                                      Default is <i>mptt</i>
+     *                                      Default is `mptt`
      *
      *  @param  string      $id_column      (Optional) Name of the column that uniquely identifies items in the table
      *
-     *                                      Default is <i>id</i>
+     *                                      Default is `id`
      *
      *  @param  string      $title_column   (Optional) Name of the column that stores item names
      *
-     *                                      Default is <i>title</i>
+     *                                      Default is `title`
      *
      *  @param  string      $left_column    (Optional) Name of the column that stores "left" values
      *
-     *                                      Default is <i>lft</i> ("left" is a reserved word in MySQL)
+     *                                      Default is `lft` ("left" is a reserved word in MySQL)
      *
      *  @param  string      $right_column   (Optional) Name of the column that stores "right" values
      *
-     *                                      Default is <i>rgt</i> ("right" is a reserved word in MySQL)
+     *                                      Default is `rgt` ("right" is a reserved word in MySQL)
      *
      *  @param  string      $parent_column  (Optional) Name of the column that stores the IDs of parent items
      *
-     *                                      Default is <i>parent</i>
+     *                                      Default is `parent`
      *
      *  @return void
      */
@@ -123,23 +123,23 @@ class Zebra_Mptt {
      *
      *  @param  integer     $parent     The ID of the parent node.
      *
-     *                                  Use "0" to add a topmost node.
+     *                                  Use `0` to add a topmost node.
      *
      *  @param  string      $title      The title of the node.
      *
      *  @param  integer     $position   (Optional) The position the node will have among the parent node's children nodes.
      *
-     *                                  When parent node is given as "0", this refers to the position the node will have
+     *                                  When parent node is given as `0`, this refers to the position the node will have
      *                                  among the topmost nodes.
      *
      *                                  The values are 0-based, meaning that if you want the node to be inserted as
-     *                                  the first child of the target node, you have to use "0", if you want it to
-     *                                  be second, use "1", and so on.
+     *                                  the first child of the target node, you have to use `0`, if you want it to
+     *                                  be second, use `1`, and so on.
      *
-     *                                  If not given (or given as boolean FALSE), the node will be inserted as the last
+     *                                  If not given (or given as boolean `FALSE`), the node will be inserted as the last
      *                                  of the parent node's children nodes.
      *
-     *  @return mixed                   Returns the ID of the newly inserted node or FALSE on error.
+     *  @return mixed                   Returns the ID of the newly inserted node or `FALSE` on error.
      */
     public function add($parent, $title, $position = false) {
 
@@ -310,26 +310,26 @@ class Zebra_Mptt {
      *
      *  @param  integer     $source     The ID of a node to copy.
      *
-     *                                  <i>Remember that the node will be copied together with all its descendant nodes!</i>
+     *                                  >   Remember that the node will be copied together with all its descendant nodes!
      *
      *  @param  integer     $target     The ID of a node which will become the copy's parent node.
      *
-     *                                  Use "0" to make the copy a topmost node.
+     *                                  Use `0` to make the copy a topmost node.
      *
      *  @param  integer     $position   (Optional) The position the node will have among the target node's children
      *                                  nodes.
      *
-     *                                  When target node is "0", this refers to the position the node will have among
+     *                                  When target node is `0`, this refers to the position the node will have among
      *                                  the topmost nodes.
      *
      *                                  The values are 0-based, meaning that if you want the node to be inserted as
-     *                                  the first child of the target node, you have to use "0", if you want it to
-     *                                  be second, use "1", and so on.
+     *                                  the first child of the target node, you have to use `0`, if you want it to
+     *                                  be second, use `1`, and so on.
      *
-     *                                  If not given (or given as boolean FALSE), the node will be inserted as the last
+     *                                  If not given (or given as boolean `FALSE`), the node will be inserted as the last
      *                                  of the target node's children nodes.
      *
-     *  @return mixed                   Returns the ID of the newly created copy, or FALSE on error.
+     *  @return mixed                   Returns the ID of the newly created copy, or `FALSE` on error.
      */
     public function copy($source, $target, $position = false) {
 
@@ -592,7 +592,7 @@ class Zebra_Mptt {
      *
      *  @param  integer     $node       The ID of the node to delete.
      *
-     *  @return boolean                 TRUE on success or FALSE on error.
+     *  @return boolean                 `TRUE` on success or `FALSE` on error.
      */
     public function delete($node) {
 
@@ -698,17 +698,17 @@ class Zebra_Mptt {
     /**
      *  Returns an unidimensional (flat) array with the descendant nodes of a given parent node.
      *
-     *  <i>For a multidimensional array use the {@link get_tree()} method.</i>
+     *  >   For a multidimensional array use the {@link get_tree()} method.
      *
      *  @param  integer     $node                       (Optional) The ID of a node for which to return the descendant nodes.
      *
-     *                                                  When not specified or given as "0", the "root" node is implied.
+     *                                                  When not specified or given as `0`, the **root** node is implied.
      *
-     *  @param  boolean     $direct_descendants_only    (Optional) Set this to FALSE if you want <b>all the descendants</b>
-     *                                                  (including descendants of descendants), and not just the <b>direct
-     *                                                  descendants</b> (children) of the node.
+     *  @param  boolean     $direct_descendants_only    (Optional) Set this to `FALSE` if you want **all the descendants**
+     *                                                  (including descendants of descendants), and not just the **direct
+     *                                                  descendants** (children) of the node.
      *
-     *                                                  Default is TRUE
+     *                                                  Default is `TRUE`
      *
      *  @return array                                   Returns an unidimensional array with the descendant nodes of a
      *                                                  given parent node.
@@ -760,17 +760,17 @@ class Zebra_Mptt {
      *  @param  integer     $node                       The ID of the node for which to return the number of direct
      *                                                  descendant nodes.
      *
-     *  @param  boolean     $direct_descendants_only    (Optional) Specifies whether to count <b>direct descendants only</b>,
-     *                                                  or to count <b>all the descendants</b> (including descendants of
+     *  @param  boolean     $direct_descendants_only    (Optional) Specifies whether to count **direct descendants only**,
+     *                                                  or to count **all the descendants** (including descendants of
      *                                                  descendants)
      *
-     *                                                  Default is TRUE
+     *                                                  Default is `TRUE`
      *
      *  @return integer                                 Returns the number of direct descendant nodes of a parent node,
-     *                                                  or FALSE on error.
+     *                                                  or `FALSE` on error.
      *
-     *                                                  <i>Since this method may return both "0" and FALSE, make sure you
-     *                                                  use === to verify the returned result!</i>
+     *                                                  >   Since this method may return both `0` and `FALSE`, make sure you
+     *                                                  use `===` to verify the returned result!
      */
     public function get_descendant_count($node, $direct_descendants_only = true) {
 
@@ -815,11 +815,11 @@ class Zebra_Mptt {
      *
      *  @param  integer     $node           The ID of a node for which to return the next sibling node.
      *
-     *  @return mixed                       Returns a node's next sibling node, "0" if a next sibling doesn't exist, or
-     *                                      FALSE on error (if the node doesn't exist).
+     *  @return mixed                       Returns a node's next sibling node, `0` if a next sibling doesn't exist, or
+     *                                      `FALSE` on error (if the node doesn't exist).
      *
-     *                                      <i>Since this method may return both "0" and FALSE, make sure you use === to
-     *                                      verify the returned result!</i>
+     *                                      >   Since this method may return both `0` and `FALSE`, make sure you use `===`
+     *                                          to verify the returned result!
      *
      *  @since  2.2.6
      */
@@ -846,16 +846,16 @@ class Zebra_Mptt {
     }
 
     /**
-     *  Returns an array containing a node's direct parent node if the node has a parent node, or "0" if the node is a
+     *  Returns an array containing a node's direct parent node if the node has a parent node, or `0` if the node is a
      *  topmost node.
      *
      *  @param  integer     $node               The ID of a node for which to return the parent node.
      *
      *  @return mixed                           Returns an array containing a node's direct parent node if the node has a
-     *                                          parent node, or "0" if the node is a topmost node.
+     *                                          parent node, or `0` if the node is a topmost node.
      *
-     *                                          <i>Since this method may return both "0" and FALSE, make sure you use ===
-     *                                          to verify the returned result!</>
+     *                                          >   Since this method may return both `0` and `FALSE`, make sure you use
+     *                                              `===` to verify the returned result!
      */
     public function get_parent($node) {
 
@@ -918,11 +918,11 @@ class Zebra_Mptt {
      *
      *  @param  integer     $node           The ID of a node for which to return the previous sibling node.
      *
-     *  @return mixed                       Returns a node's previous sibling node, "0" if a previous sibling doesn't
-     *                                      exist, or FALSE on error (if the node doesn't exist).
+     *  @return mixed                       Returns a node's previous sibling node, `0` if a previous sibling doesn't
+     *                                      exist, or `FALSE` on error (if the node doesn't exist).
      *
-     *                                      <i>Since this method may return both "0" and FALSE, make sure you use === to
-     *                                      verify the returned result!</i>
+     *                                      >   Since this method may return both `0` and `FALSE`, make sure you use
+     *                                          `===` to verify the returned result!
      *
      *  @since  2.2.6
      */
@@ -957,7 +957,7 @@ class Zebra_Mptt {
      *                                      array.
      *
      *  @return mixed                       Returns an array with a node's sibling nodes, an empty array if the node has
-     *                                      no siblings, or FALSE on error (if the node doesn't exist)
+     *                                      no siblings, or `FALSE` on error (if the node doesn't exist)
      *
      *  @since  2.2.6
      */
@@ -992,7 +992,7 @@ class Zebra_Mptt {
      *  @param  integer     $node               (Optional) The ID of a node for which to return all descendant nodes, as
      *                                          a multidimensional array.
      *
-     *                                          Not given or given as "0", will return all the nodes.
+     *                                          Not given or given as `0`, will return all the nodes.
      *
      *  @return array                           Returns a multi dimensional array with all the descendant nodes (including
      *                                          children nodes of children nodes of children nodes and so on) of a given
@@ -1045,23 +1045,23 @@ class Zebra_Mptt {
      *  @param  integer     $source     The ID of a node to move
      *
      *  @param  integer     $target     The ID of the node relative to which the source node needs to be moved. Use
-     *                                  "0" if the node does not need a parent node (making it a topmost node).
+     *                                  `0` if the node does not need a parent node (making it a topmost node).
      *
      *  @param  integer     $position   (Optional) The position where to move the node, relative to the target node.
      *
      *                                  Can be a numerical value, indicating that the source node needs to be moved to
-     *                                  become a <b>child of the target node</b>, inserted at the indicated position (
+     *                                  become a **child of the target node**, inserted at the indicated position (
      *                                  the values are 0-based, meaning that if you want the node to be inserted as
-     *                                  the first child of the target node, you have to use "0", if you want it to
-     *                                  be second, use "1", and so on)
+     *                                  the first child of the target node, you have to use `0`, if you want it to
+     *                                  be second, use `1`, and so on)
      *
-     *                                  Can also be the literal "after" or "before" string, indicating the the source
-     *                                  node needs to be moved <b>after/before the target node</b>.
+     *                                  Can also be the literal `after` or `before` string, indicating the the source
+     *                                  node needs to be moved **after/before the target node**.
      *
-     *                                  If not given (or given as boolean FALSE), the node will be inserted as the last
+     *                                  If not given (or given as boolean `FALSE`), the node will be inserted as the last
      *                                  of the target node's children nodes.
      *
-     *  @return boolean                 TRUE on success or FALSE on error
+     *  @return boolean                 `TRUE` on success or `FALSE` on error
      */
     public function move($source, $target, $position = false) {
 
@@ -1357,7 +1357,7 @@ class Zebra_Mptt {
      *
      *  @param  string      $title      The new title to be set for the node.
      *
-     *  @return boolean                 TRUE on success or FALSE on error.
+     *  @return boolean                 `TRUE` on success or `FALSE` on error.
      *
      *  @since  2.2.5
      */
@@ -1402,7 +1402,7 @@ class Zebra_Mptt {
 
     /**
      *  Returns an unidimensional (flat) array with the descendant nodes of the node given as argument, indented using
-     *  whatever given in the <i>$separator</i> argument, and ready to be used in a <select> element.
+     *  whatever given in the *$separator* argument, and ready to be used in a <select> element.
      *
      *  <code>
      *  $selectables = $mptt->to_select($node_id);
@@ -1418,23 +1418,23 @@ class Zebra_Mptt {
      *
      *  @param  integer     $node               (Optional) The ID of a node for which to get the descendant nodes and
      *                                          return everything as a unidimensional (flat) array, indented using whatever
-     *                                          given in the <i>$separator</i> argument, and ready to be used in a <select>
+     *                                          given in the *$separator* argument, and ready to be used in a <select>
      *                                          control.
      *
-     *                                          When not given, or given as "0", will return an array with *all* the
+     *                                          When not given, or given as `0`, will return an array with *all* the
      *                                          available nodes.
      *
      *  @param  string      $separator          (Optional) A string used to separate nodes.
      *
-     *                                          Default is " &rarr; "
+     *                                          Default is ` &rarr; `
      *
      *  @param  boolean     $show_full_path     (Optional) By default, parent nodes are not shown.
      *
-     *                                          Set this to TRUE to show full path to each node.
+     *                                          Set this to `TRUE` to show full path to each node.
      *
-     *                                          Default is FALSE.
+     *                                          Default is `FALSE`.
      *
-     *                                          This option was added in <b>2.3.6</b>
+     *                                          This option was added in **2.3.6**
      *
      *  @return array                           Returns an array of children nodes of a node given as argument, indented
      *                                          and ready to be used in a <select> control.
@@ -1508,10 +1508,10 @@ class Zebra_Mptt {
     /**
      *  Transforms a node and it's subnodes to an ordered/unordered list.
      *
-     *  The list items will have the class attribute set to "zebra_mptt_item zebra_mptt_item_xx" where "xx" is the ID
+     *  The list items will have the class attribute set to `zebra_mptt_item zebra_mptt_item_xx` where `xx` is the ID
      *  of the respective node.
      *
-     *  <i>You can further customize the output with regular expressions to suit your needs</i>
+     *  >   You can further customize the output with regular expressions to suit your needs
      *
      *  <code>
      *  // instantiate the class
@@ -1524,14 +1524,14 @@ class Zebra_Mptt {
      *
      *  @param  integer     $node           The ID of a node.
      *
-     *                                      When given as "0", the "root" node is implied.
+     *                                      When given as `0`, the **root** node is implied.
      *
-     *  @param  string      $list_type      (Optional) Can be either "ul" (for an unordered list) or "ol" (for an ordered
+     *  @param  string      $list_type      (Optional) Can be either `ul` (for an unordered list) or `ol` (for an ordered
      *                                      list).
      *
-     *                                      Default is "ul".
+     *                                      Default is `ul`.
      *
-     *  @param  string      $attributes     Additional HTML attributes to set for the main list, like "class" or "style".
+     *  @param  string      $attributes     Additional HTML attributes to set for the main list, like `class` or `style`.
      *
      *  @return string
      *
