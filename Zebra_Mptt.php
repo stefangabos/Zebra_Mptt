@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Mptt/ here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.3.7 (last revision: April 26, 2022)
+ *  @version    2.4.0 (last revision: December 12, 2022)
  *  @copyright  (c) 2009 - 2022 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Mptt
@@ -970,7 +970,7 @@ class Zebra_Mptt {
             $properties = $this->lookup[$node];
 
             // get node's siblings
-            $siblings = $this->get_descendants($properties['parent']);
+            $siblings = $this->get_descendants($properties[$this->properties['parent_column']]);
 
             // remove self, if required so
             if (!$include_self) unset($siblings[$node]);
@@ -1086,7 +1086,7 @@ class Zebra_Mptt {
             if ($position === 'after' || $position === 'before') {
 
                 // get the target's parent node
-                $target_parent = $target == 0 ? 0 : $this->lookup[$target]['parent'];
+                $target_parent = $target == 0 ? 0 : $this->lookup[$target][$this->properties['parent_column']];
 
                 // get the target's parent's descendant nodes
                 $descendants = $this->get_descendants($target_parent);
