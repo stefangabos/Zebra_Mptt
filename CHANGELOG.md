@@ -1,3 +1,7 @@
+## version 2.4.0 (December 12, 2022)
+
+- fixed [#14](https://github.com/stefangabos/Zebra_Mptt/issues/14) where a bug was ocurring when `$parent_column` defined in the constructor method was something other than `parent`. Thanks [Alexander Rebello](https://github.com/alexander-rebello)!
+
 ## version 2.3.7 (April 26, 2022)
 
 - fixed [#11](https://github.com/stefangabos/Zebra_Mptt/issues/11) where `moving` root nodes and using the `before` / `after` arguments would yield warnings. Thanks [@xVinniVx](https://github.com/xVinniVx)!
