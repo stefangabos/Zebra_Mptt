@@ -13,7 +13,8 @@
  *  @package    Zebra_Mptt
  */
 
-class Zebra_Mptt {
+class Zebra_Mptt
+{
 
     /**
      *  Constructor of the class.
@@ -63,20 +64,27 @@ class Zebra_Mptt {
      *
      *  @return void
      */
-    public function __construct(&$link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent') {
+
+     protected mysqli $link;
+     protected array $properties;
+     protected array $lookup;
+
+    public function __construct(&$link, $table_name = 'mptt', $id_column = 'id', $title_column = 'title', $left_column = 'lft', $right_column = 'rgt', $parent_column = 'parent')
+    {
 
         // stop if required PHP version is not available
-        if (version_compare(phpversion(), '5.0.0') < 0) trigger_error('PHP 5.0.0 or greater required', E_USER_ERROR);
+        // PHP 7.4 is the oldest supported PHP version as of 2025.
+        if (version_compare(PHP_VERSION, '7.4.0', '<')) throw new Exception('PHP 7.4.0 or greater required');
+
 
         // stop if the mysqli extension is not loaded
-        if (!extension_loaded('mysqli')) trigger_error('mysqli extension is required', E_USER_ERROR);
+        if (!extension_loaded('mysqli')) throw new Exception('mysqli extension is required');
 
         // store the connection link
         $this->link = $link;
 
         // continue only if there is an active MySQL connection
-        if (@mysqli_ping($this->link))
-
+        if (($this->link->connect_errno) == 0) {
             // initialize properties
             $this->properties = array(
 
@@ -88,11 +96,11 @@ class Zebra_Mptt {
                 'parent_column' =>  $parent_column,
 
             );
-
-        // if no MySQL connections could be found
-        // trigger a fatal error message and stop execution
-        else trigger_error('no MySQL connection', E_USER_ERROR);
-
+        } else {
+            // if no MySQL connections could be found
+            // Throw a fatal error message and stop execution
+            throw new Exception('no MySQL connection');
+        }
     }
 
     /**
@@ -141,7 +149,8 @@ class Zebra_Mptt {
      *
      *  @return mixed                   Returns the ID of the newly inserted node or `FALSE` on error.
      */
-    public function add($parent, $title, $position = false) {
+    public function add($parent, $title, $position = false)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -176,7 +185,6 @@ class Zebra_Mptt {
                 // if position is a bogus number
                 // use the default position (as the last of the parent node's children)
                 if ($position > count($descendants) || $position < 0) $position = count($descendants);
-
             }
 
             // if parent has no descendants OR the node is to be inserted as the parent node's first child
@@ -198,7 +206,6 @@ class Zebra_Mptt {
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
                 $boundary = $descendants[$this->properties['right_column']];
-
             }
 
             // iterate through all the records in the lookup array
@@ -215,11 +222,10 @@ class Zebra_Mptt {
 
                     // increment it with 2
                     $this->lookup[$id][$this->properties['right_column']] += 2;
-
             }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or throw new Exception(mysqli_error($this->link));
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             mysqli_query($this->link, '
@@ -231,7 +237,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['left_column'] . '` > ' . $boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             mysqli_query($this->link, '
 
@@ -242,32 +248,50 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['right_column'] . '` > ' . $boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // insert the new node into the database
-            mysqli_query($this->link, '
-                INSERT INTO
-                    `' . $this->properties['table_name'] . '`
-                    (
-                        `' . $this->properties['title_column'] . '`,
-                        `' . $this->properties['left_column'] . '`,
-                        `' . $this->properties['right_column'] . '`,
-                        `' . $this->properties['parent_column'] . '`
-                    )
-                VALUES
-                    (
-                        "' . mysqli_real_escape_string($this->link, $title) . '",
-                        ' . ($boundary + 1) . ',
-                        ' . ($boundary + 2) . ',
-                        ' . $parent . '
-                    )
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            // Prepare the SQL statement
+            $stmt = $this->link->prepare('
+                        INSERT INTO `' . $this->properties['table_name'] . '` (
+                            `' . $this->properties['title_column'] . '`,
+                            `' . $this->properties['left_column'] . '`,
+                            `' . $this->properties['right_column'] . '`,
+                            `' . $this->properties['parent_column'] . '`
+                        ) VALUES (?, ?, ?, ?)
+                        ');
 
-            // get the ID of the newly inserted node
-            $node_id = mysqli_insert_id($this->link);
+            // Check if the statement was prepared successfully
+            if ($stmt === false) {
+                throw new Exception($this->link->error);
+            }
+
+            // Bind the parameters
+            $stmt->bind_param(
+                'siii', // Types: 's' for string, 'i' for integers
+                $title,
+                $boundary + 1,
+                $boundary + 2,
+                $parent
+            );
+
+            // Execute the prepared statement
+            if (!$stmt->execute()) {
+                throw new Exception($stmt->error);
+            }
+
+            // Execute the prepared statement
+            if (!$stmt->execute()) {
+                throw new Exception($stmt->error);
+            }
+
+            // Get the ID of the newly inserted record
+            $node_id = $this->link->insert_id;
+            // Close the statement
+            $stmt->close();
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'UNLOCK TABLES') or throw new Exception(mysqli_error($this->link));
 
             // add the node to the lookup array
             $this->lookup[$node_id] = array(
@@ -283,12 +307,10 @@ class Zebra_Mptt {
 
             // return the ID of the newly inserted node
             return $node_id;
-
         }
 
         // if script gets this far, something must've went wrong so we return false
         return false;
-
     }
 
     /**
@@ -331,7 +353,8 @@ class Zebra_Mptt {
      *
      *  @return mixed                   Returns the ID of the newly created copy, or `FALSE` on error.
      */
-    public function copy($source, $target, $position = false) {
+    public function copy($source, $target, $position = false)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -396,7 +419,6 @@ class Zebra_Mptt {
 
                     // use the default position (the last of the target node's children)
                     $position = count($target_children);
-
             }
 
             // we are about to do an insert and some nodes need to be updated first
@@ -420,7 +442,6 @@ class Zebra_Mptt {
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
                 $target_boundary = $target_children[$this->properties['right_column']];
-
             }
 
             // iterate through the nodes in the lookup array
@@ -437,11 +458,10 @@ class Zebra_Mptt {
 
                     // increment it
                     $this->lookup[$id][$this->properties['right_column']] += $source_rl_difference;
-
             }
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or throw new Exception(mysqli_error($this->link));
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
             mysqli_query($this->link, '
@@ -453,7 +473,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['left_column'] . '` > ' . $target_boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             mysqli_query($this->link, '
 
@@ -464,7 +484,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['right_column'] . '` > ' . $target_boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // finally, the nodes that are to be inserted need to have their "left" and "right" values updated
             $shift = $target_boundary - $source_boundary + 1;
@@ -472,33 +492,44 @@ class Zebra_Mptt {
             // iterate through the nodes that are to be inserted
             foreach ($sources as $id => &$properties) {
 
-                // update "left" value
+                // Update "left" and "right" values
                 $properties[$this->properties['left_column']] += $shift;
-
-                // update "right" value
                 $properties[$this->properties['right_column']] += $shift;
 
-                // insert into the database
-                mysqli_query($this->link, '
-                    INSERT INTO
-                        `' . $this->properties['table_name'] . '`
-                        (
-                            `' . $this->properties['title_column'] . '`,
-                            `' . $this->properties['left_column'] . '`,
-                            `' . $this->properties['right_column'] . '`,
-                            `' . $this->properties['parent_column'] . '`
-                        )
-                    VALUES
-                        (
-                            "' . mysqli_real_escape_string($this->link, $properties[$this->properties['title_column']]) . '",
-                            ' . $properties[$this->properties['left_column']] . ',
-                            ' . $properties[$this->properties['right_column']] . ',
-                            ' . $properties[$this->properties['parent_column']] . '
-                        )
-                ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+                // Prepare the SQL statement
+                $stmt = $this->link->prepare('
+                            INSERT INTO `' . $this->properties['table_name'] . '` (
+                                `' . $this->properties['title_column'] . '`,
+                                `' . $this->properties['left_column'] . '`,
+                                `' . $this->properties['right_column'] . '`,
+                                `' . $this->properties['parent_column'] . '`
+                            ) VALUES (?, ?, ?, ?)
+                        ');
 
-                // get the ID of the newly inserted node
-                $node_id = mysqli_insert_id($this->link);
+                // Check if the statement was prepared successfully
+                if ($stmt === false) {
+                    throw new Exception($this->link->error);
+                }
+
+                // Bind the parameters
+                $stmt->bind_param(
+                    'siii', // Types: 's' for string, 'i' for integers
+                    $properties[$this->properties['title_column']],
+                    $properties[$this->properties['left_column']],
+                    $properties[$this->properties['right_column']],
+                    $properties[$this->properties['parent_column']]
+                );
+
+                // Execute the prepared statement
+                if (!$stmt->execute()) {
+                    throw new Exception($stmt->error);
+                }
+
+                // Get the ID of the newly inserted node
+                $node_id = $this->link->insert_id;
+
+                // Close the statement
+                $stmt->close();
 
                 // because the node may have children nodes and its ID just changed
                 // we need to find its children and update the reference to the parent ID
@@ -515,7 +546,6 @@ class Zebra_Mptt {
 
                 // update the array of inserted items
                 $sources[$id] = $properties;
-
             }
 
             // a reference of a $properties and the last array element remain even after the foreach loop
@@ -523,11 +553,11 @@ class Zebra_Mptt {
             unset($properties);
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'UNLOCK TABLES') or throw new Exception(mysqli_error($this->link));
 
             // at this point, we have the nodes in the database but we need to also update the lookup array
 
-            $parents = array();
+            $parents = [];
 
             // iterate through the inserted nodes
             foreach ($sources as $id => $properties) {
@@ -557,7 +587,6 @@ class Zebra_Mptt {
                     'right' =>  $properties[$this->properties['right_column']]
 
                 );
-
             }
 
             // reorder the lookup array
@@ -565,12 +594,10 @@ class Zebra_Mptt {
 
             // return the ID of the copy
             return $sources[0][$this->properties['id_column']];
-
         }
 
         // if scripts gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -594,7 +621,8 @@ class Zebra_Mptt {
      *
      *  @return boolean                 `TRUE` on success or `FALSE` on error.
      */
-    public function delete($node) {
+    public function delete($node)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -612,7 +640,7 @@ class Zebra_Mptt {
                 unset($this->lookup[$descendant[$this->properties['id_column']]]);
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or throw new Exception(mysqli_error($this->link));
 
             // also remove nodes from the database
             mysqli_query($this->link, '
@@ -624,7 +652,7 @@ class Zebra_Mptt {
                     `' . $this->properties['left_column'] . '` >= ' . $this->lookup[$node][$this->properties['left_column']] . ' AND
                     `' . $this->properties['right_column'] . '` <= ' . $this->lookup[$node][$this->properties['right_column']] . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // the value with which items outside the boundary set below, are to be updated with
             $target_rl_difference =
@@ -656,7 +684,6 @@ class Zebra_Mptt {
 
                     // decrement it
                     $this->lookup[$id][$this->properties['right_column']] -= $target_rl_difference;
-
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
@@ -669,7 +696,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['left_column'] . '` > ' . $boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             mysqli_query($this->link, '
 
@@ -680,19 +707,17 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['right_column'] . '` > ' . $boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'UNLOCK TABLES') or throw new Exception(mysqli_error($this->link));
 
             // return true as everything went well
             return true;
-
         }
 
         // if script gets this far, something must've went wrong so we return false
         return false;
-
     }
 
     /**
@@ -713,7 +738,8 @@ class Zebra_Mptt {
      *  @return array                                   Returns an unidimensional array with the descendant nodes of a
      *                                                  given parent node.
      */
-    public function get_descendants($node = 0, $direct_descendants_only = true) {
+    public function get_descendants($node = 0, $direct_descendants_only = true)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -721,7 +747,7 @@ class Zebra_Mptt {
         // if parent node exists in the lookup array OR we're looking for the topmost nodes
         if (isset($this->lookup[$node]) || $node == 0) {
 
-            $descendants = array();
+            $descendants = [];
 
             // get the keys in the lookup array
             $keys = array_keys($this->lookup);
@@ -741,17 +767,15 @@ class Zebra_Mptt {
                     // if we only need the first level children, check if children node's parent node is the parent given as argument
                     (!$direct_descendants_only || $this->lookup[$item][$this->properties['parent_column']] == $node)
 
-                // save to array
+                    // save to array
                 ) $descendants[$this->lookup[$item][$this->properties['id_column']]] = $this->lookup[$item];
 
             // return children nodes
             return $descendants;
-
         }
 
         // if script gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -772,7 +796,8 @@ class Zebra_Mptt {
      *                                                  >   Since this method may return both `0` and `FALSE`, make sure you
      *                                                  use `===` to verify the returned result!
      */
-    public function get_descendant_count($node, $direct_descendants_only = true) {
+    public function get_descendant_count($node, $direct_descendants_only = true)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -802,12 +827,10 @@ class Zebra_Mptt {
 
                 // return the number of direct descendant nodes
                 return $result;
-
             }
 
         // if script gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -823,7 +846,8 @@ class Zebra_Mptt {
      *
      *  @since  2.2.6
      */
-    public function get_next_sibling($node) {
+    public function get_next_sibling($node)
+    {
 
         // if node exists, get its siblings
         // (if $node exists this will never be an empty array as it will contain at least $node)
@@ -837,12 +861,10 @@ class Zebra_Mptt {
 
             // return result
             return !empty($sibling) ? array_pop($sibling) : 0;
-
         }
 
         // if script gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -857,7 +879,8 @@ class Zebra_Mptt {
      *                                          >   Since this method may return both `0` and `FALSE`, make sure you use
      *                                              `===` to verify the returned result!
      */
-    public function get_parent($node) {
+    public function get_parent($node)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -871,7 +894,6 @@ class Zebra_Mptt {
 
         // if script gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -881,12 +903,13 @@ class Zebra_Mptt {
      *
      *  @return array                           Returns an unidimensional array with the path to the given node.
      */
-    public function get_path($node) {
+    public function get_path($node)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
 
-        $parents = array();
+        $parents = [];
 
         // if node exists in the lookup array
         if (isset($this->lookup[$node]))
@@ -902,7 +925,7 @@ class Zebra_Mptt {
 
                     $properties[$this->properties['right_column']] > $this->lookup[$node][$this->properties['right_column']]
 
-                // save the parent node's information
+                    // save the parent node's information
                 ) $parents[$properties[$this->properties['id_column']]] = $properties;
 
         // add also the node given as argument
@@ -910,7 +933,6 @@ class Zebra_Mptt {
 
         // return the path to the node
         return $parents;
-
     }
 
     /**
@@ -926,7 +948,8 @@ class Zebra_Mptt {
      *
      *  @since  2.2.6
      */
-    public function get_previous_sibling($node) {
+    public function get_previous_sibling($node)
+    {
 
         // if node exists, get its siblings
         // (if $node exists this will never be an empty array as it will contain at least $node)
@@ -936,16 +959,14 @@ class Zebra_Mptt {
             $node_position = array_search($node, array_keys($siblings));
 
             // get previous node
-            $sibling = $node_position > 0 ? array_slice($siblings, $node_position - 1, 1) : array();
+            $sibling = $node_position > 0 ? array_slice($siblings, $node_position - 1, 1) : [];
 
             // return result
             return !empty($sibling) ? array_pop($sibling) : 0;
-
         }
 
         // if script gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -961,7 +982,8 @@ class Zebra_Mptt {
      *
      *  @since  2.2.6
      */
-    public function get_siblings($node, $include_self = false) {
+    public function get_siblings($node, $include_self = false)
+    {
 
         // if parent node exists in the lookup array OR we're looking for the topmost nodes
         if (isset($this->lookup[$node])) {
@@ -977,12 +999,10 @@ class Zebra_Mptt {
 
             // return siblings
             return $siblings;
-
         }
 
         // if script gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -998,7 +1018,8 @@ class Zebra_Mptt {
      *                                          children nodes of children nodes of children nodes and so on) of a given
      *                                          node.
      */
-    public function get_tree($node = 0) {
+    public function get_tree($node = 0)
+    {
 
         // get direct children nodes
         $descendants = $this->get_descendants($node);
@@ -1012,7 +1033,6 @@ class Zebra_Mptt {
 
         // return the array
         return $descendants;
-
     }
 
     /**
@@ -1063,7 +1083,8 @@ class Zebra_Mptt {
      *
      *  @return boolean                 `TRUE` on success or `FALSE` on error
      */
-    public function move($source, $target, $position = false) {
+    public function move($source, $target, $position = false)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -1099,7 +1120,6 @@ class Zebra_Mptt {
                 // move the source node to the desired position
                 if ($position == 'after') return $this->move($source, $target_parent, $target_position + ($source_position < $target_position ? 0 : 1));
                 else return $this->move($source, $target_parent, $target_position == 0 ? 0 : $target_position - ($source_position > $target_position ? 0 : 1));
-
             }
 
             // the source's parent node's ID becomes the target node's ID
@@ -1120,7 +1140,6 @@ class Zebra_Mptt {
 
                 // for now, remove them from the lookup array
                 unset($this->lookup[$descendant[$this->properties['id_column']]]);
-
             }
 
             // the value with which nodes outside the boundary set below, are to be updated with
@@ -1137,7 +1156,7 @@ class Zebra_Mptt {
             $source_boundary = $this->lookup[$source][$this->properties['left_column']];
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or throw new Exception(mysqli_error($this->link));
 
             // we'll multiply the "left" and "right" values of the nodes we're about to move with "-1", in order to
             // prevent the values being changed further in the script
@@ -1152,13 +1171,13 @@ class Zebra_Mptt {
                     `' . $this->properties['left_column'] . '` >= ' . $this->lookup[$source][$this->properties['left_column']] . ' AND
                     `' . $this->properties['right_column'] . '` <= ' . $this->lookup[$source][$this->properties['right_column']] . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // remove the source node from the list
             unset($this->lookup[$source]);
 
             // iterate through the remaining nodes in the lookup array
-            foreach ($this->lookup as $id=>$properties) {
+            foreach ($this->lookup as $id => $properties) {
 
                 // if the "left" value of node is outside the boundary
                 if ($this->lookup[$id][$this->properties['left_column']] > $source_boundary)
@@ -1171,7 +1190,6 @@ class Zebra_Mptt {
 
                     // decrement it
                     $this->lookup[$id][$this->properties['right_column']] -= $source_rl_difference;
-
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
@@ -1184,7 +1202,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['left_column'] . '` > ' . $source_boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             mysqli_query($this->link, '
 
@@ -1195,7 +1213,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['right_column'] . '` > ' . $source_boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // get descendant nodes of target node (first level only)
             $target_descendants = $this->get_descendants((int)$target);
@@ -1215,7 +1233,6 @@ class Zebra_Mptt {
 
                     // use the default position (as the last of the target node's children)
                     $position = count($target_descendants);
-
             }
 
             // because of the insert, some nodes need to have their "left" and/or "right" values adjusted
@@ -1239,7 +1256,6 @@ class Zebra_Mptt {
                 // set the boundary - nodes having their "left"/"right" values outside this boundary will be affected by
                 // the insert, and will need to be updated
                 $target_boundary = $target_descendants[$this->properties['right_column']];
-
             }
 
             // iterate through the records in the lookup array
@@ -1256,7 +1272,6 @@ class Zebra_Mptt {
 
                     // increment it
                     $this->lookup[$id][$this->properties['right_column']] += $source_rl_difference;
-
             }
 
             // update the nodes in the database having their "left"/"right" values outside the boundary
@@ -1269,7 +1284,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['left_column'] . '` > ' . $target_boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             mysqli_query($this->link, '
 
@@ -1280,7 +1295,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['right_column'] . '` > ' . $target_boundary . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // finally, the nodes that are to be inserted need to have their "left" and "right" values updated
             $shift = $target_boundary - $source_boundary + 1;
@@ -1296,7 +1311,6 @@ class Zebra_Mptt {
 
                 // add the item to our lookup array
                 $this->lookup[$properties[$this->properties['id_column']]] = $properties;
-
             }
 
             // also update the entries in the database
@@ -1312,7 +1326,7 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['left_column'] . '` < 0
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // finally, update the parent of the source node
             mysqli_query($this->link, '
@@ -1324,22 +1338,20 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['id_column'] . '` = ' . $source . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'UNLOCK TABLES') or throw new Exception(mysqli_error($this->link));
 
             // reorder the lookup array
             $this->_reorder_lookup_array();
 
             // return true as everything went well
             return true;
-
         }
 
         // if scripts gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -1361,7 +1373,8 @@ class Zebra_Mptt {
      *
      *  @since  2.2.5
      */
-    public function update($node, $title) {
+    public function update($node, $title)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -1370,7 +1383,7 @@ class Zebra_Mptt {
         if (isset($this->lookup[$node])) {
 
             // lock table to prevent other sessions from modifying the data and thus preserving data integrity
-            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'LOCK TABLE `' . $this->properties['table_name'] . '` WRITE') or throw new Exception(mysqli_error($this->link));
 
             // update node's title
             mysqli_query($this->link, '
@@ -1382,22 +1395,20 @@ class Zebra_Mptt {
                 WHERE
                     `' . $this->properties['id_column'] . '` = ' . $node . '
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
             // release table lock
-            mysqli_query($this->link, 'UNLOCK TABLES') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            mysqli_query($this->link, 'UNLOCK TABLES') or throw new Exception(mysqli_error($this->link));
 
             // update lookup array
             $this->lookup[$node][$this->properties['title_column']] = $title;
 
             // return true as everything went well
             return true;
-
         }
 
         // if scripts gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -1439,7 +1450,8 @@ class Zebra_Mptt {
      *  @return array                           Returns an array of children nodes of a node given as argument, indented
      *                                          and ready to be used in a <select> control.
      */
-    public function to_select($node = 0, $separator = ' &rarr; ', $show_full_path = false) {
+    public function to_select($node = 0, $separator = ' &rarr; ', $show_full_path = false)
+    {
 
         // lazy connection: touch the database only when the data is required for the first time and not at object instantiation
         $this->_init();
@@ -1448,7 +1460,7 @@ class Zebra_Mptt {
         if (isset($this->lookup[$node]) || $node == 0) {
 
             // the resulting array and a temporary array
-            $result = $parents = array();
+            $result = $parents = [];
 
             // get node's descendant nodes
             $descendants = $this->get_descendants($node, false);
@@ -1466,8 +1478,7 @@ class Zebra_Mptt {
                     if (isset($nodes)) $result += $nodes;
 
                     // reset the categories and parents arrays
-                    $nodes = $parents = array();
-
+                    $nodes = $parents = [];
                 }
 
                 // if the node has any parents
@@ -1480,7 +1491,6 @@ class Zebra_Mptt {
 
                         // and remove parents that are not parents of current node
                         array_pop($parents);
-
                 }
 
                 // add node to the stack of nodes
@@ -1488,7 +1498,6 @@ class Zebra_Mptt {
 
                 // add node to the stack of parents
                 $parents[$properties[$this->properties['right_column']]] = $properties[$this->properties['title_column']];
-
             }
 
             // may not be set when there are no nodes at all
@@ -1497,12 +1506,10 @@ class Zebra_Mptt {
 
             // return the resulting array
             return $result;
-
         }
 
         // if the script gets this far, return false as something must've went wrong
         return false;
-
     }
 
     /**
@@ -1537,7 +1544,8 @@ class Zebra_Mptt {
      *
      *  @since  2.2.3
      */
-    public function to_list($node, $list_type = 'ul', $attributes = '') {
+    public function to_list($node, $list_type = 'ul', $attributes = '')
+    {
 
         // if node is an ID, get the descendant nodes
         //  (when called recursively this is an array)
@@ -1555,13 +1563,11 @@ class Zebra_Mptt {
                 // generate output and if the node has children nodes, call this method recursively
                 $out .= '<li class="zebra_mptt_item zebra_mptt_item_' . $elem[$this->properties['id_column']] . '">' .
                     $elem[$this->properties['title_column']] . (is_array($elem['children']) ? $this->to_list($elem['children'], $list_type) : '') .
-                '</li>';
+                    '</li>';
 
             // return generated output
             return $out . '</' . $list_type . '>';
-
         }
-
     }
 
     /**
@@ -1572,7 +1578,8 @@ class Zebra_Mptt {
      *
      *  @access private
      */
-    private function _init() {
+    private function _init()
+    {
 
         // if the results are not already cached
         if (!isset($this->lookup)) {
@@ -1587,18 +1594,17 @@ class Zebra_Mptt {
                 ORDER BY
                     `' . $this->properties['left_column'] . '`
 
-            ') or trigger_error(mysqli_error($this->link), E_USER_ERROR);
+            ') or throw new Exception(mysqli_error($this->link));
 
-            $this->lookup = array();
+            $this->lookup = [];
+            // Fetch all records as an associative array
+            $rows = $result->fetch_all(MYSQLI_ASSOC);
 
-            // iterate through the found records
-            while ($row = mysqli_fetch_assoc($result))
-
-                // put all records in an array; use the ID column as index
+            // Populate the lookup array using the ID column as the index
+            foreach ($rows as $row) {
                 $this->lookup[$row[$this->properties['id_column']]] = $row;
-
+            }
         }
-
     }
 
     /**
@@ -1608,34 +1614,19 @@ class Zebra_Mptt {
      *
      *  @access private
      */
-    private function _reorder_lookup_array() {
+    private function _reorder_lookup_array(): void
+    {
+        // Extract "left" column values and use them to sort the lookup array
+        $sorted = $this->lookup;
+        usort($sorted, function ($a, $b) {
+            return $a[$this->properties['left_column']] <=> $b[$this->properties['left_column']];
+        });
 
-        // reorder the lookup array
-
-        // iterate through the nodes in the lookup array
-        foreach ($this->lookup as $properties)
-
-            // create a new array with the name of "left" column, having the values from the "left" column
-            ${$this->properties['left_column']}[] = $properties[$this->properties['left_column']];
-
-        // order the array by the left column
-        // in the ordering process, the keys are lost
-        array_multisort(${$this->properties['left_column']}, SORT_ASC, $this->lookup);
-
-        $tmp = array();
-
-        // iterate through the existing nodes
-        foreach ($this->lookup as $properties)
-
-            // and save them to a different array, this time with the correct ID
-            $tmp[$properties[$this->properties['id_column']]] = $properties;
-
-        // the updated lookup array
-        $this->lookup = $tmp;
-
-        // free memory
-        unset($tmp);
-
+        // Rebuild the lookup array with the correct IDs as keys
+        $this->lookup = array_column(
+            $sorted,
+            null,
+            $this->properties['id_column']
+        );
     }
-
 }
