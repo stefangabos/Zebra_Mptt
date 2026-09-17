@@ -40,6 +40,10 @@
 <ul>
 <li><a href="../Zebra_Mptt/Zebra_Mptt.html">Zebra_Mptt</a></li>
 </ul>
+<p><strong>Files:</strong></p>
+<ul>
+<li><a href="../Zebra_Mptt/_Zebra_Mptt.php.html">Zebra_Mptt.php</a></li>
+</ul>
 <p class="hello-separator"></p>
 <p class="hello">
 <img src="https://avatars1.githubusercontent.com/u/741165?s=460&u=95c38afa1015f9ed705f3ad9848b3c2687b547db&v=4" width="131" alt="Stefan Gabos">
@@ -53,7 +57,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </p>
 </div>
 </td>
-<td style="background: #FFF">
+<td style="background: #FFF; width: 100%">
 <div id="doc_content">
 <h2>Class: <strong>Zebra_Mptt</strong></h2>
 <h6><strong>source file:</strong> /Zebra_Mptt.php</h6>
@@ -172,32 +176,32 @@ void
 <tr>
 <td><em>string</em></td>
 <td><strong>$table_name</strong></td>
-<td><p>(Optional) MySQL table name to be used for storing items.</p><p>Default is <code>mptt</code></p></td>
+<td><p><span class="optional">Optional</span> MySQL table name to be used for storing items.</p><p>Default is <code>mptt</code></p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$id_column</strong></td>
-<td><p>(Optional) Name of the column that uniquely identifies items in the table</p><p>Default is <code>id</code></p></td>
+<td><p><span class="optional">Optional</span> Name of the column that uniquely identifies items in the table</p><p>Default is <code>id</code></p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$title_column</strong></td>
-<td><p>(Optional) Name of the column that stores item names</p><p>Default is <code>title</code></p></td>
+<td><p><span class="optional">Optional</span> Name of the column that stores item names</p><p>Default is <code>title</code></p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$left_column</strong></td>
-<td><p>(Optional) Name of the column that stores &quot;left&quot; values</p><p>Default is <code>lft</code> (&quot;left&quot; is a reserved word in MySQL)</p></td>
+<td><p><span class="optional">Optional</span> Name of the column that stores &quot;left&quot; values</p><p>Default is <code>lft</code> (&quot;left&quot; is a reserved word in MySQL)</p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$right_column</strong></td>
-<td><p>(Optional) Name of the column that stores &quot;right&quot; values</p><p>Default is <code>rgt</code> (&quot;right&quot; is a reserved word in MySQL)</p></td>
+<td><p><span class="optional">Optional</span> Name of the column that stores &quot;right&quot; values</p><p>Default is <code>rgt</code> (&quot;right&quot; is a reserved word in MySQL)</p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$parent_column</strong></td>
-<td><p>(Optional) Name of the column that stores the IDs of parent items</p><p>Default is <code>parent</code></p></td>
+<td><p><span class="optional">Optional</span> Name of the column that stores the IDs of parent items</p><p>Default is <code>parent</code></p></td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -260,7 +264,7 @@ mixed
 <tr>
 <td><em>integer</em></td>
 <td><strong>$position</strong></td>
-<td><p>(Optional) The position the node will have among the parent node's children nodes.</p><p>When parent node is given as <code>0</code>, this refers to the position the node will have                                   among the topmost nodes.</p><p>The values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use <code>0</code>, if you want it to                                   be second, use <code>1</code>, and so on.</p><p>If not given (or given as boolean <code>FALSE</code>), the node will be inserted as the last                                   of the parent node's children nodes.</p></td>
+<td><p><span class="optional">Optional</span> The position the node will have among the parent node's children nodes.</p><p>When parent node is given as <code>0</code>, this refers to the position the node will have                                   among the topmost nodes.</p><p>The values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use <code>0</code>, if you want it to                                   be second, use <code>1</code>, and so on.</p><p>If not given (or given as boolean <code>FALSE</code>), the node will be inserted as the last                                   of the parent node's children nodes.</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -321,7 +325,7 @@ mixed
 <tr>
 <td><em>integer</em></td>
 <td><strong>$position</strong></td>
-<td><p>(Optional) The position the node will have among the target node's children                                   nodes.</p><p>When target node is <code>0</code>, this refers to the position the node will have among                                   the topmost nodes.</p><p>The values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use <code>0</code>, if you want it to                                   be second, use <code>1</code>, and so on.</p><p>If not given (or given as boolean <code>FALSE</code>), the node will be inserted as the last                                   of the target node's children nodes.</p></td>
+<td><p><span class="optional">Optional</span> The position the node will have among the target node's children                                   nodes.</p><p>When target node is <code>0</code>, this refers to the position the node will have among                                   the topmost nodes.</p><p>The values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use <code>0</code>, if you want it to                                   be second, use <code>1</code>, and so on.</p><p>If not given (or given as boolean <code>FALSE</code>), the node will be inserted as the last                                   of the target node's children nodes.</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -403,12 +407,12 @@ array
 <tr>
 <td><em>integer</em></td>
 <td><strong>$node</strong></td>
-<td><p>(Optional) The ID of a node for which to return the descendant nodes.</p><p>When not specified or given as <code>0</code>, the <strong>root</strong> node is implied.</p></td>
+<td><p><span class="optional">Optional</span> The ID of a node for which to return the descendant nodes.</p><p>When not specified or given as <code>0</code>, the <strong>root</strong> node is implied.</p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$direct_descendants_only</strong></td>
-<td><p>(Optional) Set this to <code>FALSE</code> if you want <strong>all the descendants</strong>                                                   (including descendants of descendants), and not just the <strong>direct                                                   descendants</strong> (children) of the node.</p><p>Default is <code>TRUE</code></p></td>
+<td><p><span class="optional">Optional</span> Set this to <code>FALSE</code> if you want <strong>all the descendants</strong>                                                   (including descendants of descendants), and not just the <strong>direct                                                   descendants</strong> (children) of the node.</p><p>Default is <code>TRUE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -449,7 +453,7 @@ integer
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$direct_descendants_only</strong></td>
-<td><p>(Optional) Specifies whether to count <strong>direct descendants only</strong>,                                                   or to count <strong>all the descendants</strong> (including descendants of                                                   descendants)</p><p>Default is <code>TRUE</code></p></td>
+<td><p><span class="optional">Optional</span> Specifies whether to count <strong>direct descendants only</strong>,                                                   or to count <strong>all the descendants</strong> (including descendants of                                                   descendants)</p><p>Default is <code>TRUE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -651,7 +655,7 @@ array
 <tr>
 <td><em>integer</em></td>
 <td><strong>$node</strong></td>
-<td><p>(Optional) The ID of a node for which to return all descendant nodes, as                                           a multidimensional array.</p><p>Not given or given as <code>0</code>, will return all the nodes.</p></td>
+<td><p><span class="optional">Optional</span> The ID of a node for which to return all descendant nodes, as                                           a multidimensional array.</p><p>Not given or given as <code>0</code>, will return all the nodes.</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -721,7 +725,7 @@ boolean
 <tr>
 <td><em>integer</em></td>
 <td><strong>$position</strong></td>
-<td><p>(Optional) The position where to move the node, relative to the target node.</p><p>Can be a numerical value, indicating that the source node needs to be moved to                                   become a <strong>child of the target node</strong>, inserted at the indicated position (                                   the values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use <code>0</code>, if you want it to                                   be second, use <code>1</code>, and so on)</p><p>Can also be the literal <code>after</code> or <code>before</code> string, indicating the the source                                   node needs to be moved <strong>after/before the target node</strong>.</p><p>If not given (or given as boolean <code>FALSE</code>), the node will be inserted as the last                                   of the target node's children nodes.</p></td>
+<td><p><span class="optional">Optional</span> The position where to move the node, relative to the target node.</p><p>Can be a numerical value, indicating that the source node needs to be moved to                                   become a <strong>child of the target node</strong>, inserted at the indicated position (                                   the values are 0-based, meaning that if you want the node to be inserted as                                   the first child of the target node, you have to use <code>0</code>, if you want it to                                   be second, use <code>1</code>, and so on)</p><p>Can also be the literal <code>after</code> or <code>before</code> string, indicating the the source                                   node needs to be moved <strong>after/before the target node</strong>.</p><p>If not given (or given as boolean <code>FALSE</code>), the node will be inserted as the last                                   of the target node's children nodes.</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -776,7 +780,7 @@ string
 <tr>
 <td><em>string</em></td>
 <td><strong>$list_type</strong></td>
-<td><p>(Optional) Can be either <code>ul</code> (for an unordered list) or <code>ol</code> (for an ordered                                       list).</p><p>Default is <code>ul</code>.</p></td>
+<td><p><span class="optional">Optional</span> Can be either <code>ul</code> (for an unordered list) or <code>ol</code> (for an ordered                                       list).</p><p>Default is <code>ul</code>.</p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
@@ -838,17 +842,17 @@ array
 <tr>
 <td><em>integer</em></td>
 <td><strong>$node</strong></td>
-<td><p>(Optional) The ID of a node for which to get the descendant nodes and                                           return everything as a unidimensional (flat) array, indented using whatever                                           given in the <em>$separator</em> argument, and ready to be used in a &lt;select&gt;                                           control.</p><p>When not given, or given as <code>0</code>, will return an array with <em>all</em> the                                           available nodes.</p></td>
+<td><p><span class="optional">Optional</span> The ID of a node for which to get the descendant nodes and                                           return everything as a unidimensional (flat) array, indented using whatever                                           given in the <em>$separator</em> argument, and ready to be used in a &lt;select&gt;                                           control.</p><p>When not given, or given as <code>0</code>, will return an array with <em>all</em> the                                           available nodes.</p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$separator</strong></td>
-<td><p>(Optional) A string used to separate nodes.</p><p>Default is <code> &amp;rarr; </code></p></td>
+<td><p><span class="optional">Optional</span> A string used to separate nodes.</p><p>Default is <code> &amp;rarr; </code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$show_full_path</strong></td>
-<td><p>(Optional) By default, parent nodes are not shown.</p><p>Set this to <code>TRUE</code> to show full path to each node.</p><p>Default is <code>FALSE</code>.</p><p>This option was added in <strong>2.3.6</strong></p></td>
+<td><p><span class="optional">Optional</span> By default, parent nodes are not shown.</p><p>Set this to <code>TRUE</code> to show full path to each node.</p><p>Default is <code>FALSE</code>.</p><p>This option was added in <strong>2.3.6</strong></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -913,7 +917,8 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Fri, 30 Dec 22</span>
+Documentation generated on <span>Thu, 17 September 2026</span>
+<p class="doc_author">I also build fast, custom-coded one-page websites for small businesses at <a href="https://pagedrop.pro/">PageDrop.pro</a></p>
 </div>
 </div>
 <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0301ZD47Q7"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0301ZD47Q7');</script></body>
